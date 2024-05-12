@@ -2,6 +2,6 @@
 
 int main()
 {
-	std::cout << "Super Karol Kart!\n";
+	std::cout << "Super Karol Kart!" << std::endl;
 	return 0;
 }
