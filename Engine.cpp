@@ -17,6 +17,8 @@ void Engine::init(uint32_t width, uint32_t height, std::string const& title)
 
 void Engine::run()
 {
+	static sf::Clock clock;
+
 	onStart();
 	while (m_window.isOpen())
 	{
@@ -27,7 +29,7 @@ void Engine::run()
 		}
 		m_window.clear();
 
-		onUpdate();
+		onUpdate(clock.restart().asSeconds()); // reset clock and pass delta time in seconds
 
 		m_window.display();
 	}
@@ -39,7 +41,7 @@ void Engine::onStart()
 	m_track.loadTrack("assets/track_00.txt");
 }
 
-void Engine::onUpdate()
+void Engine::onUpdate(float dt)
 {
 	m_track.draw(m_window);
 }

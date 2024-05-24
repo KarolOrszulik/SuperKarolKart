@@ -18,10 +18,7 @@ public:
 	void loadTilemap(std::string const& path);
 	Tile at(sf::Vector2u);
 
-	void draw(sf::RenderTarget& target) const
-	{
-		target.draw(sf::Sprite(m_texture.getTexture()));
-	}
+	void draw(sf::RenderTarget& target) const;
 
 
 private:

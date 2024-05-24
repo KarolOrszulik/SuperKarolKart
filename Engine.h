@@ -18,7 +18,7 @@ private:
 	static std::shared_ptr<Engine> s_instance;
 
 	void onStart();
-	void onUpdate();
+	void onUpdate(float dt);
 
 	sf::RenderWindow m_window;
 	Track m_track;

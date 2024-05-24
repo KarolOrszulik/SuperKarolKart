@@ -85,34 +85,42 @@ void Track::renderTexture()
 			sprite.setTexture(m_tilemap);
 
 			Tile tile = at({ x, y });
+
 			if (tile == Tile::INVALID)
 				continue;
+
 			sprite.setTextureRect(tileRects.at(tile));
 			sprite.setPosition(x * GRID_SIZE, y * GRID_SIZE);
 
 			if (tile == Tile::ROAD_CORNER) //  Rotate the corner tile
 			{
-				int neighbours = 0;
-				if (at({ x - 1, y }) == Tile::ROAD) neighbours |= 0b0001; // West
-				if (at({ x + 1, y }) == Tile::ROAD) neighbours |= 0b0010; // East
-				if (at({ x, y - 1 }) == Tile::ROAD) neighbours |= 0b0100; // North
-				if (at({ x, y + 1 }) == Tile::ROAD) neighbours |= 0b1000; // South
+				constexpr int WEST  = 0b0001;
+				constexpr int EAST  = 0b0010;
+				constexpr int NORTH = 0b0100;
+				constexpr int SOUTH = 0b1000;
 
-				sprite.setOrigin(GRID_SIZE / 2, GRID_SIZE / 2); // Set the origin to the center of the sprite
+				int neighbours = 0;
+				if (at({ x - 1, y }) == Tile::ROAD) neighbours |= WEST;
+				if (at({ x + 1, y }) == Tile::ROAD) neighbours |= EAST;
+				if (at({ x, y - 1 }) == Tile::ROAD) neighbours |= NORTH;
+				if (at({ x, y + 1 }) == Tile::ROAD) neighbours |= SOUTH;
 
 				switch (neighbours)
 				{
-					case 0b0101: sprite.setRotation(0); break;
-					case 0b0110: sprite.setRotation(90); sprite.move({ GRID_SIZE, 0 }); break;
-					case 0b1010: sprite.setRotation(180); sprite.move({ GRID_SIZE, GRID_SIZE }); break;
-					case 0b1001: sprite.setRotation(270); sprite.move({ 0, GRID_SIZE }); break;
-					default: std::cerr << "Corner tile has invalid neighbours\n";
+					case NORTH | WEST: break; // No rotation needed
+					case NORTH | EAST: sprite.setRotation(90);  sprite.move({ GRID_SIZE, 0 });         break;
+					case SOUTH | WEST: sprite.setRotation(270); sprite.move({ 0,         GRID_SIZE }); break;
+					case SOUTH | EAST: sprite.setRotation(180); sprite.move({ GRID_SIZE, GRID_SIZE }); break;
+					default: std::cerr << "Corner tile is not in a corner\n";
 				}
-
-				sprite.setOrigin(0, 0);
 			}
 			m_texture.draw(sprite);
 		}
 
 	m_texture.display(); // This is important! It finalizes the texture
+}
+
+void Track::draw(sf::RenderTarget& target) const
+{
+	target.draw(sf::Sprite{m_texture.getTexture()});
 }
