@@ -39,9 +39,39 @@ void Engine::onStart()
 {
 	m_track.loadTilemap("assets/track_tileset.png");
 	m_track.loadTrack("assets/track_00.txt");
+
+	if (!m_font.loadFromFile("assets/Minecraft.ttf"))
+		throw std::runtime_error("Font could not be found");
 }
 
 void Engine::onUpdate(float dt)
 {
 	m_track.draw(m_window);
+	drawFPS(dt);
+}
+
+void Engine::drawFPS(float dt)
+{
+	constexpr float UPDATE_INTERVAL = 0.5f;
+
+	static float totalTime = 0.f;
+	static int   frames   = 0;
+	static sf::Text text("...", m_font, 24);
+	// Tyle statycznych zmiennych, ¿e to w zasadzie powinna byæ klasa. Ale w specyfikacji nie ma takiej klasy, wiêc trudno.
+
+	text.setFillColor(sf::Color::White);
+	text.setOutlineColor(sf::Color::Black);
+	text.setOutlineThickness(2);
+
+	m_window.draw(text);
+
+	totalTime += dt;
+	frames++;
+
+	if (totalTime < UPDATE_INTERVAL) return;
+
+	text.setString("FPS: " + std::to_string(static_cast<int>(frames / totalTime)));
+
+	totalTime = 0.f;
+	frames = 0;
 }

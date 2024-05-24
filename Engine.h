@@ -20,7 +20,11 @@ private:
 	void onStart();
 	void onUpdate(float dt);
 
+	void drawFPS(float dt);
+
 	sf::RenderWindow m_window;
 	Track m_track;
+
+	sf::Font m_font;
 };
 
