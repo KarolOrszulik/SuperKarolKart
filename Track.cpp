@@ -1,0 +1,118 @@
+#include "Track.h"
+
+#include <fstream>
+#include <map>
+#include <iostream>
+
+Track::Tile Track::at(sf::Vector2u pos)
+{
+	if (pos.x >= m_size.x || pos.y >= m_size.y)
+		return Tile::INVALID;
+
+	return m_tiles[pos.y * m_size.x + pos.x];
+}
+
+void Track::loadTrack(std::string const& path)
+{
+	std::ifstream file(path);
+
+	if (!file.is_open())
+	{
+		throw std::runtime_error("Failed to open file: " + path);
+	}
+
+	const std::map<char, Tile> tileMap
+	{
+		{ '.', Tile::GRASS },
+		{ 'X', Tile::ROAD },
+		{ 'x', Tile::ROAD_CORNER}
+	};
+
+	std::string line;
+	while (std::getline(file, line))
+	{
+		if (m_size.x != 0 && m_size.x != line.length())
+		{
+			std::cerr << "Invalid track file: all lines must have the same length" << std::endl;
+			return;
+		}
+		else
+		{
+			m_size.x = line.length();
+		}
+		m_size.y++;
+
+		try
+		{
+			for (char c : line)
+				m_tiles.push_back(tileMap.at(c));
+		}
+		catch (std::out_of_range const&)
+		{
+			std::cerr << "Invalid character in track file" << std::endl;
+		}
+	}
+
+	renderTexture();
+}
+
+void Track::loadTilemap(std::string const& path)
+{
+	if (!m_tilemap.loadFromFile(path))
+	{
+		throw std::runtime_error("Failed to load tilemap: " + path);
+	}
+}
+
+void Track::renderTexture()
+{
+	constexpr int GRID_SIZE = 16;
+
+	m_texture.create(m_size.x * GRID_SIZE, m_size.y * GRID_SIZE);
+	m_texture.clear(sf::Color::Black);
+
+	const std::map<Tile, sf::IntRect> tileRects
+	{
+		{ Tile::GRASS,		 sf::IntRect(0 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) },
+		{ Tile::ROAD,		 sf::IntRect(1 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) },
+		{ Tile::ROAD_CORNER, sf::IntRect(2 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) }
+	};
+
+	for (uint32_t y = 0; y < m_size.y; ++y)
+		for (uint32_t x = 0; x < m_size.x; ++x)
+		{
+			sf::Sprite sprite;
+			sprite.setTexture(m_tilemap);
+
+			Tile tile = at({ x, y });
+			if (tile == Tile::INVALID)
+				continue;
+			sprite.setTextureRect(tileRects.at(tile));
+			sprite.setPosition(x * GRID_SIZE, y * GRID_SIZE);
+
+			if (tile == Tile::ROAD_CORNER) //  Rotate the corner tile
+			{
+				int neighbours = 0;
+				if (at({ x - 1, y }) == Tile::ROAD) neighbours |= 0b0001; // West
+				if (at({ x + 1, y }) == Tile::ROAD) neighbours |= 0b0010; // East
+				if (at({ x, y - 1 }) == Tile::ROAD) neighbours |= 0b0100; // North
+				if (at({ x, y + 1 }) == Tile::ROAD) neighbours |= 0b1000; // South
+
+				sprite.setOrigin(GRID_SIZE / 2, GRID_SIZE / 2); // Set the origin to the center of the sprite
+
+				switch (neighbours)
+				{
+					case 0b0101: sprite.setRotation(0); break;
+					case 0b0110: sprite.setRotation(90); sprite.move({ GRID_SIZE, 0 }); break;
+					case 0b1010: sprite.setRotation(180); sprite.move({ GRID_SIZE, GRID_SIZE }); break;
+					case 0b1001: sprite.setRotation(270); sprite.move({ 0, GRID_SIZE }); break;
+					default: std::cerr << "Corner tile has invalid neighbours\n";
+				}
+
+				sprite.setOrigin(0, 0);
+			}
+			m_texture.draw(sprite);
+		}
+
+	m_texture.display(); // This is important! It finalizes the texture
+}

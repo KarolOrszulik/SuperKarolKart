@@ -1,23 +1,9 @@
-// SFML hello world
-
-#include <SFML/Graphics.hpp>
+#include "Engine.h"
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Hello World");
+	auto engine = Engine::getInstance();
 
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
-
-	while (window.isOpen())
-	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed) window.close();
-		}
-		window.clear();
-		window.draw(shape);
-		window.display();
-	}
+	engine->init(800, 600, "SuperKarolKart");
+	engine->run();
 }
