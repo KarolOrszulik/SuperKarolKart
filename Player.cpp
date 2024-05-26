@@ -27,7 +27,8 @@ void Player::controlVehicle()
 	{
 		{ Player::ControlScheme::WASD,   { sf::Keyboard::Key::W,  sf::Keyboard::Key::S,    sf::Keyboard::Key::A,    sf::Keyboard::Key::D } },
 		{ Player::ControlScheme::ARROWS, { sf::Keyboard::Key::Up, sf::Keyboard::Key::Down, sf::Keyboard::Key::Left, sf::Keyboard::Key::Right } },
-		{ Player::ControlScheme::IJKL,   { sf::Keyboard::Key::I,  sf::Keyboard::Key::K,    sf::Keyboard::Key::J,    sf::Keyboard::Key::L } }
+		{ Player::ControlScheme::IJKL,   { sf::Keyboard::Key::I,  sf::Keyboard::Key::K,    sf::Keyboard::Key::J,    sf::Keyboard::Key::L } },
+		{ Player::ControlScheme::TFGH,   { sf::Keyboard::Key::T,  sf::Keyboard::Key::G,    sf::Keyboard::Key::F,    sf::Keyboard::Key::H } },
 	};
 	// to siê a¿ prosi o refaktoring, ale zostawiam dla czytelnoœci
 

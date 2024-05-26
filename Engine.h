@@ -22,12 +22,29 @@ public:
 	void run();
 
 private:
+	enum class State
+	{
+		MAIN_MENU,
+		SETUP,
+		RACE,
+		RESULTS
+	};
+
 	static std::shared_ptr<Engine> s_instance;
 
 	void onStart();
 	void onUpdate(float dt);
 
 	void drawFPS(float dt);
+
+	void stateMainMenu(float dt);
+	void stateSetup(float dt);
+	void stateRace(float dt);
+	void stateResults(float dt);
+
+	void populatePlayers(int numPlayers);
+
+	State m_state = State::MAIN_MENU;
 
 	std::unordered_set<std::unique_ptr<GameObject>> m_objects;
 	std::vector<Player> m_players;

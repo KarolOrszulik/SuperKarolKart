@@ -47,52 +47,102 @@ void Engine::onStart()
 
 	if (!m_font.loadFromFile("assets/Minecraft.ttf"))
 		throw std::runtime_error("Font could not be found");
-
-	// === SEKCJA DEMO
-	Vehicle* v1 = new Vehicle();
-	Vehicle* v2 = new Vehicle();
-	Vehicle* v3 = new Vehicle();
-	Vehicle* v4 = new Vehicle();
-
-	m_objects.insert(std::unique_ptr<GameObject>(v1));
-	m_objects.insert(std::unique_ptr<GameObject>(v2));
-	m_objects.insert(std::unique_ptr<GameObject>(v3));
-	m_objects.insert(std::unique_ptr<GameObject>(v4));
-
-	m_players.emplace_back(Player::ControlScheme::WASD,   0);
-	m_players.emplace_back(Player::ControlScheme::ARROWS, 1);
-	m_players.emplace_back(Player::ControlScheme::IJKL,   2);
-	m_players.emplace_back(Player::ControlScheme::WASD,   3);
-
-	m_players[0].setVehicle(v1);
-	m_players[1].setVehicle(v2);
-	m_players[2].setVehicle(v3);
-	m_players[3].setVehicle(v4);
-	// === KONIEC SEKCJI DEMO
 }
 
 void Engine::onUpdate(float dt)
 {
-	m_world.clear();
+	switch (m_state)
+	{
+	case State::MAIN_MENU:
+		stateMainMenu(dt);
+		break;
+	case State::SETUP:
+		stateSetup(dt);
+		break;
+	case State::RACE:
+		stateRace(dt);
+		break;
+	case State::RESULTS:
+		stateResults(dt);
+		break;
+	}
+}
 
-	m_track.draw(m_world);
-	// drawFPS(dt);
+void Engine::populatePlayers(int numPlayers)
+{
+	m_players.clear();
 
+	for (int i = 0; i < numPlayers; i++)
+	{
+		std::unique_ptr<Vehicle> vehicle = std::make_unique<Vehicle>();
+
+		m_players.emplace_back(static_cast<Player::ControlScheme>(i), i);
+		m_players.back().setVehicle(vehicle.get());
+
+		m_objects.insert(std::move(vehicle));
+	}
+}
+
+void Engine::stateMainMenu(float dt)
+{
+	sf::Text text("Press 1-4 to start the 'race'.", m_font, 24);
+	text.setFillColor(sf::Color::White);
+	m_window.draw(text);
+
+	m_objects.clear();
+	m_players.clear();
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
+		populatePlayers(1);
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2))
+		populatePlayers(2);
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3))
+		populatePlayers(3);
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num4))
+		populatePlayers(4);
+
+	if (getNumPlayers() > 0)
+		m_state = State::SETUP;
+}
+
+void Engine::stateSetup(float dt)
+{
+	m_state = State::RACE;
+}
+
+void Engine::stateRace(float dt)
+{
 	for (auto& player : m_players)
 		player.controlVehicle();
 
+	m_world.clear();
+	m_track.draw(m_world);
 	for (auto& obj : m_objects)
 	{
 		obj->update(dt);
 		obj->draw(m_world);
 	}
+	m_world.display(); // finalize drawing the world
 
-	m_world.display();
-
-	sf::Sprite worldsprite = sf::Sprite(m_world.getTexture());
 
 	for (auto& player : m_players)
 		player.drawPlayerScreen(m_world, m_window);
+
+
+	drawFPS(dt);
+
+
+	sf::Text text("Escape to return to main menu", m_font, 24);
+	text.setFillColor(sf::Color::White);
+	text.move(0, 30);
+	m_window.draw(text);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+		m_state = State::MAIN_MENU;
+}
+
+void Engine::stateResults(float dt)
+{
 }
 
 void Engine::drawFPS(float dt)
