@@ -1,10 +1,14 @@
 #pragma once
 
-#include <memory>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
+#include <memory>
+#include <unordered_set>
+
 #include "Track.h"
+#include "GameObject.h"
+#include "Player.h"
 
 class Engine
 {
@@ -21,6 +25,11 @@ private:
 	void onUpdate(float dt);
 
 	void drawFPS(float dt);
+
+	std::unordered_set<std::unique_ptr<GameObject>> m_objects;
+	std::vector<Player> m_players;
+
+	sf::RenderTexture m_world;
 
 	sf::RenderWindow m_window;
 	Track m_track;

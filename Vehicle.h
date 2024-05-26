@@ -1,6 +1,18 @@
 #pragma once
-class Vehicle :
-    public GameObject
+
+#include "GameObject.h"
+
+class Vehicle : public GameObject
 {
+public:
+	void applyAccelerator(float accelerator);
+	void applySteering(float steering);
+
+	void update(float dt) override;
+	void draw(sf::RenderTarget& window) override;
+
+private:
+	float m_acceleration = 0.0f;
+	float m_steering = 0.0f;
 };
 

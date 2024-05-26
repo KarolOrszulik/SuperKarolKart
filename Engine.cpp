@@ -1,5 +1,8 @@
 #include "Engine.h"
 
+#include "Player.h"
+#include "Vehicle.h"
+
 std::shared_ptr<Engine> Engine::s_instance = nullptr;
 
 std::shared_ptr<Engine> Engine::getInstance()
@@ -42,12 +45,38 @@ void Engine::onStart()
 
 	if (!m_font.loadFromFile("assets/Minecraft.ttf"))
 		throw std::runtime_error("Font could not be found");
+
+	// === SEKCJA DEMO
+	Vehicle* v1 = new Vehicle();
+	Vehicle* v2 = new Vehicle();
+
+	m_objects.insert(std::unique_ptr<GameObject>(v1));
+	m_objects.insert(std::unique_ptr<GameObject>(v2));
+
+	m_players.push_back(Player{Player::ControlScheme::WASD, 0, 2, m_window.getSize()});
+	m_players.push_back(Player{Player::ControlScheme::ARROWS, 1, 2, m_window.getSize() });
+
+	m_players[0].setVehicle(v1);
+	m_players[1].setVehicle(v2);
+	// === KONIEC SEKCJI DEMO
 }
 
 void Engine::onUpdate(float dt)
 {
 	m_track.draw(m_window);
 	drawFPS(dt);
+
+	for (auto& player : m_players)
+		player.controlVehicle();
+
+	m_world.clear();
+	for (auto& obj : m_objects)
+	{
+		obj->update(dt);
+		obj->draw(m_window);
+	}
+	m_world.display();
+
 }
 
 void Engine::drawFPS(float dt)
