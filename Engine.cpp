@@ -132,17 +132,18 @@ void Engine::stateRace(float dt)
 	drawFPS(dt);
 
 
-	sf::Text text("Escape to return to main menu", m_font, 24);
+	sf::Text text("Escape to end race", m_font, 24);
 	text.setFillColor(sf::Color::White);
 	text.move(0, 30);
 	m_window.draw(text);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-		m_state = State::MAIN_MENU;
+		m_state = State::RESULTS;
 }
 
 void Engine::stateResults(float dt)
 {
+	m_state = State::MAIN_MENU;
 }
 
 void Engine::drawFPS(float dt)
