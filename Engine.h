@@ -15,6 +15,9 @@ class Engine
 public:
 	static std::shared_ptr<Engine> getInstance();
 
+	int getNumPlayers() const { return m_players.size(); }
+	sf::Vector2u getWindowSize() const { return m_window.getSize(); }
+
 	void init(uint32_t width, uint32_t height, std::string const& title);
 	void run();
 

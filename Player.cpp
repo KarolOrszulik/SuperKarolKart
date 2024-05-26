@@ -2,18 +2,12 @@
 #include "Vehicle.h"
 
 Player::Player(ControlScheme control, int player_number)
-	: m_control(control), m_number(player_number)
+	: m_control(control), m_screen(player_number)
 {}
 
 void Player::drawPlayerScreen(sf::RenderTexture& source, sf::RenderTarget& target)
 {
-	sf::View view(m_vehicle->getPosition(), { 400, 600 });
-	view.setViewport(sf::FloatRect(0.5f * m_number, 0.f, 0.5f, 1.f));
-
-	target.setView(view);
-	target.draw(sf::Sprite(source.getTexture()));
-
-	target.setView(target.getDefaultView());
+	m_screen.draw(source, target, m_vehicle->getPosition());
 }
 
 void Player::controlVehicle()
@@ -32,7 +26,8 @@ void Player::controlVehicle()
 	static const std::map<Player::ControlScheme, KeyMapping> keyMappings
 	{
 		{ Player::ControlScheme::WASD,   { sf::Keyboard::Key::W,  sf::Keyboard::Key::S,    sf::Keyboard::Key::A,    sf::Keyboard::Key::D } },
-		{ Player::ControlScheme::ARROWS, { sf::Keyboard::Key::Up, sf::Keyboard::Key::Down, sf::Keyboard::Key::Left, sf::Keyboard::Key::Right } }
+		{ Player::ControlScheme::ARROWS, { sf::Keyboard::Key::Up, sf::Keyboard::Key::Down, sf::Keyboard::Key::Left, sf::Keyboard::Key::Right } },
+		{ Player::ControlScheme::IJKL,   { sf::Keyboard::Key::I,  sf::Keyboard::Key::K,    sf::Keyboard::Key::J,    sf::Keyboard::Key::L } }
 	};
 	// to siê a¿ prosi o refaktoring, ale zostawiam dla czytelnoœci
 

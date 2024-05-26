@@ -51,22 +51,28 @@ void Engine::onStart()
 	// === SEKCJA DEMO
 	Vehicle* v1 = new Vehicle();
 	Vehicle* v2 = new Vehicle();
+	Vehicle* v3 = new Vehicle();
+	Vehicle* v4 = new Vehicle();
 
 	m_objects.insert(std::unique_ptr<GameObject>(v1));
 	m_objects.insert(std::unique_ptr<GameObject>(v2));
+	m_objects.insert(std::unique_ptr<GameObject>(v3));
+	m_objects.insert(std::unique_ptr<GameObject>(v4));
 
 	m_players.emplace_back(Player::ControlScheme::WASD,   0);
 	m_players.emplace_back(Player::ControlScheme::ARROWS, 1);
+	m_players.emplace_back(Player::ControlScheme::IJKL,   2);
+	m_players.emplace_back(Player::ControlScheme::WASD,   3);
 
 	m_players[0].setVehicle(v1);
 	m_players[1].setVehicle(v2);
+	m_players[2].setVehicle(v3);
+	m_players[3].setVehicle(v4);
 	// === KONIEC SEKCJI DEMO
 }
 
 void Engine::onUpdate(float dt)
 {
-	static int i = 0;
-
 	m_world.clear();
 
 	m_track.draw(m_world);

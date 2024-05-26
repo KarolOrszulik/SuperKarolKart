@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Vehicle.h"
+#include "PlayerScreen.h"
 
 
 class Player
@@ -20,12 +21,12 @@ public:
 private:
 	Vehicle* m_vehicle = nullptr;
 	ControlScheme m_control;
-
-	int m_number;
+	PlayerScreen m_screen;
 };
 
 enum class Player::ControlScheme
 {
 	WASD,
-	ARROWS
+	ARROWS,
+	IJKL,
 };
