@@ -40,6 +40,8 @@ void Engine::run()
 
 void Engine::onStart()
 {
+	m_world.create(m_window.getSize().x, m_window.getSize().y);
+
 	m_track.loadTilemap("assets/track_tileset.png");
 	m_track.loadTrack("assets/track_00.txt");
 
@@ -53,8 +55,8 @@ void Engine::onStart()
 	m_objects.insert(std::unique_ptr<GameObject>(v1));
 	m_objects.insert(std::unique_ptr<GameObject>(v2));
 
-	m_players.push_back(Player{Player::ControlScheme::WASD, 0, 2, m_window.getSize()});
-	m_players.push_back(Player{Player::ControlScheme::ARROWS, 1, 2, m_window.getSize() });
+	m_players.emplace_back(Player::ControlScheme::WASD,   0);
+	m_players.emplace_back(Player::ControlScheme::ARROWS, 1);
 
 	m_players[0].setVehicle(v1);
 	m_players[1].setVehicle(v2);
@@ -63,20 +65,28 @@ void Engine::onStart()
 
 void Engine::onUpdate(float dt)
 {
-	m_track.draw(m_window);
-	drawFPS(dt);
+	static int i = 0;
+
+	m_world.clear();
+
+	m_track.draw(m_world);
+	// drawFPS(dt);
 
 	for (auto& player : m_players)
 		player.controlVehicle();
 
-	m_world.clear();
 	for (auto& obj : m_objects)
 	{
 		obj->update(dt);
-		obj->draw(m_window);
+		obj->draw(m_world);
 	}
+
 	m_world.display();
 
+	sf::Sprite worldsprite = sf::Sprite(m_world.getTexture());
+
+	for (auto& player : m_players)
+		player.drawPlayerScreen(m_world, m_window);
 }
 
 void Engine::drawFPS(float dt)

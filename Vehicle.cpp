@@ -24,6 +24,7 @@ void Vehicle::update(float dt)
 void Vehicle::draw(sf::RenderTarget& window)
 {
 	constexpr float RADIUS = 20.0f;
+
 	sf::CircleShape shape(RADIUS);
 	shape.setOrigin(RADIUS, RADIUS);
 	shape.setFillColor(sf::Color::Red);
