@@ -17,7 +17,8 @@ void UIElement::setBackgroundSize(sf::Vector2f size)
 
 void UIElement::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	target.draw(m_background);
+	states.transform *= getTransform();
+	target.draw(m_background, states);
 }
 
 sf::RectangleShape UIElement::getBackground() const

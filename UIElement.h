@@ -17,7 +17,7 @@ public:
 	sf::RectangleShape getBackground() const;
 
 protected:
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 private:
 	sf::RectangleShape m_background;

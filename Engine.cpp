@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Vehicle.h"
 #include "UIElement.h"
+#include "Menu.h"
 
 std::shared_ptr<Engine> Engine::s_instance = nullptr;
 
@@ -93,7 +94,15 @@ void Engine::stateMainMenu(float dt)
 
 	UIElement el;
 	el.setBackground(bg);
-	m_window.draw(el);
+	el.setBackgroundColor({ 230,100,150,255 });
+	el.setBackgroundSize({ 200,300 });
+	el.setPosition({100,100});
+
+	Menu menu;
+	menu.setBackground(bg);
+	menu.addElement(std::make_unique<UIElement>(el));
+	menu.setPosition({ 100,100 });
+	m_window.draw(menu);
 
 	sf::Text text("Press 1-4 to start the 'race'.", m_font, 24);
 	text.setFillColor(sf::Color::White);
