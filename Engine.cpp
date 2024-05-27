@@ -2,6 +2,7 @@
 
 #include "Player.h"
 #include "Vehicle.h"
+#include "UIElement.h"
 
 std::shared_ptr<Engine> Engine::s_instance = nullptr;
 
@@ -85,10 +86,19 @@ void Engine::populatePlayers(int numPlayers)
 
 void Engine::stateMainMenu(float dt)
 {
+	sf::RectangleShape bg;
+	bg.setFillColor({ 100,150,230,255 });
+	bg.setSize({ static_cast<float>(m_window.getSize().x),
+				 static_cast<float>(m_window.getSize().y) });
+
+	UIElement el;
+	el.setBackground(bg);
+	m_window.draw(el);
+
 	sf::Text text("Press 1-4 to start the 'race'.", m_font, 24);
 	text.setFillColor(sf::Color::White);
 	m_window.draw(text);
-
+	
 	m_objects.clear();
 	m_players.clear();
 
