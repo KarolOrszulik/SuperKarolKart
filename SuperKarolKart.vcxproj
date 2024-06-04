@@ -146,6 +146,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerScreen.cpp" />
     <ClCompile Include="Track.cpp" />
+    <ClCompile Include="UIButton.cpp" />
     <ClCompile Include="UIElement.cpp" />
     <ClCompile Include="Vehicle.cpp" />
   </ItemGroup>
@@ -156,6 +157,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerScreen.h" />
     <ClInclude Include="Track.h" />
+    <ClInclude Include="UIButton.h" />
     <ClInclude Include="UIElement.h" />
     <ClInclude Include="Vehicle.h" />
   </ItemGroup>

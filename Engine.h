@@ -9,6 +9,7 @@
 #include "Track.h"
 #include "GameObject.h"
 #include "Player.h"
+#include "Menu.h"
 
 class Engine
 {
@@ -55,5 +56,8 @@ private:
 	Track m_track;
 
 	sf::Font m_font;
+
+	//std::unordered_map<State, Menu> m_menus;
+	Menu m_mainMenu;
 };
 

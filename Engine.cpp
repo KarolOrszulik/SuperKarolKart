@@ -4,6 +4,8 @@
 #include "Vehicle.h"
 #include "UIElement.h"
 #include "Menu.h"
+#include "UIButton.h"
+#include <iostream>
 
 std::shared_ptr<Engine> Engine::s_instance = nullptr;
 
@@ -18,6 +20,33 @@ std::shared_ptr<Engine> Engine::getInstance()
 void Engine::init(uint32_t width, uint32_t height, std::string const& title)
 {
 	m_window.create(sf::VideoMode(width, height), title);
+
+	// TODO Poprawiæ, bo jest bardzo brudno
+	std::unique_ptr<UIButton> btn = std::make_unique<UIButton>();
+	btn->setBackgroundColor({ 0,100,250,255 });
+	btn->setPosition({ 50,50 });
+	btn->setBackgroundSize({ 100, 100 });
+	btn->onClick = []() { std::cout << 1; };
+
+	std::unique_ptr<UIButton> btn2 = std::make_unique<UIButton>(*btn);
+	btn2->setPosition({ 50, 175 });
+	btn2->onClick = []() { std::cout << 2; };
+
+	std::unique_ptr<UIButton> btn3 = std::make_unique<UIButton>(*btn);
+	btn3->setPosition({ 50, 300 });
+	btn3->onClick = []() { std::cout << 3; };
+
+	std::unique_ptr<UIButton> btn4 = std::make_unique<UIButton>(*btn);
+	btn4->setPosition({ 50, 425 });
+	btn4->onClick = []() { std::cout << 4; };
+
+	m_mainMenu.setBackgroundColor({ 20,170,150,255 });
+	m_mainMenu.setBackgroundSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
+
+	m_mainMenu.addElement(std::move(btn));
+	m_mainMenu.addElement(std::move(btn2));
+	m_mainMenu.addElement(std::move(btn3));
+	m_mainMenu.addElement(std::move(btn4));
 }
 
 void Engine::run()
@@ -31,6 +60,7 @@ void Engine::run()
 		while (m_window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed) m_window.close();
+			else m_mainMenu.handleEvents(event);
 		}
 		m_window.clear();
 
@@ -87,27 +117,12 @@ void Engine::populatePlayers(int numPlayers)
 
 void Engine::stateMainMenu(float dt)
 {
-	sf::RectangleShape bg;
-	bg.setFillColor({ 100,150,230,255 });
-	bg.setSize({ static_cast<float>(m_window.getSize().x),
-				 static_cast<float>(m_window.getSize().y) });
-
-	UIElement el;
-	el.setBackground(bg);
-	el.setBackgroundColor({ 230,100,150,255 });
-	el.setBackgroundSize({ 200,300 });
-	el.setPosition({100,100});
-
-	Menu menu;
-	menu.setBackground(bg);
-	menu.addElement(std::make_unique<UIElement>(el));
-	menu.setPosition({ 100,100 });
-	m_window.draw(menu);
+	m_window.draw(m_mainMenu);
 
 	sf::Text text("Press 1-4 to start the 'race'.", m_font, 24);
 	text.setFillColor(sf::Color::White);
 	m_window.draw(text);
-	
+
 	m_objects.clear();
 	m_players.clear();
 
