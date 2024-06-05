@@ -26,19 +26,23 @@ void Engine::init(uint32_t width, uint32_t height, std::string const& title)
 	btn->setBackgroundColor({ 0,100,250,255 });
 	btn->setPosition({ 50,50 });
 	btn->setBackgroundSize({ 100, 100 });
-	btn->onClick = []() { std::cout << 1; };
+	btn->onClick = [this]() { populatePlayers(1); };
 
 	std::unique_ptr<UIButton> btn2 = std::make_unique<UIButton>(*btn);
 	btn2->setPosition({ 50, 175 });
-	btn2->onClick = []() { std::cout << 2; };
+	btn2->onClick = [this]() { populatePlayers(2); };
 
 	std::unique_ptr<UIButton> btn3 = std::make_unique<UIButton>(*btn);
 	btn3->setPosition({ 50, 300 });
-	btn3->onClick = []() { std::cout << 3; };
+	btn3->onClick = [this]() { populatePlayers(3); };
 
 	std::unique_ptr<UIButton> btn4 = std::make_unique<UIButton>(*btn);
 	btn4->setPosition({ 50, 425 });
-	btn4->onClick = []() { std::cout << 4; };
+	btn4->onClick = [this]() { populatePlayers(4); };
+
+	std::unique_ptr<UIButton> btnGO = std::make_unique<UIButton>(*btn);
+	btnGO->setPosition({ 250, 425 });
+	btnGO->onClick = [this]() { m_TEMP_START = true; };
 
 	m_mainMenu.setBackgroundColor({ 20,170,150,255 });
 	m_mainMenu.setBackgroundSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
@@ -47,6 +51,7 @@ void Engine::init(uint32_t width, uint32_t height, std::string const& title)
 	m_mainMenu.addElement(std::move(btn2));
 	m_mainMenu.addElement(std::move(btn3));
 	m_mainMenu.addElement(std::move(btn4));
+	m_mainMenu.addElement(std::move(btnGO));
 }
 
 void Engine::run()
@@ -123,8 +128,8 @@ void Engine::stateMainMenu(float dt)
 	text.setFillColor(sf::Color::White);
 	m_window.draw(text);
 
-	m_objects.clear();
-	m_players.clear();
+	//m_objects.clear();
+	//m_players.clear();
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
 		populatePlayers(1);
@@ -135,8 +140,11 @@ void Engine::stateMainMenu(float dt)
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num4))
 		populatePlayers(4);
 
-	if (getNumPlayers() > 0)
+	if (m_TEMP_START)
+	{
+		m_TEMP_START = false;
 		m_state = State::SETUP;
+	}
 }
 
 void Engine::stateSetup(float dt)
@@ -177,6 +185,8 @@ void Engine::stateRace(float dt)
 
 void Engine::stateResults(float dt)
 {
+	m_players.clear();
+	m_objects.clear();
 	m_state = State::MAIN_MENU;
 }
 

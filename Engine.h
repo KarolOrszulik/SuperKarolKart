@@ -59,5 +59,6 @@ private:
 
 	//std::unordered_map<State, Menu> m_menus;
 	Menu m_mainMenu;
+	bool m_TEMP_START = false;
 };
 
