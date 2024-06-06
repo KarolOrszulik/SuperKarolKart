@@ -92,32 +92,47 @@ void Engine::stateMainMenu(float dt)
 {
 	if (!m_menus.contains(State::MAIN_MENU))
 	{
-		auto onClickRed = [](UIButton& btn) { btn.setBackgroundColor({ 255,0,0,255 }); };
+		auto mouseEnterEvent = [this](UIButton& b) { b.setFontColor({ 230,0,0,255 }); };
+		auto mouseLeaveEvent = [this](UIButton& b) { b.setFontColor({ 255,255,255,255 }); };
+
 		std::unique_ptr<UIButton> btn = std::make_unique<UIButton>();
-		btn->setBackgroundColor({ 0,100,250,255 });
 		btn->setPosition({ 50,50 });
-		btn->setSize({ 100, 100 });
-		btn->onClick = [this, &onClickRed](UIButton& b) { populatePlayers(1); };
+		btn->onClick = [this](UIButton& b) { populatePlayers(1); };
+		btn->onMouseEnter = mouseEnterEvent;
+		btn->onMouseLeave = mouseLeaveEvent;
+		btn->setText("1 Player");
+		btn->setFont(m_font);
+		btn->setCharacterSize(24);
+		btn->shrinkSizeToText();
 
 		std::unique_ptr<UIButton> btn2 = std::make_unique<UIButton>(*btn);
 		btn2->setPosition({ 50, 175 });
 		btn2->onClick = [this](UIButton&) { populatePlayers(2); };
+		btn2->setText("2 Players");
+		btn2->shrinkSizeToText();
 
 		std::unique_ptr<UIButton> btn3 = std::make_unique<UIButton>(*btn);
 		btn3->setPosition({ 50, 300 });
 		btn3->onClick = [this](UIButton&) { populatePlayers(3); };
+		btn3->setText("3 Players");
+		btn3->shrinkSizeToText();
 
 		std::unique_ptr<UIButton> btn4 = std::make_unique<UIButton>(*btn);
 		btn4->setPosition({ 50, 425 });
 		btn4->onClick = [this](UIButton&) { populatePlayers(4); };
+		btn4->setText("4 Players");
+		btn4->shrinkSizeToText();
 
 		std::unique_ptr<UIButton> btnGO = std::make_unique<UIButton>(*btn);
 		btnGO->setPosition({ 250, 425 });
 		btnGO->onClick = [this](UIButton&) {
-			if (getNumPlayers() > 0)
+			if (getNumPlayers() > 0) {
 				m_state = State::SETUP;
 				m_menus.erase(State::MAIN_MENU);
-			};
+			}
+		};
+		btnGO->setText("START!");
+		btnGO->shrinkSizeToText();
 
 		Menu& m_mainMenu = m_menus[State::MAIN_MENU];
 		m_mainMenu.setBackgroundColor({ 20,170,150,255 });
@@ -128,7 +143,6 @@ void Engine::stateMainMenu(float dt)
 		m_mainMenu.addElement(std::move(btn3));
 		m_mainMenu.addElement(std::move(btn4));
 		m_mainMenu.addElement(std::move(btnGO));
-		sf::sleep(sf::milliseconds(2000));
 	}
 	m_window.draw(m_menus[State::MAIN_MENU]);
 }

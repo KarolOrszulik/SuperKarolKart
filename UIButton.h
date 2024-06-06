@@ -7,23 +7,28 @@ class UIButton
 	: public UIElement
 {
 public:
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
-	void handleEvents(sf::Event& event);
-
-	// function that will be called when the button is clicked
-	// gets the button as parameter
-	std::function<void(UIButton&)> onClick;
-	std::function<void(UIButton&)> onHover;
+	UIButton();
 
 	void setText(const std::string& text);
-
-	bool isActive() const;
+	void setFont(const sf::Font& font);
+	void setFontColor(const sf::Color& color);
 	void setActive(bool active);
+	void setCharacterSize(unsigned int size);
 	
+	bool isActive() const;
+	bool isHovered() const;
+
+	void shrinkSizeToText();
+	void handleEvents(sf::Event& event);
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+	// may add setters and getters
+	std::function<void(UIButton&)> onClick;
+	std::function<void(UIButton&)> onMouseEnter;
+	std::function<void(UIButton&)> onMouseLeave;
 private:
 	sf::Text m_text;
-	sf::String m_TextContent;
-	bool m_isActive = false;
+	bool m_isActive;
+	bool m_isHovered;
 };
 
