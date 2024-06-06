@@ -10,22 +10,42 @@ void UIButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 void UIButton::handleEvents(sf::Event& event)
 {
-	using namespace sf;
-	if (event.type == Event::MouseButtonPressed)
+	switch (event.type)
 	{
-		auto mbEvent = event.mouseButton;
-		if (mbEvent.button == Mouse::Left)
+		case sf::Event::MouseButtonPressed:
 		{
-			// TODO zmieniæ na getWidth itd.
-			FloatRect bounds = getBackground().getLocalBounds();
-			bounds.top += getPosition().y;
-			bounds.left += getPosition().x;
-			if (bounds.contains({(float)mbEvent.x, (float)mbEvent.y}))
+			auto mbEvent = event.mouseButton;
+			if (onClick && mbEvent.button == sf::Mouse::Left)
 			{
-				if (onClick) {
-					onClick();
+				sf::FloatRect bounds(getPosition(), getSize());
+				sf::Vector2f eventBounds((float)mbEvent.x, (float)mbEvent.y);
+
+				if (bounds.contains(eventBounds))
+				{
+					m_isActive = true;
+					onClick(*this);
+				}
+				else
+				{
+					m_isActive = false;
 				}
 			}
+			break;
 		}
 	}
+}
+
+void UIButton::setText(const std::string& text)
+{
+	
+}
+
+bool UIButton::isActive() const
+{
+	return m_isActive;
+}
+
+void UIButton::setActive(bool active)
+{
+	m_isActive = active;
 }

@@ -20,38 +20,6 @@ std::shared_ptr<Engine> Engine::getInstance()
 void Engine::init(uint32_t width, uint32_t height, std::string const& title)
 {
 	m_window.create(sf::VideoMode(width, height), title);
-
-	// TODO Poprawiæ, bo jest bardzo brudno
-	std::unique_ptr<UIButton> btn = std::make_unique<UIButton>();
-	btn->setBackgroundColor({ 0,100,250,255 });
-	btn->setPosition({ 50,50 });
-	btn->setBackgroundSize({ 100, 100 });
-	btn->onClick = [this]() { populatePlayers(1); };
-
-	std::unique_ptr<UIButton> btn2 = std::make_unique<UIButton>(*btn);
-	btn2->setPosition({ 50, 175 });
-	btn2->onClick = [this]() { populatePlayers(2); };
-
-	std::unique_ptr<UIButton> btn3 = std::make_unique<UIButton>(*btn);
-	btn3->setPosition({ 50, 300 });
-	btn3->onClick = [this]() { populatePlayers(3); };
-
-	std::unique_ptr<UIButton> btn4 = std::make_unique<UIButton>(*btn);
-	btn4->setPosition({ 50, 425 });
-	btn4->onClick = [this]() { populatePlayers(4); };
-
-	std::unique_ptr<UIButton> btnGO = std::make_unique<UIButton>(*btn);
-	btnGO->setPosition({ 250, 425 });
-	btnGO->onClick = [this]() { m_TEMP_START = true; };
-
-	m_mainMenu.setBackgroundColor({ 20,170,150,255 });
-	m_mainMenu.setBackgroundSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
-
-	m_mainMenu.addElement(std::move(btn));
-	m_mainMenu.addElement(std::move(btn2));
-	m_mainMenu.addElement(std::move(btn3));
-	m_mainMenu.addElement(std::move(btn4));
-	m_mainMenu.addElement(std::move(btnGO));
 }
 
 void Engine::run()
@@ -65,7 +33,7 @@ void Engine::run()
 		while (m_window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed) m_window.close();
-			else m_mainMenu.handleEvents(event);
+			else if(m_menus.contains(m_state)) m_menus[m_state].handleEvents(event);
 		}
 		m_window.clear();
 
@@ -122,29 +90,47 @@ void Engine::populatePlayers(int numPlayers)
 
 void Engine::stateMainMenu(float dt)
 {
-	m_window.draw(m_mainMenu);
-
-	sf::Text text("Press 1-4 to start the 'race'.", m_font, 24);
-	text.setFillColor(sf::Color::White);
-	m_window.draw(text);
-
-	//m_objects.clear();
-	//m_players.clear();
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
-		populatePlayers(1);
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2))
-		populatePlayers(2);
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3))
-		populatePlayers(3);
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num4))
-		populatePlayers(4);
-
-	if (m_TEMP_START)
+	if (!m_menus.contains(State::MAIN_MENU))
 	{
-		m_TEMP_START = false;
-		m_state = State::SETUP;
+		auto onClickRed = [](UIButton& btn) { btn.setBackgroundColor({ 255,0,0,255 }); };
+		std::unique_ptr<UIButton> btn = std::make_unique<UIButton>();
+		btn->setBackgroundColor({ 0,100,250,255 });
+		btn->setPosition({ 50,50 });
+		btn->setSize({ 100, 100 });
+		btn->onClick = [this, &onClickRed](UIButton& b) { populatePlayers(1); };
+
+		std::unique_ptr<UIButton> btn2 = std::make_unique<UIButton>(*btn);
+		btn2->setPosition({ 50, 175 });
+		btn2->onClick = [this](UIButton&) { populatePlayers(2); };
+
+		std::unique_ptr<UIButton> btn3 = std::make_unique<UIButton>(*btn);
+		btn3->setPosition({ 50, 300 });
+		btn3->onClick = [this](UIButton&) { populatePlayers(3); };
+
+		std::unique_ptr<UIButton> btn4 = std::make_unique<UIButton>(*btn);
+		btn4->setPosition({ 50, 425 });
+		btn4->onClick = [this](UIButton&) { populatePlayers(4); };
+
+		std::unique_ptr<UIButton> btnGO = std::make_unique<UIButton>(*btn);
+		btnGO->setPosition({ 250, 425 });
+		btnGO->onClick = [this](UIButton&) {
+			if (getNumPlayers() > 0)
+				m_state = State::SETUP;
+				m_menus.erase(State::MAIN_MENU);
+			};
+
+		Menu& m_mainMenu = m_menus[State::MAIN_MENU];
+		m_mainMenu.setBackgroundColor({ 20,170,150,255 });
+		m_mainMenu.setSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
+
+		m_mainMenu.addElement(std::move(btn));
+		m_mainMenu.addElement(std::move(btn2));
+		m_mainMenu.addElement(std::move(btn3));
+		m_mainMenu.addElement(std::move(btn4));
+		m_mainMenu.addElement(std::move(btnGO));
+		sf::sleep(sf::milliseconds(2000));
 	}
+	m_window.draw(m_menus[State::MAIN_MENU]);
 }
 
 void Engine::stateSetup(float dt)

@@ -2,6 +2,9 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
+
+// MUSI BYÆ DZIEDZICZONE PO Drawable i Transformable!!!
+// I DO TEGO AGREGOWAÆ RectangleShape
 class UIElement :
 	public sf::Drawable,
 	public sf::Transformable
@@ -10,17 +13,21 @@ public:
 	UIElement() = default;
 	virtual ~UIElement() = default;
 
-	void setBackground(const sf::RectangleShape& background);
+	sf::Color getBackgroundColor() const;
+	sf::Vector2f getSize() const;
+	float getWidth() const;
+	float getHeight() const;
+	
+
 	void setBackgroundColor(const sf::Color& color);
-	void setBackgroundSize(sf::Vector2f size);
-
-	// TODO dodaæ getWidth i getHeight i setWidth i setHeight
-
-	sf::RectangleShape getBackground() const;
+	void setSize(sf::Vector2f size);
+	void setWidth(float width);
+	void setHeight(float height);
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	virtual void handleEvents(sf::Event& event) = 0;
+
 private:
 	sf::RectangleShape m_background;
 };
