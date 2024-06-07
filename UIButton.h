@@ -16,7 +16,7 @@ public:
 
 	struct Style
 	{
-		sf::Color bgColor = {0, 0, 0, 255};
+		sf::Color bgColor = {0, 0, 0, 0};
 		sf::Color bgOutlineColor = {0, 0, 0, 0};
 		float bgOutlineThickness = 0.f;
 		sf::Color fontColor = { 255, 255, 255, 255 };
@@ -36,9 +36,12 @@ public:
 	inline void setCharacterSize(unsigned int size)
 		{ m_text.setCharacterSize(size); };
 
+	State getState() const
+		{ return m_state; };
+
 	void setState(State state);
 
-	virtual void handleEvents(sf::Event& event);
+	void handleEvents(sf::Event& event);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void shrinkSizeToText();
 
@@ -51,15 +54,18 @@ public:
 	Style m_normalStyle;
 	Style m_hoveredStyle;
 	Style m_selectedStyle;
+
+protected:
+	void updateStyle();
+	virtual void mouseClick(sf::Vector2i mousePos);
+	virtual void mouseRelease(sf::Vector2i mousePos);
+	void mouseMove(sf::Vector2i mousePos);
+	void mouseEnter();
+	void mouseLeave();
+
 private:
 	sf::Text m_text;
 	State m_state;
-
-	void updateStyle();
-	void mouseClick();
-	void mouseRelease(sf::Vector2i mousePos);
-	void mouseEnter();
-	void mouseLeave();
 
 	// use Style please
 	using UIElement::setBgColor;

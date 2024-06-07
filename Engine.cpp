@@ -5,6 +5,7 @@
 #include "UIElement.h"
 #include "Menu.h"
 #include "UIButton.h"
+#include "UIToggleButton.h"
 #include <iostream>
 
 std::shared_ptr<Engine> Engine::s_instance = nullptr;
@@ -102,19 +103,15 @@ void Engine::stateMainMenu(float dt)
 		UIButton::Style selectedStyle;
 		selectedStyle.fontColor = { 255, 0, 0, 255 };
 
-		std::unique_ptr<UIButton> btn = 
-			std::make_unique<UIButton>(normalStyle, hoveredStyle, selectedStyle);
+		std::unique_ptr<UIToggleButton> btn = 
+			std::make_unique<UIToggleButton>(normalStyle, hoveredStyle, selectedStyle);
 		btn->setPosition({ 50,50 });
-		btn->onClick = [this]() { populatePlayers(1); std::cout << "Klik"; };
-		btn->onRelease = [this]() { std::cout << "Puszczone"; };
-		//btn->onMouseEnter = mouseEnterEvent;
-		//btn->onMouseLeave = mouseLeaveEvent;
+		btn->onClick = [this]() { std::cout << "klik"; };
+		btn->onRelease = [this]() { populatePlayers(1);};
 		btn->setText("1 Player");
 		btn->setFont(m_font);
 		btn->setCharacterSize(24);
 		btn->shrinkSizeToText();
-		btn->onMouseEnter = []() { std::cout << "Weszlo\n"; };
-		btn->onMouseLeave = []() { std::cout << "Wyszlo\n"; };
 
 
 		//std::unique_ptr<UIButton> btn2 = std::make_unique<UIButton>(*btn);

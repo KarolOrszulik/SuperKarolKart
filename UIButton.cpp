@@ -26,10 +26,9 @@ void UIButton::handleEvents(sf::Event& event)
 			auto e = event.mouseButton;
 			sf::Vector2i mousePos {e.x, e.y};
 
-			if (e.button == sf::Mouse::Left && contains(mousePos)
-				&& m_state != State::SELECTED)
+			if (e.button == sf::Mouse::Left)
 			{
-				mouseClick();
+				mouseClick(mousePos);
 			}
 			break;
 		}
@@ -38,8 +37,7 @@ void UIButton::handleEvents(sf::Event& event)
 			auto e = event.mouseButton;
 			sf::Vector2i mousePos{ e.x, e.y };
 
-			if (e.button == sf::Mouse::Left 
-				&& m_state == State::SELECTED)
+			if (e.button == sf::Mouse::Left)
 			{
 				mouseRelease(mousePos);
 			}
@@ -49,17 +47,7 @@ void UIButton::handleEvents(sf::Event& event)
 		{
 			auto e = event.mouseMove;
 			sf::Vector2i mousePos{ e.x, e.y };
-
-			if (contains(mousePos) 
-				&& m_state == State::NORMAL)
-			{
-				mouseEnter();
-			}
-			else if(!contains(mousePos) 
-				&& m_state == State::HOVERED)
-			{
-				mouseLeave();
-			}
+			mouseMove(mousePos);
 			break;
 		}
 	}
@@ -108,8 +96,13 @@ void UIButton::updateStyle()
 	setBgOutlineThickness(updatedStyle.bgOutlineThickness);
 }
 
-void UIButton::mouseClick()
+void UIButton::mouseClick(sf::Vector2i mousePos)
 {
+	if (!contains(mousePos))
+	{
+		return;
+	}
+
 	setState(State::SELECTED);
 	if (onClick)
 	{
@@ -119,11 +112,35 @@ void UIButton::mouseClick()
 
 void UIButton::mouseRelease(sf::Vector2i mousePos)
 {
-	if (contains(mousePos)) setState(State::HOVERED);
-	else setState(State::NORMAL);
+	if (m_state != State::SELECTED)
+	{
+		return;
+	}
+
+	if (contains(mousePos))
+	{
+		setState(State::HOVERED);
+	}
+	else
+	{
+		setState(State::NORMAL);
+	}
+
 	if (onRelease)
 	{
 		onRelease();
+	}
+}
+
+void UIButton::mouseMove(sf::Vector2i mousePos)
+{
+	if (contains(mousePos) && m_state == State::NORMAL)
+	{
+		mouseEnter();
+	}
+	else if (!contains(mousePos) && m_state == State::HOVERED)
+	{
+		mouseLeave();
 	}
 }
 
