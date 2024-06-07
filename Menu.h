@@ -9,8 +9,10 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void addElement(std::unique_ptr<UIElement> element);
 
-	void handleEvents(sf::Event& event) override;
+	virtual void handleEvents(sf::Event& event) override;
 
+protected:
+	
 private:
 	std::vector<std::unique_ptr<UIElement>> elements;
 };

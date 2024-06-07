@@ -17,20 +17,38 @@ void Menu::addElement(std::unique_ptr<UIElement> element)
 
 void Menu::handleEvents(sf::Event& event)
 {
-	for (auto const& element : elements)
+	if (event.type == sf::Event::TextEntered)
 	{
-		if(event.type == sf::Event::MouseMoved)
-		{
-			event.mouseMove.x -= getPosition().x;
-			event.mouseMove.y -= getPosition().y;
+		sf::Event::TextEvent e = event.text;
+		if (e.unicode < 128)
+		{ 
+			// tutaj zrobic, ze wysyla sie event do elementu z focusem
 		}
-		else if(event.type == sf::Event::MouseButtonPressed ||
-				event.type == sf::Event::MouseButtonReleased)
+	}
+	switch (event.type)
+	{
+		case sf::Event::MouseButtonPressed:
+		case sf::Event::MouseButtonReleased:
 		{
 			event.mouseButton.x -= getPosition().x;
 			event.mouseButton.y -= getPosition().y;
-		}
 
-		element->handleEvents(event);
+			for (auto const& element : elements)
+			{
+				element->handleEvents(event);
+			}
+			break;
+		}
+		case sf::Event::MouseMoved:
+		{
+			event.mouseMove.x -= getPosition().x;
+			event.mouseMove.y -= getPosition().y;
+
+			for (auto const& element : elements)
+			{
+				element->handleEvents(event);
+			}
+			break;
+		}
 	}
 }

@@ -92,40 +92,52 @@ void Engine::stateMainMenu(float dt)
 {
 	if (!m_menus.contains(State::MAIN_MENU))
 	{
-		auto mouseEnterEvent = [this](UIButton& b) { b.setFontColor({ 230,0,0,255 }); };
-		auto mouseLeaveEvent = [this](UIButton& b) { b.setFontColor({ 255,255,255,255 }); };
+		UIButton::Style normalStyle;
+		normalStyle.bgColor = { 0, 0, 0, 0};
+		normalStyle.fontColor = { 255, 255, 255, 255 };
 
-		std::unique_ptr<UIButton> btn = std::make_unique<UIButton>();
+		UIButton::Style hoveredStyle;
+		hoveredStyle.fontColor = { 255, 200, 0, 255 };
+
+		UIButton::Style selectedStyle;
+		selectedStyle.fontColor = { 255, 0, 0, 255 };
+
+		std::unique_ptr<UIButton> btn = 
+			std::make_unique<UIButton>(normalStyle, hoveredStyle, selectedStyle);
 		btn->setPosition({ 50,50 });
-		btn->onClick = [this](UIButton& b) { populatePlayers(1); };
-		btn->onMouseEnter = mouseEnterEvent;
-		btn->onMouseLeave = mouseLeaveEvent;
+		btn->onClick = [this]() { populatePlayers(1); std::cout << "Klik"; };
+		btn->onRelease = [this]() { std::cout << "Puszczone"; };
+		//btn->onMouseEnter = mouseEnterEvent;
+		//btn->onMouseLeave = mouseLeaveEvent;
 		btn->setText("1 Player");
 		btn->setFont(m_font);
 		btn->setCharacterSize(24);
 		btn->shrinkSizeToText();
+		btn->onMouseEnter = []() { std::cout << "Weszlo\n"; };
+		btn->onMouseLeave = []() { std::cout << "Wyszlo\n"; };
 
-		std::unique_ptr<UIButton> btn2 = std::make_unique<UIButton>(*btn);
-		btn2->setPosition({ 50, 175 });
-		btn2->onClick = [this](UIButton&) { populatePlayers(2); };
-		btn2->setText("2 Players");
-		btn2->shrinkSizeToText();
 
-		std::unique_ptr<UIButton> btn3 = std::make_unique<UIButton>(*btn);
-		btn3->setPosition({ 50, 300 });
-		btn3->onClick = [this](UIButton&) { populatePlayers(3); };
-		btn3->setText("3 Players");
-		btn3->shrinkSizeToText();
+		//std::unique_ptr<UIButton> btn2 = std::make_unique<UIButton>(*btn);
+		//btn2->setPosition({ 50, 175 });
+		//btn2->onClick = [this](UIButton&) { populatePlayers(2); };
+		//btn2->setText("2 Players");
+		//btn2->shrinkSizeToText();
 
-		std::unique_ptr<UIButton> btn4 = std::make_unique<UIButton>(*btn);
-		btn4->setPosition({ 50, 425 });
-		btn4->onClick = [this](UIButton&) { populatePlayers(4); };
-		btn4->setText("4 Players");
-		btn4->shrinkSizeToText();
+		//std::unique_ptr<UIButton> btn3 = std::make_unique<UIButton>(*btn);
+		//btn3->setPosition({ 50, 300 });
+		//btn3->onClick = [this](UIButton&) { populatePlayers(3); };
+		//btn3->setText("3 Players");
+		//btn3->shrinkSizeToText();
+
+		//std::unique_ptr<UIButton> btn4 = std::make_unique<UIButton>(*btn);
+		//btn4->setPosition({ 50, 425 });
+		//btn4->onClick = [this](UIButton&) { populatePlayers(4); };
+		//btn4->setText("4 Players");
+		//btn4->shrinkSizeToText();
 
 		std::unique_ptr<UIButton> btnGO = std::make_unique<UIButton>(*btn);
 		btnGO->setPosition({ 250, 425 });
-		btnGO->onClick = [this](UIButton&) {
+		btnGO->onClick = [this]() {
 			if (getNumPlayers() > 0) {
 				m_state = State::SETUP;
 				m_menus.erase(State::MAIN_MENU);
@@ -135,13 +147,20 @@ void Engine::stateMainMenu(float dt)
 		btnGO->shrinkSizeToText();
 
 		Menu& m_mainMenu = m_menus[State::MAIN_MENU];
-		m_mainMenu.setBackgroundColor({ 20,170,150,255 });
+		m_mainMenu.setBgColor({ 20,170,150,255 });
 		m_mainMenu.setSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
 
+		//std::unique_ptr<UIRadioGroup> radioGroup = std::make_unique<UIRadioGroup>();
+		//radioGroup->addButton(std::move(btn));
+		//radioGroup->addButton(std::move(btn2));
+		//radioGroup->addButton(std::move(btn3));
+		//radioGroup->addButton(std::move(btn4));
+
 		m_mainMenu.addElement(std::move(btn));
+		/*m_mainMenu.addElement(std::move(btn));
 		m_mainMenu.addElement(std::move(btn2));
 		m_mainMenu.addElement(std::move(btn3));
-		m_mainMenu.addElement(std::move(btn4));
+		m_mainMenu.addElement(std::move(btn4));*/
 		m_mainMenu.addElement(std::move(btnGO));
 	}
 	m_window.draw(m_menus[State::MAIN_MENU]);

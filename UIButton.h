@@ -7,28 +7,63 @@ class UIButton
 	: public UIElement
 {
 public:
-	UIButton();
+	enum class State
+	{
+		NORMAL,
+		HOVERED,
+		SELECTED
+	};
 
-	void setText(const std::string& text);
-	void setFont(const sf::Font& font);
-	void setFontColor(const sf::Color& color);
-	void setActive(bool active);
-	void setCharacterSize(unsigned int size);
-	
-	bool isActive() const;
-	bool isHovered() const;
+	struct Style
+	{
+		sf::Color bgColor = {0, 0, 0, 255};
+		sf::Color bgOutlineColor = {0, 0, 0, 0};
+		float bgOutlineThickness = 0.f;
+		sf::Color fontColor = { 255, 255, 255, 255 };
+		sf::Color fontOutlineColor = { 0, 0, 0, 255 };
+		float fontOutlineThickness = 0.f;
+	};
 
-	void shrinkSizeToText();
-	void handleEvents(sf::Event& event);
+	UIButton() = default;
+	UIButton(Style normal, Style hovered, Style selected);
+
+	inline void setText(const std::string& text) 
+		{ m_text.setString(text); };
+
+	inline void setFont(const sf::Font& font) 
+		{ m_text.setFont(font); };
+
+	inline void setCharacterSize(unsigned int size)
+		{ m_text.setCharacterSize(size); };
+
+	void setState(State state);
+
+	virtual void handleEvents(sf::Event& event);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+	void shrinkSizeToText();
 
 	// may add setters and getters
-	std::function<void(UIButton&)> onClick;
-	std::function<void(UIButton&)> onMouseEnter;
-	std::function<void(UIButton&)> onMouseLeave;
+	std::function<void()> onClick;
+	std::function<void()> onRelease;
+	std::function<void()> onMouseEnter;
+	std::function<void()> onMouseLeave;
+
+	Style m_normalStyle;
+	Style m_hoveredStyle;
+	Style m_selectedStyle;
 private:
 	sf::Text m_text;
-	bool m_isActive;
-	bool m_isHovered;
+	State m_state;
+
+	void updateStyle();
+	void mouseClick();
+	void mouseRelease(sf::Vector2i mousePos);
+	void mouseEnter();
+	void mouseLeave();
+
+	// use Style please
+	using UIElement::setBgColor;
+	using UIElement::setBgOutlineColor;
+	using UIElement::setBgOutlineThickness;
 };
 

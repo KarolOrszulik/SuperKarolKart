@@ -1,12 +1,13 @@
 #include "UIButton.h"
 #include <iostream>
 
-UIButton::UIButton()
-	: m_isActive(false), 
-	m_isHovered(false)
+UIButton::UIButton(Style normal, Style hovered, Style selected)
+	: m_state(State::NORMAL)
 {
-	setBackgroundColor({0,0,0,0});
-	setFontColor({255,255,255,255});
+	m_normalStyle = normal;
+	m_hoveredStyle = hovered;
+	m_selectedStyle = selected;
+	updateStyle();
 }
 
 void UIButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -22,73 +23,46 @@ void UIButton::handleEvents(sf::Event& event)
 	{
 		case sf::Event::MouseButtonPressed:
 		{
-			auto mbEvent = event.mouseButton;
-			if (onClick && mbEvent.button == sf::Mouse::Left)
-			{
-				sf::FloatRect bounds(getPosition(), getSize());
-				sf::Vector2f eventBounds((float)mbEvent.x, (float)mbEvent.y);
+			auto e = event.mouseButton;
+			sf::Vector2i mousePos {e.x, e.y};
 
-				if (bounds.contains(eventBounds))
-				{
-					m_isActive = true;
-					onClick(*this);
-				}
-				else
-				{
-					m_isActive = false;
-				}
+			if (e.button == sf::Mouse::Left && contains(mousePos)
+				&& m_state != State::SELECTED)
+			{
+				mouseClick();
+			}
+			break;
+		}
+		case sf::Event::MouseButtonReleased:
+		{
+			auto e = event.mouseButton;
+			sf::Vector2i mousePos{ e.x, e.y };
+
+			if (e.button == sf::Mouse::Left 
+				&& m_state == State::SELECTED)
+			{
+				mouseRelease(mousePos);
 			}
 			break;
 		}
 		case sf::Event::MouseMoved:
 		{
-			auto mmEvent = event.mouseMove;
-			sf::FloatRect bounds(getPosition(), getSize());
-			sf::Vector2f eventBounds((float)mmEvent.x, (float)mmEvent.y);
+			auto e = event.mouseMove;
+			sf::Vector2i mousePos{ e.x, e.y };
 
-			if (!m_isHovered && bounds.contains(eventBounds))
+			if (contains(mousePos) 
+				&& m_state == State::NORMAL)
 			{
-				m_isHovered = true;
-				onMouseEnter(*this);
+				mouseEnter();
 			}
-			else if (m_isHovered && !bounds.contains(eventBounds))
+			else if(!contains(mousePos) 
+				&& m_state == State::HOVERED)
 			{
-				m_isHovered = false;
-				onMouseLeave(*this);
+				mouseLeave();
 			}
 			break;
 		}
 	}
-}
-
-void UIButton::setText(const std::string& text)
-{
-	m_text.setString(text);
-}
-
-void UIButton::setFont(const sf::Font& font)
-{
-	m_text.setFont(font);
-}
-
-void UIButton::setFontColor(const sf::Color& color)
-{
-	m_text.setFillColor(color);
-}
-
-void UIButton::setCharacterSize(unsigned int size)
-{
-	m_text.setCharacterSize(size);
-}
-
-bool UIButton::isActive() const
-{
-	return m_isActive;
-}
-
-bool UIButton::isHovered() const
-{
-	return m_isHovered;
 }
 
 void UIButton::shrinkSizeToText()
@@ -98,7 +72,75 @@ void UIButton::shrinkSizeToText()
 	setSize(newSize);
 }
 
-void UIButton::setActive(bool active)
+void UIButton::setState(State state)
 {
-	m_isActive = active;
+	if(m_state == state)
+	{
+		return;
+	}
+	
+	m_state = state;
+	updateStyle();
+}
+
+void UIButton::updateStyle()
+{
+	Style updatedStyle;
+	switch (m_state)
+	{
+	case State::NORMAL:
+		updatedStyle = m_normalStyle;
+		break;
+	case State::HOVERED:
+		updatedStyle = m_hoveredStyle;
+		break;
+	case State::SELECTED:
+		updatedStyle = m_selectedStyle;
+		break;
+	}
+
+	m_text.setFillColor(updatedStyle.fontColor);
+	m_text.setOutlineColor(updatedStyle.fontOutlineColor);
+	m_text.setOutlineThickness(updatedStyle.fontOutlineThickness);
+
+	setBgColor(updatedStyle.bgColor);
+	setBgOutlineColor(updatedStyle.bgOutlineColor);
+	setBgOutlineThickness(updatedStyle.bgOutlineThickness);
+}
+
+void UIButton::mouseClick()
+{
+	setState(State::SELECTED);
+	if (onClick)
+	{
+		onClick();
+	}
+}
+
+void UIButton::mouseRelease(sf::Vector2i mousePos)
+{
+	if (contains(mousePos)) setState(State::HOVERED);
+	else setState(State::NORMAL);
+	if (onRelease)
+	{
+		onRelease();
+	}
+}
+
+void UIButton::mouseEnter()
+{
+	setState(State::HOVERED);
+	if (onMouseEnter)
+	{
+		onMouseEnter();
+	}
+}
+
+void UIButton::mouseLeave()
+{
+	setState(State::NORMAL);
+	if (onMouseLeave)
+	{
+		onMouseLeave();
+	}
 }
