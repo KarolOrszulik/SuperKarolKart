@@ -7,26 +7,31 @@ void UIToggleButton::mouseClick(sf::Vector2i point)
 		return;
 	}
 
-	if (m_IsToggled)
+	if (getState() == State::SELECTED)
 	{
 		setState(State::HOVERED);
+		if (onDeselected)
+		{
+			onDeselected();
+		}
 	}
 	else
 	{
 		setState(State::SELECTED);
+		if(onSelected)
+		{
+			onSelected();
+		}
 	}
-	m_IsToggled = !m_IsToggled;
+	m_IsPressed = true;
 
-	if (onClick)
-	{
-		onClick();
-	}
 }
 
 void UIToggleButton::mouseRelease(sf::Vector2i point)
 {
-	if (onRelease)
+	if (m_IsPressed && onRelease)
 	{
 		onRelease();
+		m_IsPressed = false;
 	}
 }

@@ -38,6 +38,7 @@ private:
 
 	void drawFPS(float dt);
 
+	void setGameState(State state);
 	void stateMainMenu(float dt);
 	void stateSetup(float dt);
 	void stateRace(float dt);

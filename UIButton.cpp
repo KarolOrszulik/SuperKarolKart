@@ -2,11 +2,11 @@
 #include <iostream>
 
 UIButton::UIButton(Style normal, Style hovered, Style selected)
-	: m_state(State::NORMAL)
+	: m_state(State::NORMAL), 
+	m_normalStyle(normal), 
+	m_hoveredStyle(hovered), 
+	m_selectedStyle(selected)
 {
-	m_normalStyle = normal;
-	m_hoveredStyle = hovered;
-	m_selectedStyle = selected;
 	updateStyle();
 }
 

@@ -89,6 +89,12 @@ void Engine::populatePlayers(int numPlayers)
 	}
 }
 
+void Engine::setGameState(State state)
+{
+	m_menus.erase(m_state);
+	m_state = state;
+}
+
 void Engine::stateMainMenu(float dt)
 {
 	if (!m_menus.contains(State::MAIN_MENU))
@@ -103,61 +109,38 @@ void Engine::stateMainMenu(float dt)
 		UIButton::Style selectedStyle;
 		selectedStyle.fontColor = { 255, 0, 0, 255 };
 
-		std::unique_ptr<UIToggleButton> btn = 
+		std::unique_ptr<UIToggleButton> btn =
 			std::make_unique<UIToggleButton>(normalStyle, hoveredStyle, selectedStyle);
 		btn->setPosition({ 50,50 });
-		btn->onClick = [this]() { std::cout << "klik"; };
-		btn->onRelease = [this]() { populatePlayers(1);};
 		btn->setText("1 Player");
 		btn->setFont(m_font);
 		btn->setCharacterSize(24);
 		btn->shrinkSizeToText();
-
-
-		//std::unique_ptr<UIButton> btn2 = std::make_unique<UIButton>(*btn);
-		//btn2->setPosition({ 50, 175 });
-		//btn2->onClick = [this](UIButton&) { populatePlayers(2); };
-		//btn2->setText("2 Players");
-		//btn2->shrinkSizeToText();
-
-		//std::unique_ptr<UIButton> btn3 = std::make_unique<UIButton>(*btn);
-		//btn3->setPosition({ 50, 300 });
-		//btn3->onClick = [this](UIButton&) { populatePlayers(3); };
-		//btn3->setText("3 Players");
-		//btn3->shrinkSizeToText();
-
-		//std::unique_ptr<UIButton> btn4 = std::make_unique<UIButton>(*btn);
-		//btn4->setPosition({ 50, 425 });
-		//btn4->onClick = [this](UIButton&) { populatePlayers(4); };
-		//btn4->setText("4 Players");
-		//btn4->shrinkSizeToText();
-
-		std::unique_ptr<UIButton> btnGO = std::make_unique<UIButton>(*btn);
-		btnGO->setPosition({ 250, 425 });
-		btnGO->onClick = [this]() {
-			if (getNumPlayers() > 0) {
-				m_state = State::SETUP;
-				m_menus.erase(State::MAIN_MENU);
-			}
+		btn->onSelected = [this]() {
+			populatePlayers(1);
 		};
+		btn->onDeselected = [this]() {
+			populatePlayers(0);
+		};
+
+		std::unique_ptr<UIButton> btnGO =
+			std::make_unique<UIButton>(normalStyle, hoveredStyle, selectedStyle);
+		btnGO->setPosition({ 250,50 });
 		btnGO->setText("START!");
+		btnGO->setFont(m_font);
+		btnGO->setCharacterSize(24);
 		btnGO->shrinkSizeToText();
+		btnGO->onRelease = [this]() {
+			if (getNumPlayers() > 0) {
+				setGameState(State::SETUP);
+			} 
+		};
 
 		Menu& m_mainMenu = m_menus[State::MAIN_MENU];
 		m_mainMenu.setBgColor({ 20,170,150,255 });
 		m_mainMenu.setSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
 
-		//std::unique_ptr<UIRadioGroup> radioGroup = std::make_unique<UIRadioGroup>();
-		//radioGroup->addButton(std::move(btn));
-		//radioGroup->addButton(std::move(btn2));
-		//radioGroup->addButton(std::move(btn3));
-		//radioGroup->addButton(std::move(btn4));
-
 		m_mainMenu.addElement(std::move(btn));
-		/*m_mainMenu.addElement(std::move(btn));
-		m_mainMenu.addElement(std::move(btn2));
-		m_mainMenu.addElement(std::move(btn3));
-		m_mainMenu.addElement(std::move(btn4));*/
 		m_mainMenu.addElement(std::move(btnGO));
 	}
 	m_window.draw(m_menus[State::MAIN_MENU]);
@@ -165,7 +148,7 @@ void Engine::stateMainMenu(float dt)
 
 void Engine::stateSetup(float dt)
 {
-	m_state = State::RACE;
+	setGameState(State::RACE);
 }
 
 void Engine::stateRace(float dt)
