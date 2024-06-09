@@ -6,7 +6,8 @@
 #include "Menu.h"
 #include "UIButton.h"
 #include "UIToggleButton.h"
-#include <iostream>
+#include "UIRadioGroup.h"
+
 
 std::shared_ptr<Engine> Engine::s_instance = nullptr;
 
@@ -34,7 +35,7 @@ void Engine::run()
 		while (m_window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed) m_window.close();
-			else if(m_menus.contains(m_state)) m_menus[m_state].handleEvents(event);
+			else if(m_menus.contains(m_state)) m_menus[m_state].handleEvent(event);
 		}
 		m_window.clear();
 
@@ -99,32 +100,57 @@ void Engine::stateMainMenu(float dt)
 {
 	if (!m_menus.contains(State::MAIN_MENU))
 	{
-		UIButton::Style normalStyle;
-		normalStyle.bgColor = { 0, 0, 0, 0};
-		normalStyle.fontColor = { 255, 255, 255, 255 };
+		using UIToggle = UIToggleButton;
 
-		UIButton::Style hoveredStyle;
-		hoveredStyle.fontColor = { 255, 200, 0, 255 };
+		UIButton::Style normStyle;
+		normStyle.bgColor = { 0, 0, 0, 0};
+		normStyle.fontColor = { 255, 255, 255, 255 };
 
-		UIButton::Style selectedStyle;
-		selectedStyle.fontColor = { 255, 0, 0, 255 };
+		UIButton::Style hovStyle;
+		hovStyle.fontColor = { 255, 200, 0, 255 };
 
-		std::unique_ptr<UIToggleButton> btn =
-			std::make_unique<UIToggleButton>(normalStyle, hoveredStyle, selectedStyle);
+		UIButton::Style selStyle;
+		selStyle.fontColor = { 255, 0, 0, 255 };
+
+		auto btn = std::make_unique<UIToggle>(normStyle, hovStyle, selStyle);
 		btn->setPosition({ 50,50 });
 		btn->setText("1 Player");
 		btn->setFont(m_font);
 		btn->setCharacterSize(24);
 		btn->shrinkSizeToText();
-		btn->onSelected = [this]() {
-			populatePlayers(1);
-		};
-		btn->onDeselected = [this]() {
-			populatePlayers(0);
-		};
+		btn->setOnSelected([this]() { populatePlayers(1); });
 
-		std::unique_ptr<UIButton> btnGO =
-			std::make_unique<UIButton>(normalStyle, hoveredStyle, selectedStyle);
+		auto btn2 =std::make_unique<UIToggle>(normStyle, hovStyle, selStyle);
+		btn2->setPosition({ 50,150 });
+		btn2->setText("2 Players");
+		btn2->setFont(m_font);
+		btn2->setCharacterSize(24);
+		btn2->shrinkSizeToText();
+		btn2->setOnSelected([this]() { populatePlayers(2);});
+
+		auto btn3 = std::make_unique<UIToggle>(normStyle, hovStyle, selStyle);
+		btn3->setPosition({ 50,250 });
+		btn3->setText("3 Players");
+		btn3->setFont(m_font);
+		btn3->setCharacterSize(24);
+		btn3->shrinkSizeToText();
+		btn3->setOnSelected([this]() { populatePlayers(3); });
+
+		auto btn4 = std::make_unique<UIToggle>(normStyle, hovStyle, selStyle);
+		btn4->setPosition({ 50,350 });
+		btn4->setText("4 Players");
+		btn4->setFont(m_font);
+		btn4->setCharacterSize(24);
+		btn4->shrinkSizeToText();
+		btn4->setOnSelected([this]() { populatePlayers(4); });
+
+		auto uiRadioGroup = std::make_unique<UIRadioGroup>();
+		uiRadioGroup->addElement(std::move(btn));
+		uiRadioGroup->addElement(std::move(btn2));
+		uiRadioGroup->addElement(std::move(btn3));
+		uiRadioGroup->addElement(std::move(btn4));
+
+		auto btnGO = std::make_unique<UIButton>(normStyle, hovStyle, selStyle);
 		btnGO->setPosition({ 250,50 });
 		btnGO->setText("START!");
 		btnGO->setFont(m_font);
@@ -140,7 +166,7 @@ void Engine::stateMainMenu(float dt)
 		m_mainMenu.setBgColor({ 20,170,150,255 });
 		m_mainMenu.setSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
 
-		m_mainMenu.addElement(std::move(btn));
+		m_mainMenu.addElement(std::move(uiRadioGroup));
 		m_mainMenu.addElement(std::move(btnGO));
 	}
 	m_window.draw(m_menus[State::MAIN_MENU]);

@@ -45,7 +45,7 @@ public:
 	bool contains(sf::Vector2i point) const;
 	
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-	virtual void handleEvents(sf::Event& event) = 0;
+	virtual void handleEvent(sf::Event& event) = 0;
 
 protected:
 	sf::Vector2i translateRelativeToElement(sf::Vector2i globalPoint) const;

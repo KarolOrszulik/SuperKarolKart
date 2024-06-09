@@ -2,10 +2,12 @@
 #include <iostream>
 
 UIButton::UIButton(Style normal, Style hovered, Style selected)
-	: m_state(State::NORMAL), 
-	m_normalStyle(normal), 
-	m_hoveredStyle(hovered), 
-	m_selectedStyle(selected)
+	: m_state{ State::NORMAL },
+	m_styles{
+		{State::NORMAL, normal}, 
+		{State::HOVERED, hovered}, 
+		{State::SELECTED, selected}
+	}
 {
 	updateStyle();
 }
@@ -17,7 +19,7 @@ void UIButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	target.draw(m_text, states);
 }
 
-void UIButton::handleEvents(sf::Event& event)
+void UIButton::handleEvent(sf::Event& event)
 {
 	switch (event.type)
 	{
@@ -73,19 +75,7 @@ void UIButton::setState(State state)
 
 void UIButton::updateStyle()
 {
-	Style updatedStyle;
-	switch (m_state)
-	{
-	case State::NORMAL:
-		updatedStyle = m_normalStyle;
-		break;
-	case State::HOVERED:
-		updatedStyle = m_hoveredStyle;
-		break;
-	case State::SELECTED:
-		updatedStyle = m_selectedStyle;
-		break;
-	}
+	Style updatedStyle = m_styles[getState()];
 
 	m_text.setFillColor(updatedStyle.fontColor);
 	m_text.setOutlineColor(updatedStyle.fontOutlineColor);

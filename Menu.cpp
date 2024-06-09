@@ -15,38 +15,39 @@ void Menu::addElement(std::unique_ptr<UIElement> element)
 	elements.push_back(std::move(element));
 }
 
-void Menu::handleEvents(sf::Event& event)
+void Menu::handleEvent(sf::Event& event)
 {
-	if (event.type == sf::Event::TextEntered)
-	{
-		sf::Event::TextEvent e = event.text;
-		if (e.unicode < 128)
-		{ 
-			// tutaj zrobic, ze wysyla sie event do elementu z focusem
-		}
-	}
 	switch (event.type)
 	{
+		case sf::Event::TextEntered:
+		{
+			sf::Event::TextEvent e = event.text;
+			if (e.unicode < 128)
+			{
+				// tutaj zrobic, ze wysyla sie event do elementu z focusem
+			}
+			break;
+		}
 		case sf::Event::MouseButtonPressed:
 		case sf::Event::MouseButtonReleased:
 		{
-			event.mouseButton.x -= getPosition().x;
-			event.mouseButton.y -= getPosition().y;
+			event.mouseButton.x -= static_cast<int>(getPosition().x);
+			event.mouseButton.y -= static_cast<int>(getPosition().y);
 
 			for (auto const& element : elements)
 			{
-				element->handleEvents(event);
+				element->handleEvent(event);
 			}
 			break;
 		}
 		case sf::Event::MouseMoved:
 		{
-			event.mouseMove.x -= getPosition().x;
-			event.mouseMove.y -= getPosition().y;
+			event.mouseMove.x -= static_cast<int>(getPosition().x);
+			event.mouseMove.y -= static_cast<int>(getPosition().y);
 
 			for (auto const& element : elements)
 			{
-				element->handleEvents(event);
+				element->handleEvent(event);
 			}
 			break;
 		}

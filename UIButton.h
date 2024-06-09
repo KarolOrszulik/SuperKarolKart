@@ -36,24 +36,23 @@ public:
 	inline void setCharacterSize(unsigned int size)
 		{ m_text.setCharacterSize(size); };
 
+	void setState(State state);
+
 	State getState() const
 		{ return m_state; };
 
-	void setState(State state);
+	
 
-	void handleEvents(sf::Event& event);
+	void handleEvent(sf::Event& event);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void shrinkSizeToText();
 
-	// may add setters and getters
+	// TODO add setters and getters
 	std::function<void()> onClick;
 	std::function<void()> onRelease;
 	std::function<void()> onMouseEnter;
 	std::function<void()> onMouseLeave;
 
-	Style m_normalStyle;
-	Style m_hoveredStyle;
-	Style m_selectedStyle;
 
 protected:
 	void updateStyle();
@@ -64,8 +63,10 @@ protected:
 	void mouseLeave();
 
 private:
-	sf::Text m_text;
 	State m_state;
+	sf::Text m_text;
+	std::unordered_map<State, Style> m_styles;
+
 
 	// use Style please
 	using UIElement::setBgColor;

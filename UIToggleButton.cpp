@@ -10,17 +10,17 @@ void UIToggleButton::mouseClick(sf::Vector2i point)
 	if (getState() == State::SELECTED)
 	{
 		setState(State::HOVERED);
-		if (onDeselected)
+		if (m_onDeselected)
 		{
-			onDeselected();
+			m_onDeselected();
 		}
 	}
 	else
 	{
 		setState(State::SELECTED);
-		if(onSelected)
+		if(m_onSelected)
 		{
-			onSelected();
+			m_onSelected();
 		}
 	}
 	m_IsPressed = true;

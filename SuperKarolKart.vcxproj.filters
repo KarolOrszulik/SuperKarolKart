@@ -48,6 +48,9 @@
     <ClCompile Include="UIToggleButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UIRadioGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UIToggleButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UIRadioGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
