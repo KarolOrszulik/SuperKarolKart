@@ -12,6 +12,14 @@ UIButton::UIButton(Style normal, Style hovered, Style selected)
 	updateStyle();
 }
 
+UIButton::UIButton(Style normal)
+{
+	m_styles[State::NORMAL] = normal;
+	m_styles[State::HOVERED] = normal;
+	m_styles[State::SELECTED] = normal;
+	updateStyle();
+}
+
 void UIButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	UIElement::draw(target, states);

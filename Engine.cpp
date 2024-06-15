@@ -101,9 +101,10 @@ void Engine::stateMainMenu(float dt)
 	if (!m_menus.contains(State::MAIN_MENU))
 	{
 		using UIToggle = UIToggleButton;
+		using namespace std;
 
 		UIButton::Style normStyle;
-		normStyle.bgColor = { 0, 0, 0, 0};
+		normStyle.bgColor = { 0, 0, 0, 0 };
 		normStyle.fontColor = { 255, 255, 255, 255 };
 
 		UIButton::Style hovStyle;
@@ -112,62 +113,64 @@ void Engine::stateMainMenu(float dt)
 		UIButton::Style selStyle;
 		selStyle.fontColor = { 255, 0, 0, 255 };
 
-		auto btn = std::make_unique<UIToggle>(normStyle, hovStyle, selStyle);
-		btn->setPosition({ 50,50 });
-		btn->setText("1 Player");
-		btn->setFont(m_font);
-		btn->setCharacterSize(24);
-		btn->shrinkSizeToText();
-		btn->setOnSelected([this]() { populatePlayers(1); });
+		Menu& m_mainMenu = m_menus[State::MAIN_MENU];
+		m_mainMenu.setBgColor({ 20,170,150,255 });
+		m_mainMenu.setSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
 
-		auto btn2 =std::make_unique<UIToggle>(normStyle, hovStyle, selStyle);
-		btn2->setPosition({ 50,150 });
-		btn2->setText("2 Players");
-		btn2->setFont(m_font);
-		btn2->setCharacterSize(24);
-		btn2->shrinkSizeToText();
-		btn2->setOnSelected([this]() { populatePlayers(2);});
+		// Creating toggle menu for players
+		auto playerNumSelect = std::make_unique<UIRadioGroup>();
 
-		auto btn3 = std::make_unique<UIToggle>(normStyle, hovStyle, selStyle);
-		btn3->setPosition({ 50,250 });
-		btn3->setText("3 Players");
-		btn3->setFont(m_font);
-		btn3->setCharacterSize(24);
-		btn3->shrinkSizeToText();
-		btn3->setOnSelected([this]() { populatePlayers(3); });
+		UIToggle onePlayerBtn(normStyle, hovStyle, selStyle);
+		onePlayerBtn.setPosition({ 50,50 });
+		onePlayerBtn.setText("1 Player");
+		onePlayerBtn.setFont(m_font);
+		onePlayerBtn.setCharacterSize(24);
+		onePlayerBtn.shrinkSizeToText();
+		onePlayerBtn.setOnSelected([this]() { populatePlayers(1); });
 
-		auto btn4 = std::make_unique<UIToggle>(normStyle, hovStyle, selStyle);
-		btn4->setPosition({ 50,350 });
-		btn4->setText("4 Players");
-		btn4->setFont(m_font);
-		btn4->setCharacterSize(24);
-		btn4->shrinkSizeToText();
-		btn4->setOnSelected([this]() { populatePlayers(4); });
+		UIToggle twoPlayerBtn(onePlayerBtn);
+		twoPlayerBtn.setPosition({ 50,150 });
+		twoPlayerBtn.setText("2 Players");
+		twoPlayerBtn.setOnSelected([this]() { populatePlayers(2);});
 
-		auto uiRadioGroup = std::make_unique<UIRadioGroup>();
-		uiRadioGroup->addElement(std::move(btn));
-		uiRadioGroup->addElement(std::move(btn2));
-		uiRadioGroup->addElement(std::move(btn3));
-		uiRadioGroup->addElement(std::move(btn4));
+		UIToggle threePlayerBtn(twoPlayerBtn);
+		threePlayerBtn.setPosition({ 50,250 });
+		threePlayerBtn.setText("3 Players");
+		threePlayerBtn.setOnSelected([this]() { populatePlayers(3); });
 
-		auto btnGO = std::make_unique<UIButton>(normStyle, hovStyle, selStyle);
-		btnGO->setPosition({ 250,50 });
-		btnGO->setText("START!");
-		btnGO->setFont(m_font);
-		btnGO->setCharacterSize(24);
-		btnGO->shrinkSizeToText();
-		btnGO->onRelease = [this]() {
+		UIToggle fourPlayerBtn(threePlayerBtn);
+		fourPlayerBtn.setPosition({ 50,350 });
+		fourPlayerBtn.setText("4 Players");
+		fourPlayerBtn.setOnSelected([this]() { populatePlayers(4); });
+
+		playerNumSelect->addElement(make_unique<UIToggle>(onePlayerBtn));
+		playerNumSelect->addElement(make_unique<UIToggle>(twoPlayerBtn));
+		playerNumSelect->addElement(make_unique<UIToggle>(threePlayerBtn));
+		playerNumSelect->addElement(make_unique<UIToggle>(fourPlayerBtn));
+
+		UIButton btnGO(onePlayerBtn);
+		btnGO.setPosition({ 250,50 });
+		btnGO.setText("START!");
+		btnGO.setFont(m_font);
+		btnGO.setCharacterSize(24);
+		btnGO.shrinkSizeToText();
+		btnGO.onRelease = [this]() {
 			if (getNumPlayers() > 0) {
 				setGameState(State::SETUP);
 			} 
 		};
 
-		Menu& m_mainMenu = m_menus[State::MAIN_MENU];
-		m_mainMenu.setBgColor({ 20,170,150,255 });
-		m_mainMenu.setSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
+		UIButton title(normStyle);
+		title.setPosition({ 50, 10 });
+		title.setText("Super Karol Kart");
+		title.setFont(m_font);
+		title.setCharacterSize(48);
+		title.shrinkSizeToText();
+		title.centerHorizontally(m_mainMenu.getWidth());
 
-		m_mainMenu.addElement(std::move(uiRadioGroup));
-		m_mainMenu.addElement(std::move(btnGO));
+		m_mainMenu.addElement(move(playerNumSelect));
+		m_mainMenu.addElement(make_unique<UIButton>(title));
+		m_mainMenu.addElement(make_unique<UIButton>(btnGO));
 	}
 	m_window.draw(m_menus[State::MAIN_MENU]);
 }

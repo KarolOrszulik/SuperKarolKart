@@ -26,6 +26,8 @@ public:
 
 	UIButton() = default;
 	UIButton(Style normal, Style hovered, Style selected);
+	UIButton(Style normal);
+
 
 	inline void setText(const std::string& text) 
 		{ m_text.setString(text); };

@@ -14,6 +14,6 @@ public:
 protected:
 	
 private:
-	std::vector<std::unique_ptr<UIElement>> elements;
+	std::vector<std::shared_ptr<UIElement>> elements;
 };
 

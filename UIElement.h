@@ -43,6 +43,9 @@ public:
 
 	bool contains(sf::Vector2f point) const;
 	bool contains(sf::Vector2i point) const;
+
+	void centerHorizontally(float parentWidth);
+	void centerVertically(float parentHeight);
 	
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	virtual void handleEvent(sf::Event& event) = 0;
