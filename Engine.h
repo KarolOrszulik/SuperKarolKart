@@ -59,5 +59,8 @@ private:
 	sf::Font m_font;
 
 	std::unordered_map<State, Menu> m_menus;
+
+	friend float operator ""_vh(long double);
+	friend float operator ""_vw(long double);
 };
 

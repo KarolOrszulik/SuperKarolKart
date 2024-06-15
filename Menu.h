@@ -11,9 +11,7 @@ public:
 
 	virtual void handleEvent(sf::Event& event) override;
 
-protected:
-	
 private:
-	std::vector<std::shared_ptr<UIElement>> elements;
+	std::vector<std::unique_ptr<UIElement>> elements;
 };
 

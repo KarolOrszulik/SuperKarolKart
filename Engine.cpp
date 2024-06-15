@@ -11,6 +11,20 @@
 
 std::shared_ptr<Engine> Engine::s_instance = nullptr;
 
+float operator ""_vh(long double heightVh)
+{
+	auto engine = Engine::getInstance();
+	unsigned windowHeight = engine->m_window.getSize().y;
+	return static_cast<float>(heightVh / 100.0 * windowHeight);
+}
+
+float operator ""_vw(long double widthVw)
+{
+	auto engine = Engine::getInstance();
+	unsigned windowWidth = engine->m_window.getSize().x;
+	return static_cast<float>(widthVw / 100.0 * windowWidth);
+}
+
 std::shared_ptr<Engine> Engine::getInstance()
 {
 	if (s_instance == nullptr)
@@ -52,7 +66,7 @@ void Engine::onStart()
 	m_track.loadTilemap("assets/track_tileset.png");
 	m_track.loadTrack("assets/track_00.txt");
 
-	if (!m_font.loadFromFile("assets/Minecraft.ttf"))
+	if (!m_font.loadFromFile("assets/SKK.ttf"))
 		throw std::runtime_error("Font could not be found");
 }
 
@@ -115,13 +129,25 @@ void Engine::stateMainMenu(float dt)
 
 		Menu& m_mainMenu = m_menus[State::MAIN_MENU];
 		m_mainMenu.setBgColor({ 20,170,150,255 });
-		m_mainMenu.setSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
+		m_mainMenu.setSize(
+			{ (float)m_window.getSize().x, (float)m_window.getSize().y });
 
-		// Creating toggle menu for players
+		// <---- Title ---->
+		UIButton title(normStyle);
+		title.setPosition({ 0, 5.0_vh });
+		title.setText("Super Karol Kart");
+		title.setFont(m_font);
+		title.setCharacterSize(48);
+		title.shrinkSizeToText();
+		title.centerHorizontally(m_mainMenu.getWidth());
+
+		m_mainMenu.addElement(make_unique<UIButton>(title));
+
+		// <---- Player Number Selection ---->
 		auto playerNumSelect = std::make_unique<UIRadioGroup>();
 
 		UIToggle onePlayerBtn(normStyle, hovStyle, selStyle);
-		onePlayerBtn.setPosition({ 50,50 });
+		onePlayerBtn.setPosition({ 5.0_vw, 25.0_vh });
 		onePlayerBtn.setText("1 Player");
 		onePlayerBtn.setFont(m_font);
 		onePlayerBtn.setCharacterSize(24);
@@ -129,17 +155,17 @@ void Engine::stateMainMenu(float dt)
 		onePlayerBtn.setOnSelected([this]() { populatePlayers(1); });
 
 		UIToggle twoPlayerBtn(onePlayerBtn);
-		twoPlayerBtn.setPosition({ 50,150 });
+		twoPlayerBtn.setPosition({ 5.0_vw, 40.0_vh});
 		twoPlayerBtn.setText("2 Players");
 		twoPlayerBtn.setOnSelected([this]() { populatePlayers(2);});
 
 		UIToggle threePlayerBtn(twoPlayerBtn);
-		threePlayerBtn.setPosition({ 50,250 });
+		threePlayerBtn.setPosition({ 5.0_vw, 55.0_vh });
 		threePlayerBtn.setText("3 Players");
 		threePlayerBtn.setOnSelected([this]() { populatePlayers(3); });
 
 		UIToggle fourPlayerBtn(threePlayerBtn);
-		fourPlayerBtn.setPosition({ 50,350 });
+		fourPlayerBtn.setPosition({ 5.0_vw, 70.0_vh });
 		fourPlayerBtn.setText("4 Players");
 		fourPlayerBtn.setOnSelected([this]() { populatePlayers(4); });
 
@@ -148,6 +174,9 @@ void Engine::stateMainMenu(float dt)
 		playerNumSelect->addElement(make_unique<UIToggle>(threePlayerBtn));
 		playerNumSelect->addElement(make_unique<UIToggle>(fourPlayerBtn));
 
+		m_mainMenu.addElement(move(playerNumSelect));
+
+		// <---- Start Button ---->
 		UIButton btnGO(onePlayerBtn);
 		btnGO.setPosition({ 250,50 });
 		btnGO.setText("START!");
@@ -159,17 +188,7 @@ void Engine::stateMainMenu(float dt)
 				setGameState(State::SETUP);
 			} 
 		};
-
-		UIButton title(normStyle);
-		title.setPosition({ 50, 10 });
-		title.setText("Super Karol Kart");
-		title.setFont(m_font);
-		title.setCharacterSize(48);
-		title.shrinkSizeToText();
-		title.centerHorizontally(m_mainMenu.getWidth());
-
-		m_mainMenu.addElement(move(playerNumSelect));
-		m_mainMenu.addElement(make_unique<UIButton>(title));
+		
 		m_mainMenu.addElement(make_unique<UIButton>(btnGO));
 	}
 	m_window.draw(m_menus[State::MAIN_MENU]);
