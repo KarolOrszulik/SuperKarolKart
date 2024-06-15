@@ -26,7 +26,7 @@ private:
 	enum class State
 	{
 		MAIN_MENU,
-		SETUP,
+		SETUP_MENU,
 		RACE,
 		RESULTS
 	};
@@ -39,6 +39,7 @@ private:
 	void drawFPS(float dt);
 
 	void setGameState(State state);
+
 	void stateMainMenu(float dt);
 	void stateSetup(float dt);
 	void stateRace(float dt);
@@ -62,5 +63,8 @@ private:
 
 	friend float operator ""_vh(long double);
 	friend float operator ""_vw(long double);
+	friend unsigned operator ""_vh(unsigned long long);
+	friend unsigned operator ""_vw(unsigned long long);
+
 };
 
