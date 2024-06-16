@@ -65,6 +65,14 @@ void Engine::run()
 		while (m_window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed) m_window.close();
+			else if (event.type == sf::Event::Resized)
+			{
+				sf::Vector2u newSize = m_window.getSize();
+
+				sf::View view(sf::FloatRect(0, 0, newSize.x, newSize.y));
+				m_window.setView(view);
+				m_menus.erase(m_state);
+			}
 			else if(m_menus.contains(m_state)) m_menus[m_state].handleEvent(event);
 		}
 		m_window.clear();
