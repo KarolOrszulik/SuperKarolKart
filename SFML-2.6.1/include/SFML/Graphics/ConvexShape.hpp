@@ -88,7 +88,7 @@ public:
     /// \see getPoint
     ///
     ////////////////////////////////////////////////////////////
-    void setPoint(std::size_t index, const Vector2f& point);
+    void setPoint(std::size_t tile2index, const Vector2f& point);
 
     ////////////////////////////////////////////////////////////
     /// \brief Get the position of a point
@@ -105,7 +105,7 @@ public:
     /// \see setPoint
     ///
     ////////////////////////////////////////////////////////////
-    virtual Vector2f getPoint(std::size_t index) const;
+    virtual Vector2f getPoint(std::size_t tile2index) const;
 
 private:
 

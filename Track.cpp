@@ -4,16 +4,53 @@
 #include <map>
 #include <iostream>
 
-Track::Tile Track::at(sf::Vector2u pos)
+Track::Tile Track::at(sf::Vector2u tile) const
 {
-	if (pos.x >= m_size.x || pos.y >= m_size.y)
+	if (tile.x >= m_size.x || tile.y >= m_size.y)
 		return Tile::INVALID;
 
-	return m_tiles[pos.y * m_size.x + pos.x];
+	return m_tiles[tile2index(tile.x, tile.y)];
+}
+
+Track::Tile Track::atPos(sf::Vector2f pos) const
+{
+	return at({ static_cast<unsigned>(pos.x / GRID_SIZE), static_cast<unsigned>(pos.y / GRID_SIZE) });
+}
+
+size_t Track::tile2index(int x, int y) const
+{
+	return y * m_size.x + x;
+}
+
+size_t Track::pos2index(sf::Vector2f pos) const
+{
+	return tile2index(static_cast<int>(pos.x / GRID_SIZE), static_cast<int>(pos.y / GRID_SIZE));
+}
+
+sf::Vector2f Track::index2pos(size_t idx) const
+{
+	return sf::Vector2f(idx % m_size.x, idx / m_size.x) * static_cast<float>(GRID_SIZE);
+}
+
+sf::Vector2f Track::index2posCenter(size_t idx) const
+{
+	return index2pos(idx) + sf::Vector2f(GRID_SIZE_F / 2.f, GRID_SIZE_F / 2.f);
+}
+
+std::optional<int> Track::getCheckpointIndex(sf::Vector2f pos) const
+{
+	for (size_t i = 0; i < m_checkpoints.size(); i++)
+	{
+		if (std::ranges::find(m_checkpoints[i], pos2index(pos)) != m_checkpoints[i].end())
+			return i;
+	}
+	return {};
 }
 
 void Track::loadTrack(std::string const& path)
 {
+	std::map<char, Checkpoint> tmpCheckpoints;
+
 	std::ifstream file(path);
 
 	if (!file.is_open())
@@ -24,12 +61,12 @@ void Track::loadTrack(std::string const& path)
 	const std::map<char, Tile> tileMap
 	{
 		{ '#', Tile::GRASS },
-		{ ' ', Tile::ROAD },
-		{ '.', Tile::ROAD_CORNER}
+		{ '.', Tile::ROAD_CORNER},
+		{ '~', Tile::FINISH},
 	};
 
 	std::string line;
-	while (std::getline(file, line))
+	for (int y = 0; std::getline(file, line); y++)
 	{
 		if (m_size.x != 0 && m_size.x != line.length())
 		{
@@ -38,25 +75,39 @@ void Track::loadTrack(std::string const& path)
 		}
 		else
 		{
-			m_size.x = line.length();
+			m_size.x = static_cast<unsigned int>(line.length());
 		}
-		m_size.y++;
+		m_size.y = y+1;
 
-		for (char c : line)
+
+		for (int x = 0; x < line.length(); x++)
 		{
+			char c = line[x];
 			try
 			{
+				if (std::isalpha(c) || c == '~')
+				{
+					tmpCheckpoints[c].push_back(tile2index( x, y ));
+				}
+				if (std::isdigit(c))
+				{
+					m_playerStarts[c - '1'] = tile2index(x, y);
+				}
 				m_tiles.push_back(tileMap.at(c));
 			}
 			catch (std::out_of_range const&)
 			{
-				m_tiles.push_back(Tile::INVALID);
-				std::cerr << "Invalid character in track file" << std::endl;
+				m_tiles.push_back(Tile::ROAD);
 			}
 		}
 	}
 
 	renderTexture();
+
+	for (auto& [c, cp] : tmpCheckpoints)
+	{
+		m_checkpoints.push_back(cp);
+	}
 }
 
 void Track::loadTilemap(std::string const& path)
@@ -76,7 +127,8 @@ void Track::renderTexture()
 	{
 		{ Tile::GRASS,		 sf::IntRect(0 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) },
 		{ Tile::ROAD,		 sf::IntRect(1 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) },
-		{ Tile::ROAD_CORNER, sf::IntRect(2 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) }
+		{ Tile::ROAD_CORNER, sf::IntRect(2 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) },
+		{ Tile::FINISH,      sf::IntRect(3 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) }
 	};
 
 	for (uint32_t y = 0; y < m_size.y; ++y)
@@ -91,7 +143,7 @@ void Track::renderTexture()
 				continue;
 
 			sprite.setTextureRect(tileRects.at(tile));
-			sprite.setPosition(x * GRID_SIZE, y * GRID_SIZE);
+			sprite.setPosition(x * GRID_SIZE_F, y * GRID_SIZE_F);
 
 			if (tile == Tile::ROAD_CORNER) //  Rotate the corner tile
 			{

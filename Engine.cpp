@@ -88,7 +88,7 @@ void Engine::run()
 void Engine::onStart()
 {
 	m_track.loadTilemap("assets/track_tileset.png");
-	m_track.loadTrack("assets/track_01.txt");
+	m_track.loadTrack("assets/track_02.txt");
 
 	m_world.create(m_track.getSize().x, m_track.getSize().y);
 
@@ -121,7 +121,7 @@ void Engine::populatePlayers(int numPlayers)
 
 	for (int i = 0; i < numPlayers; i++)
 	{
-		std::unique_ptr<Vehicle> vehicle = std::make_unique<Vehicle>();
+		std::unique_ptr<Vehicle> vehicle = std::make_unique<Vehicle>(&m_track, m_track.getPlayerStartingPos(i));
 
 		m_players.emplace_back(static_cast<Player::ControlScheme>(i), i);
 		m_players.back().setVehicle(vehicle.get());

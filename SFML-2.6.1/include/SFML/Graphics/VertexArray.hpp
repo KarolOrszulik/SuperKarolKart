@@ -85,7 +85,7 @@ public:
     /// \see getVertexCount
     ///
     ////////////////////////////////////////////////////////////
-    Vertex& operator [](std::size_t index);
+    Vertex& operator [](std::size_t tile2index);
 
     ////////////////////////////////////////////////////////////
     /// \brief Get a read-only access to a vertex by its index
@@ -101,7 +101,7 @@ public:
     /// \see getVertexCount
     ///
     ////////////////////////////////////////////////////////////
-    const Vertex& operator [](std::size_t index) const;
+    const Vertex& operator [](std::size_t tile2index) const;
 
     ////////////////////////////////////////////////////////////
     /// \brief Clear the vertex array

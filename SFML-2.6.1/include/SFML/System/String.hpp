@@ -329,7 +329,7 @@ public:
     /// \return Character at position \a index
     ///
     ////////////////////////////////////////////////////////////
-    Uint32 operator [](std::size_t index) const;
+    Uint32 operator [](std::size_t tile2index) const;
 
     ////////////////////////////////////////////////////////////
     /// \brief Overload of [] operator to access a character by its position
@@ -342,7 +342,7 @@ public:
     /// \return Reference to the character at position \a index
     ///
     ////////////////////////////////////////////////////////////
-    Uint32& operator [](std::size_t index);
+    Uint32& operator [](std::size_t tile2index);
 
     ////////////////////////////////////////////////////////////
     /// \brief Clear the string
