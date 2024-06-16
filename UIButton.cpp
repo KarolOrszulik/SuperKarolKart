@@ -24,6 +24,9 @@ void UIButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	UIElement::draw(target, states);
 	states.transform *= getTransform();
+	auto pos = m_text.getPosition();
+	pos.y -= m_text.getLocalBounds().top;
+	states.transform.translate(pos);
 	target.draw(m_text, states);
 }
 
@@ -66,7 +69,7 @@ void UIButton::handleEvent(sf::Event& event)
 void UIButton::shrinkSizeToText()
 {
 	sf::FloatRect textBounds = m_text.getLocalBounds();
-	sf::Vector2f newSize(textBounds.width + 10, textBounds.height + 10);
+	sf::Vector2f newSize(textBounds.width, textBounds.height);
 	setSize(newSize);
 }
 
