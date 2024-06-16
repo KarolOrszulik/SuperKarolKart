@@ -47,7 +47,7 @@ public:
 
 	void handleEvent(sf::Event& event);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-	void shrinkSizeToText();
+	virtual void shrinkSizeToText();
 
 	// TODO add setters and getters
 	std::function<void()> onClick;
@@ -64,9 +64,10 @@ protected:
 	void mouseEnter();
 	void mouseLeave();
 
+	sf::Text m_text;
+
 private:
 	State m_state;
-	sf::Text m_text;
 	std::unordered_map<State, Style> m_styles;
 
 

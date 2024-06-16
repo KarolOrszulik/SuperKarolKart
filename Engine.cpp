@@ -7,6 +7,7 @@
 #include "UIButton.h"
 #include "UIToggleButton.h"
 #include "UIRadioGroup.h"
+#include "UITextInput.h"
 
 #include <iostream>
 
@@ -140,7 +141,6 @@ void Engine::stateMainMenu(float dt)
 {
 	if (!m_menus.contains(State::MAIN_MENU))
 	{
-		std::cout << m_window.getSize().x << " " << m_window.getSize().y << std::endl;
 		using UIToggle = UIToggleButton;
 		using namespace std;
 
@@ -202,6 +202,9 @@ void Engine::stateSetup(float dt)
 		using UIToggle = UIToggleButton;
 		using namespace std;
 
+		// <---- Preparing settings ---->
+		gameSettings.numPlayers = -1;
+
 		UIButton::Style normStyle;
 		normStyle.bgColor = { 0, 0, 0, 0 };
 		normStyle.fontColor = { 255, 255, 255, 255 };
@@ -212,9 +215,9 @@ void Engine::stateSetup(float dt)
 		UIButton::Style selStyle;
 		selStyle.fontColor = { 255, 0, 0, 255 };
 
-		Menu& m_mainMenu = m_menus[State::SETUP_MENU];
-		m_mainMenu.setBgColor({ 20,170,150,255 });
-		m_mainMenu.setSize(
+		Menu& menu = m_menus[State::SETUP_MENU];
+		menu.setBgColor({ 20,170,150,255 });
+		menu.setSize(
 			{ (float)m_window.getSize().x, (float)m_window.getSize().y });
 
 		// <---- Title ---->
@@ -224,9 +227,9 @@ void Engine::stateSetup(float dt)
 		title.setFont(m_font);
 		title.setCharacterSize(15_vh);
 		title.shrinkSizeToText();
-		title.centerHorizontally(m_mainMenu.getWidth());
+		title.centerHorizontally(menu.getWidth());
 
-		m_mainMenu.addElement(make_unique<UIButton>(title));
+		menu.addElement(make_unique<UIButton>(title));
 
 		// <---- Player Number Selection ---->
 		auto playerNumSelect = std::make_unique<UIRadioGroup>();
@@ -259,7 +262,28 @@ void Engine::stateSetup(float dt)
 		playerNumSelect->addElement(make_unique<UIToggle>(threePlayerBtn));
 		playerNumSelect->addElement(make_unique<UIToggle>(fourPlayerBtn));
 
-		m_mainMenu.addElement(move(playerNumSelect));
+		menu.addElement(move(playerNumSelect));
+
+		// <---- Text input ---->
+		normStyle.bgColor = { 0, 0, 200, 255 };
+		normStyle.fontColor = { 255, 255, 255, 255 };
+		hovStyle.bgColor = { 0, 200, 0, 255 };
+		hovStyle.fontColor = { 255, 255, 255, 255 };
+		selStyle.bgColor = { 200, 0, 0, 255 };
+		selStyle.fontColor = { 255, 255, 255, 255 };
+
+		UITextInput textInput(normStyle, hovStyle, selStyle);
+		textInput.setPosition({ 5.0_vw, 80.0_vh });
+		textInput.setSize({ 20.0_vw, 5.0_vh });
+		textInput.setFont(m_font);
+		textInput.setCharacterSize(5_vh);
+		textInput.setPlaceHolder("Enter your name");
+		textInput.onTextEntered = [this](const std::string& text) {
+			gameSettings.playerName[0] = text;
+		};
+		textInput.shrinkSizeToText();
+
+		menu.addElement(make_unique<UITextInput>(textInput));
 
 		// <---- Start Button ---->
 		UIButton btnGO(onePlayerBtn);
@@ -267,15 +291,16 @@ void Engine::stateSetup(float dt)
 		btnGO.setText("START!");
 		btnGO.setFont(m_font);
 		btnGO.shrinkSizeToText();
-		btnGO.centerHorizontally(m_mainMenu.getWidth());
+		btnGO.centerHorizontally(menu.getWidth());
 		btnGO.onRelease = [this]() {
+			// ZAIMPLEMENTOWAC REGEXA, ZEBY BYLY TYLKO LITERY W IMIONACH
 			if (gameSettings.numPlayers > 0) {
 				populatePlayers(gameSettings.numPlayers);
 				setGameState(State::RACE);
 			}
 		};
 
-		m_mainMenu.addElement(make_unique<UIButton>(btnGO));
+		menu.addElement(make_unique<UIButton>(btnGO));
 	}
 	m_window.draw(m_menus[State::SETUP_MENU]);
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))

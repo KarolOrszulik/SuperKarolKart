@@ -65,6 +65,7 @@ private:
 	struct Settings
 	{
 		int numPlayers = -1;
+		std::string playerName[4]{};
 	} gameSettings;
 
 	friend float operator ""_vh(long double);
