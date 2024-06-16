@@ -58,13 +58,16 @@ private:
 	Track m_track;
 
 	sf::Font m_font;
-
 	std::unordered_map<State, Menu> m_menus;
+
+	struct Settings
+	{
+		int numPlayers = -1;
+	} gameSettings;
 
 	friend float operator ""_vh(long double);
 	friend float operator ""_vw(long double);
 	friend unsigned operator ""_vh(unsigned long long);
 	friend unsigned operator ""_vw(unsigned long long);
-
 };
 

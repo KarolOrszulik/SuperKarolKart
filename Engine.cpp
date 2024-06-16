@@ -8,6 +8,8 @@
 #include "UIToggleButton.h"
 #include "UIRadioGroup.h"
 
+#include <iostream>
+
 
 std::shared_ptr<Engine> Engine::s_instance = nullptr;
 
@@ -90,7 +92,7 @@ void Engine::onStart()
 	m_track.loadTilemap("assets/track_tileset.png");
 	m_track.loadTrack("assets/track_00.txt");
 
-	if (!m_font.loadFromFile("assets/Minecraft.ttf"))
+	if (!m_font.loadFromFile("assets/SKK.ttf"))
 		throw std::runtime_error("Font could not be found");
 }
 
@@ -138,6 +140,7 @@ void Engine::stateMainMenu(float dt)
 {
 	if (!m_menus.contains(State::MAIN_MENU))
 	{
+		std::cout << m_window.getSize().x << " " << m_window.getSize().y << std::endl;
 		using UIToggle = UIToggleButton;
 		using namespace std;
 
@@ -234,22 +237,22 @@ void Engine::stateSetup(float dt)
 		onePlayerBtn.setFont(m_font);
 		onePlayerBtn.setCharacterSize(5_vh);
 		onePlayerBtn.shrinkSizeToText();
-		onePlayerBtn.setOnSelected([this]() { populatePlayers(1); });
+		onePlayerBtn.setOnSelected([this]() { gameSettings.numPlayers = 1; });
 
 		UIToggle twoPlayerBtn(onePlayerBtn);
 		twoPlayerBtn.setPosition({ 5.0_vw, 45.0_vh });
 		twoPlayerBtn.setText("2 Players");
-		twoPlayerBtn.setOnSelected([this]() { populatePlayers(2); });
+		twoPlayerBtn.setOnSelected([this]() { gameSettings.numPlayers = 2; });
 
 		UIToggle threePlayerBtn(twoPlayerBtn);
 		threePlayerBtn.setPosition({ 5.0_vw, 60.0_vh });
 		threePlayerBtn.setText("3 Players");
-		threePlayerBtn.setOnSelected([this]() { populatePlayers(3); });
+		threePlayerBtn.setOnSelected([this]() { gameSettings.numPlayers = 3; });
 
 		UIToggle fourPlayerBtn(threePlayerBtn);
 		fourPlayerBtn.setPosition({ 5.0_vw, 75.0_vh });
 		fourPlayerBtn.setText("4 Players");
-		fourPlayerBtn.setOnSelected([this]() { populatePlayers(4); });
+		fourPlayerBtn.setOnSelected([this]() { gameSettings.numPlayers = 4; });
 
 		playerNumSelect->addElement(make_unique<UIToggle>(onePlayerBtn));
 		playerNumSelect->addElement(make_unique<UIToggle>(twoPlayerBtn));
@@ -266,7 +269,8 @@ void Engine::stateSetup(float dt)
 		btnGO.shrinkSizeToText();
 		btnGO.centerHorizontally(m_mainMenu.getWidth());
 		btnGO.onRelease = [this]() {
-			if (getNumPlayers() > 0) {
+			if (gameSettings.numPlayers > 0) {
+				populatePlayers(gameSettings.numPlayers);
 				setGameState(State::RACE);
 			}
 		};
