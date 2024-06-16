@@ -12,6 +12,8 @@ public:
 	void applyAccelerator(float accelerator);
 	void applySteering(float steering);
 
+	size_t getCompletedLaps() const { return m_completedLaps; }
+
 	void update(float dt) override;
 	void draw(sf::RenderTarget& window) override;
 
@@ -20,5 +22,6 @@ private:
 	float m_steering = 0.0f;
 	Track* m_track = nullptr;
 	size_t m_nextCheckpoint = 0;
+	size_t m_completedLaps = 0;
 };
 

@@ -336,6 +336,10 @@ void Engine::stateRace(float dt)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
 		m_state = State::RESULTS;
+
+	constexpr size_t LAPS = 3;
+	if (std::ranges::all_of(m_players, [](Player const& p) {return p.getCompletedLaps() >= LAPS; }))
+		m_state = State::RESULTS;
 }
 
 void Engine::stateResults(float dt)

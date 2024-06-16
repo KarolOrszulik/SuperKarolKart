@@ -36,6 +36,7 @@ void Vehicle::update(float dt)
 			if (m_nextCheckpoint == 0)
 			{
 				std::cout << "Gracz " << this << " rozpoczal nowe okrazenie" << std::endl;
+				++m_completedLaps;
 			}
 		}
 	}

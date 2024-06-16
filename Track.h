@@ -14,9 +14,11 @@ public:
 	void loadTilemap(std::string const& path);
 
 	Tile at(sf::Vector2u) const;
-	Track::Tile atPos(sf::Vector2f pos) const;
+	Tile atPos(sf::Vector2f pos) const;
+
 	size_t tile2index(int x, int y) const;
 	size_t pos2index(sf::Vector2f) const;
+
 	sf::Vector2f index2pos(size_t idx) const;
 	sf::Vector2f index2posCenter(size_t idx) const;
 

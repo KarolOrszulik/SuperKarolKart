@@ -18,6 +18,8 @@ public:
 
 	void drawPlayerScreen(sf::RenderTexture& source, sf::RenderTarget& target);
 
+	size_t getCompletedLaps() const { return m_vehicle->getCompletedLaps(); }
+
 private:
 	Vehicle* m_vehicle = nullptr;
 	ControlScheme m_control;
