@@ -175,6 +175,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="assets\track_00.txt" />
+    <Text Include="assets\track_01.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

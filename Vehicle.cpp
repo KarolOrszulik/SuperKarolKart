@@ -23,7 +23,7 @@ void Vehicle::update(float dt)
 
 void Vehicle::draw(sf::RenderTarget& window)
 {
-	constexpr float RADIUS = 20.0f;
+	constexpr float RADIUS = 16.0f;
 
 	sf::CircleShape shape(RADIUS);
 	shape.setOrigin(RADIUS, RADIUS);

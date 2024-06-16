@@ -41,7 +41,7 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, sf:
 
 	sf::View view(center, m_size);
 	view.setViewport(m_viewport);
-	view.zoom(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z) ? 0.5f : 1.f); // to zmieniæ na zale¿ne od prêdkoœci jak ju¿ bêdzie coœ takiego jak prêdkoœæ
+	view.zoom(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z) ? 0.25f : 1.f); // to zmieniæ na zale¿ne od prêdkoœci jak ju¿ bêdzie coœ takiego jak prêdkoœæ
 	target.setView(view);
 	target.draw(sf::Sprite(source.getTexture()));
 	target.setView(target.getDefaultView());

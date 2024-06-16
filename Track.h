@@ -14,7 +14,11 @@ public:
 
 	void draw(sf::RenderTarget& target) const;
 
+	sf::Vector2f getSize() const { return sf::Vector2f(m_size * GRID_SIZE); }
+
 private:
+	static constexpr unsigned int GRID_SIZE = 16;
+
 	void renderTexture();
 
 	sf::RenderTexture m_texture;

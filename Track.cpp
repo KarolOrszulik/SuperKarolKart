@@ -23,9 +23,9 @@ void Track::loadTrack(std::string const& path)
 
 	const std::map<char, Tile> tileMap
 	{
-		{ '.', Tile::GRASS },
-		{ 'X', Tile::ROAD },
-		{ 'x', Tile::ROAD_CORNER}
+		{ '#', Tile::GRASS },
+		{ ' ', Tile::ROAD },
+		{ '.', Tile::ROAD_CORNER}
 	};
 
 	std::string line;
@@ -42,14 +42,17 @@ void Track::loadTrack(std::string const& path)
 		}
 		m_size.y++;
 
-		try
+		for (char c : line)
 		{
-			for (char c : line)
+			try
+			{
 				m_tiles.push_back(tileMap.at(c));
-		}
-		catch (std::out_of_range const&)
-		{
-			std::cerr << "Invalid character in track file" << std::endl;
+			}
+			catch (std::out_of_range const&)
+			{
+				m_tiles.push_back(Tile::INVALID);
+				std::cerr << "Invalid character in track file" << std::endl;
+			}
 		}
 	}
 
@@ -66,8 +69,6 @@ void Track::loadTilemap(std::string const& path)
 
 void Track::renderTexture()
 {
-	constexpr int GRID_SIZE = 16;
-
 	m_texture.create(m_size.x * GRID_SIZE, m_size.y * GRID_SIZE);
 	m_texture.clear(sf::Color::Black);
 
@@ -107,7 +108,7 @@ void Track::renderTexture()
 
 				switch (neighbours)
 				{
-					case NORTH | WEST: break; // No rotation needed
+					case NORTH | WEST: break; // No rotation or translation needed
 					case NORTH | EAST: sprite.setRotation(90);  sprite.move({ GRID_SIZE, 0 });         break;
 					case SOUTH | WEST: sprite.setRotation(270); sprite.move({ 0,         GRID_SIZE }); break;
 					case SOUTH | EAST: sprite.setRotation(180); sprite.move({ GRID_SIZE, GRID_SIZE }); break;

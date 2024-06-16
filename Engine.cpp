@@ -85,10 +85,10 @@ void Engine::run()
 
 void Engine::onStart()
 {
-	m_world.create(m_window.getSize().x, m_window.getSize().y);
-
 	m_track.loadTilemap("assets/track_tileset.png");
-	m_track.loadTrack("assets/track_00.txt");
+	m_track.loadTrack("assets/track_01.txt");
+
+	m_world.create(m_track.getSize().x, m_track.getSize().y);
 
 	if (!m_font.loadFromFile("assets/Minecraft.ttf"))
 		throw std::runtime_error("Font could not be found");
