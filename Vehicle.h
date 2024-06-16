@@ -17,11 +17,15 @@ public:
 	void update(float dt) override;
 	void draw(sf::RenderTarget& window) override;
 
+	void setSpeedMultiplier(float speedMultiplier, float time);
+
 private:
 	float m_acceleration = 0.0f;
 	float m_steering = 0.0f;
 	Track* m_track = nullptr;
 	size_t m_nextCheckpoint = 0;
 	size_t m_completedLaps = 0;
+	float m_speedMultiplier = 1.0f;
+	float m_timeToClearMultiplier = 0.0f;
 };
 

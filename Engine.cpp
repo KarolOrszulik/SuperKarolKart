@@ -2,6 +2,7 @@
 
 #include "Player.h"
 #include "Vehicle.h"
+#include "SpeedAdjuster.h"
 #include "UIElement.h"
 #include "Menu.h"
 #include "UIButton.h"
@@ -89,8 +90,8 @@ void Engine::run()
 void Engine::onStart()
 {
 	m_track.loadTilemap("assets/track_tileset.png");
-	m_track.loadTrack("assets/track_02.txt");
 
+	m_track.loadTrack("assets/track_02.txt");
 	m_world.create(m_track.getSize().x, m_track.getSize().y);
 
 	if (!m_font.loadFromFile("assets/SKK.ttf"))
@@ -296,7 +297,7 @@ void Engine::stateSetup(float dt)
 			// ZAIMPLEMENTOWAC REGEXA, ZEBY BYLY TYLKO LITERY W IMIONACH
 			if (gameSettings.numPlayers > 0) {
 				populatePlayers(gameSettings.numPlayers);
-				setGameState(State::RACE);
+				setGameState(State::RACE); // tu chyba nie dzia³a poœrednie przejœcie przez PRE_RACE huhh
 			}
 		};
 
@@ -305,6 +306,11 @@ void Engine::stateSetup(float dt)
 	m_window.draw(m_menus[State::SETUP_MENU]);
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
 		setGameState(State::MAIN_MENU);
+}
+
+void Engine::statePreRace(float dt)
+{
+	setGameState(State::RACE);
 }
 
 void Engine::stateRace(float dt)
@@ -320,6 +326,16 @@ void Engine::stateRace(float dt)
 		obj->draw(m_world);
 	}
 	m_world.display(); // finalize drawing the world
+
+
+	// remove objects from m_objects which are in m_objectsToRemove
+	for (auto& obj : m_objectsToRemove)
+	{
+		auto it = std::ranges::find_if(m_objects, [obj](auto& p) { return p.get() == obj; });
+		if (it != m_objects.end())
+			m_objects.erase(it);
+	}
+	m_objectsToRemove.clear();
 
 
 	for (auto& player : m_players)

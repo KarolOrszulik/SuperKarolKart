@@ -1,4 +1,6 @@
 #include "Vehicle.h"
+#include "Engine.h"
+#include "GroundItem.h"
 
 #include <iostream>
 
@@ -12,11 +14,43 @@ void Vehicle::applySteering(float steering)
 	m_steering += steering;
 }
 
+void Vehicle::setSpeedMultiplier(float speedMultiplier, float time)
+{
+	m_speedMultiplier = speedMultiplier;
+	m_timeToClearMultiplier = time;
+}
+
 void Vehicle::update(float dt)
 {
+	for (auto& obj : Engine::getInstance()->getObjects())
+	{
+		if (GroundItem* gi = dynamic_cast<GroundItem*>(obj.get())) // :(
+		{
+			sf::Vector2f gipos = gi->getPosition();
+			float dx = m_position.x - gipos.x;
+			float dy = m_position.y - gipos.y;
+			float distancesq = dx * dx + dy * dy;
+
+			if (distancesq <= 16.f*16.f)
+			{
+				gi->interactWithVehicle(*this);
+			}
+		}
+	}
+
+	if (m_timeToClearMultiplier > 0.0f)
+	{
+		m_timeToClearMultiplier -= dt;
+		if (m_timeToClearMultiplier <= 0.0f)
+		{
+			m_speedMultiplier = 1.0f;
+		}
+	}
+
 	Track::Tile tile = m_track->atPos(m_position);
 	
-	float SPEED = tile == Track::Tile::GRASS ? 100.f : 200.f;
+	float SPEED = tile == Track::Tile::GRASS ? 60.f : 120.f;
+	SPEED *= m_speedMultiplier;
 
 	m_position.y -= m_acceleration * SPEED * dt; // tylko demo
 	m_position.x += m_steering * SPEED * dt; // tylko demo

@@ -149,10 +149,13 @@
   <ItemGroup>
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GroundItem.cpp" />
+    <ClCompile Include="GroundItemSpawner.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerScreen.cpp" />
+    <ClCompile Include="SpeedAdjuster.cpp" />
     <ClCompile Include="Track.cpp" />
     <ClCompile Include="UIButton.cpp" />
     <ClCompile Include="UIElement.cpp" />
@@ -164,9 +167,12 @@
   <ItemGroup>
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GroundItem.h" />
+    <ClInclude Include="GroundItemSpawner.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerScreen.h" />
+    <ClInclude Include="SpeedAdjuster.h" />
     <ClInclude Include="Track.h" />
     <ClInclude Include="UIButton.h" />
     <ClInclude Include="UIElement.h" />
@@ -178,6 +184,7 @@
   <ItemGroup>
     <Text Include="assets\track_00.txt" />
     <Text Include="assets\track_01.txt" />
+    <Text Include="assets\track_02.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
