@@ -7,7 +7,7 @@ Player::Player(ControlScheme control, int player_number)
 
 void Player::drawPlayerScreen(sf::RenderTexture& source, sf::RenderTarget& target)
 {
-	m_screen.draw(source, target, m_vehicle->getPosition());
+	m_screen.draw(source, target, m_vehicle->getPosition(), m_vehicle->getAngle());
 }
 
 void Player::controlVehicle()

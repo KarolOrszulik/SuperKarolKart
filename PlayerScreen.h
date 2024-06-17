@@ -7,7 +7,7 @@ class PlayerScreen
 public:
 	PlayerScreen(int number);
 
-	void draw(sf::RenderTexture& source, sf::RenderTarget& target, sf::Vector2f center);
+	void draw(sf::RenderTexture& source, sf::RenderTarget& target, sf::Vector2f center, float angle);
 
 private:
 	void calculateSizeAndViewport();

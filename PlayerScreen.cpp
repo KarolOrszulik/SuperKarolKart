@@ -35,13 +35,14 @@ void PlayerScreen::calculateSizeAndViewport()
 		m_viewport.top += 0.5f;
 }
 
-void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, sf::Vector2f center)
+void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, sf::Vector2f center, float angle)
 {
 	calculateSizeAndViewport();
 
 	sf::View view(center, m_size);
 	view.setViewport(m_viewport);
 	view.zoom(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z) ? 0.25f : 0.5f); // to zmieniæ na zale¿ne od prêdkoœci jak ju¿ bêdzie coœ takiego jak prêdkoœæ
+	view.rotate(angle * 180.f / 3.1415f + 90.f);
 	target.setView(view);
 	target.draw(sf::Sprite(source.getTexture()));
 	target.setView(target.getDefaultView());
