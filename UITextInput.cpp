@@ -5,9 +5,13 @@ void UITextInput::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	UIButton::draw(target, states);
 	if (m_text.getString().isEmpty())
 	{
+		states.transform *= getTransform();
+
 		sf::Text text = m_text;
 		text.setString(m_placeHolder);
-		states.transform *= getTransform();
+		auto pos = text.getPosition();
+		pos.y -= text.getLocalBounds().top;
+		states.transform.translate(pos);
 		target.draw(text, states);
 	}
 }
@@ -47,7 +51,6 @@ void UITextInput::mouseRelease(sf::Vector2i mousePos)
 	}
 }
 
-#include <iostream>
 void UITextInput::textEntered(sf::Uint32 unicode)
 {
 	if (getState() == State::SELECTED)

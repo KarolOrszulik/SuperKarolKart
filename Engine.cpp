@@ -108,6 +108,9 @@ void Engine::onUpdate(float dt)
 	case State::SETUP_MENU:
 		stateSetup(dt);
 		break;
+	case State::PRE_RACE:
+		statePreRace(dt);
+		break;
 	case State::RACE:
 		stateRace(dt);
 		break;
@@ -297,7 +300,7 @@ void Engine::stateSetup(float dt)
 			// ZAIMPLEMENTOWAC REGEXA, ZEBY BYLY TYLKO LITERY W IMIONACH
 			if (gameSettings.numPlayers > 0) {
 				populatePlayers(gameSettings.numPlayers);
-				setGameState(State::RACE); // tu chyba nie dzia³a poœrednie przejœcie przez PRE_RACE huhh
+				setGameState(State::PRE_RACE);
 			}
 		};
 
