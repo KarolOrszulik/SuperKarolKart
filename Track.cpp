@@ -2,6 +2,7 @@
 #include "GroundItemSpawner.h"
 #include "SpeedAdjuster.h"
 #include "Engine.h"
+#include "Box.h"
 
 #include <fstream>
 #include <map>
@@ -100,6 +101,13 @@ void Track::loadTrack(std::string const& path)
 					std::unique_ptr<GroundItem> pBooster = std::make_unique<SpeedAdjuster>(2.0f, sf::Vector2f{}, false);
 					std::unique_ptr<GroundItemSpawner> pSpawner =
 						std::make_unique<GroundItemSpawner>(sf::Vector2f((x + 0.5f) * GRID_SIZE_F, (y + 0.5f) * GRID_SIZE_F), std::move(pBooster));
+					Engine::getInstance()->addObject(std::move(pSpawner));
+				}
+				if (c == '$')
+				{
+					std::unique_ptr<GroundItem> box = std::make_unique<Box>();
+					std::unique_ptr<GroundItemSpawner> pSpawner =
+						std::make_unique<GroundItemSpawner>(sf::Vector2f((x + 0.5f) * GRID_SIZE_F, (y + 0.5f) * GRID_SIZE_F), std::move(box));
 					Engine::getInstance()->addObject(std::move(pSpawner));
 				}
 				if (std::isalpha(c) || c == '~')
