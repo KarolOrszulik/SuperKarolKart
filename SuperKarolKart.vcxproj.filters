@@ -63,6 +63,15 @@
     <ClCompile Include="GroundItemSpawner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Kart.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Motorcycle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hovercraft.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -110,9 +119,17 @@
     <ClInclude Include="GroundItemSpawner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Kart.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Motorcycle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hovercraft.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="assets\track_00.txt" />
     <Text Include="assets\track_01.txt" />
     <Text Include="assets\track_02.txt" />
   </ItemGroup>

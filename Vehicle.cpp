@@ -1,6 +1,6 @@
 #include "Vehicle.h"
 #include "Engine.h"
-#include "GroundItem.h"
+#include "SpeedAdjuster.h"
 
 #include <iostream>
 
@@ -34,7 +34,7 @@ void Vehicle::update(float dt)
 {
 	for (auto& obj : Engine::getInstance()->getObjects())
 	{
-		if (GroundItem* gi = dynamic_cast<GroundItem*>(obj.get())) // :(
+		if (GroundItem* gi = dynamic_cast<GroundItem*>(obj.get()))
 		{
 			sf::Vector2f gipos = gi->getPosition();
 			float dx = m_position.x - gipos.x;
@@ -70,6 +70,16 @@ void Vehicle::update(float dt)
 
 	m_acceleration = 0.0f;
 	m_steering = 0.0f;
+
+	// wykonaæ u¿ycie itemu jak trzeba
+	if (m_use)
+	{
+		m_use = false;
+		// na razie na sztywno "kula do krêgli"
+		std::unique_ptr<SpeedAdjuster> ball = std::make_unique<SpeedAdjuster>(0.2f, sf::Vector2f(std::cos(m_angle), std::sin(m_angle))*150.f);
+		ball->setPosition(m_position + sf::Vector2f(std::cos(m_angle), std::sin(m_angle)) * 20.f);
+		Engine::getInstance()->addObject(std::move(ball));
+	}
 
 
 	// sprawdzamy czy pojazd przekroczy³ checkpoint

@@ -13,7 +13,7 @@ public:
 
 	void setSpawner(GroundItemSpawner* spawner) { m_spawner = spawner; }
 
-	~GroundItem() override { m_spawner->notifyObjectDeleted(); }
+	~GroundItem() override;
 
 private:
 	GroundItemSpawner* m_spawner = nullptr;
