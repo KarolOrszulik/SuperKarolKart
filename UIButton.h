@@ -40,8 +40,17 @@ public:
 
 	void setState(State state);
 
-	State getState() const
+	inline State getState() const
 		{ return m_state; };
+
+	inline std::string getText() const
+		{ return m_text.getString(); };
+
+	inline sf::Font getFont() const
+		{ return *m_text.getFont(); };
+
+	inline unsigned getCharacterSize() const
+		{ return m_text.getCharacterSize(); };
 
 	
 
