@@ -6,8 +6,7 @@
 class Vehicle : public GameObject
 {
 public:
-	Vehicle(Track* track, sf::Vector2f position = { 0.0f, 0.0f })
-		: GameObject(position), m_track(track) {}
+	Vehicle(Track* track, sf::Vector2f position = { 0.0f, 0.0f });
 
 	void applyAccelerator(float accelerator);
 	void applySteering(float steering);
@@ -18,7 +17,7 @@ public:
 	float getAngle() const { return m_angle; }
 
 	void update(float dt);
-	virtual void draw(sf::RenderTarget& window) = 0;
+	void draw(sf::RenderTarget& window);
 
 	void setSpeedMultiplier(float speedMultiplier, float time);
 
@@ -29,15 +28,21 @@ protected:
 	void handleItemUse();
 	virtual void handleMovement(float dt) = 0;
 
-	float m_acceleration = 0.0f;
-	float m_steering = 0.0f;
-	float m_angle = 0.0f;
 	Track* m_track = nullptr;
 	size_t m_nextCheckpoint = 0;
 	size_t m_completedLaps = 0;
+
+	float m_angle = 0.0f;
+	
 	float m_speedMultiplier = 1.0f;
 	float m_timeToClearMultiplier = 0.0f;
+	
+	float m_acceleratorInput = 0.0f;
+	float m_steeringInput = 0.0f;
 	bool m_use = false;
 	bool m_skill = false;
+
+	sf::Texture m_texture;
+	virtual int getTextureOffset() = 0;
 };
 

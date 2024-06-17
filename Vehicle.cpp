@@ -4,14 +4,20 @@
 
 #include <iostream>
 
+Vehicle::Vehicle(Track* track, sf::Vector2f position)
+	: GameObject(position) , m_track(track)
+{
+	m_texture.loadFromFile("assets/vehicle_tileset.png");
+}
+
 void Vehicle::applyAccelerator(float accelerator)
 {
-	m_acceleration += accelerator;
+	m_acceleratorInput += accelerator;
 }
 
 void Vehicle::applySteering(float steering)
 {
-	m_steering += steering;
+	m_steeringInput += steering;
 }
 
 void Vehicle::applyUse()
@@ -99,4 +105,14 @@ void Vehicle::update(float dt)
 
 	handleItemUse();
 	handleCheckpoints();
+}
+
+void Vehicle::draw(sf::RenderTarget& window)
+{
+	sf::Sprite sprite(m_texture);
+	sprite.setPosition(m_position);
+	sprite.setOrigin(8.f, 8.f);
+	sprite.setRotation(m_angle * 180.f / 3.14f + 90.f);
+	sprite.setTextureRect(sf::IntRect(getTextureOffset() * 16, 0, 16, 16));
+	window.draw(sprite);
 }

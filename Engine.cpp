@@ -130,7 +130,20 @@ void Engine::populatePlayers(int numPlayers)
 
 	for (int i = 0; i < numPlayers; i++)
 	{
-		std::unique_ptr<Vehicle> vehicle = std::make_unique<Kart>(&m_track, m_track.getPlayerStartingPos(i));
+		std::unique_ptr<Vehicle> vehicle;
+		
+		switch (i)
+		{
+		case 0:
+			vehicle = std::make_unique<Kart>(&m_track, m_track.getPlayerStartingPos(i));
+			break;
+		case 1:
+			vehicle = std::make_unique<Motorcycle>(&m_track, m_track.getPlayerStartingPos(i));
+			break;
+		default:
+			vehicle = std::make_unique<Hovercraft>(&m_track, m_track.getPlayerStartingPos(i));
+			break;
+		}
 
 		m_players.emplace_back(static_cast<Player::ControlScheme>(i), i);
 		m_players.back().setVehicle(vehicle.get());
