@@ -2,7 +2,8 @@
 
 #include "GameObject.h"
 #include "Track.h"
-
+#include "PowerUp.h"
+#include "BowlingBall.h"
 class Vehicle : public GameObject
 {
 public:
@@ -14,8 +15,11 @@ public:
 	void applyUse();
 	void applySkill();
 
+	void setPowerUp(std::unique_ptr<PowerUp> powerUp) { m_powerUp = std::move(powerUp); }
+
 	size_t getCompletedLaps() const { return m_completedLaps; }
 	float getAngle() const { return m_angle; }
+	sf::Vector2f getUnitVector() const { return { std::cos(m_angle), std::sin(m_angle) }; }
 
 	void update(float dt);
 	virtual void draw(sf::RenderTarget& window) = 0;
@@ -39,5 +43,6 @@ protected:
 	float m_timeToClearMultiplier = 0.0f;
 	bool m_use = false;
 	bool m_skill = false;
+	std::unique_ptr<PowerUp> m_powerUp = std::make_unique<BowlingBall>();
 };
 

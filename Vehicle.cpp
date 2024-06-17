@@ -83,10 +83,11 @@ void Vehicle::handleItemUse()
 	if (m_use)
 	{
 		m_use = false;
-		// na razie na sztywno "kula do krêgli"
-		std::unique_ptr<SpeedAdjuster> ball = std::make_unique<SpeedAdjuster>(0.2f, sf::Vector2f(std::cos(m_angle), std::sin(m_angle)) * 150.f);
-		ball->setPosition(m_position + sf::Vector2f(std::cos(m_angle), std::sin(m_angle)) * 20.f);
-		Engine::getInstance()->addObject(std::move(ball));
+		if (m_powerUp) {
+			m_powerUp->use(*this);
+			if(!m_powerUp->canBeUsed())
+				m_powerUp = nullptr;
+		}
 	}
 }
 
