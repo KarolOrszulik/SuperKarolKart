@@ -35,14 +35,22 @@ void PlayerScreen::calculateSizeAndViewport()
 		m_viewport.top += 0.5f;
 }
 
-void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, sf::Vector2f center, float angle)
+void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, sf::Vector2f center, float angle, float dt)
 {
+	static float a = 0.f;
+	//a = std::lerp(a, angle, 1 - std::exp(-dt * 5.f));
+
+	float newsin = std::lerp(std::sin(a), std::sin(angle), 1 - std::exp(-dt * 5.f));
+	float newcos = std::lerp(std::cos(a), std::cos(angle), 1 - std::exp(-dt * 5.f));
+	a = std::atan2(newsin, newcos);
+
 	calculateSizeAndViewport();
 
 	sf::View view(center, m_size);
 	view.setViewport(m_viewport);
 	view.zoom(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z) ? 0.25f : 0.5f); // to zmieniæ na zale¿ne od prêdkoœci jak ju¿ bêdzie coœ takiego jak prêdkoœæ
-	view.rotate(angle * 180.f / 3.1415f + 90.f);
+	//view.rotate(angle * 180.f / 3.1415f + 90.f); // sztywna rotacja
+	//view.rotate(a * 180.f / 3.1415f + 90.f); // interpolowana rotacja
 	target.setView(view);
 	target.draw(sf::Sprite(source.getTexture()));
 	target.setView(target.getDefaultView());

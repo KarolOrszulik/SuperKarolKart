@@ -16,7 +16,7 @@ public:
 	void setVehicle(Vehicle* vehicle) { m_vehicle = vehicle; }
 	void controlVehicle();
 
-	void drawPlayerScreen(sf::RenderTexture& source, sf::RenderTarget& target);
+	void drawPlayerScreen(sf::RenderTexture& source, sf::RenderTarget& target, float dt);
 
 	size_t getCompletedLaps() const { return m_vehicle->getCompletedLaps(); }
 

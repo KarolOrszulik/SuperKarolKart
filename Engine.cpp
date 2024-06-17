@@ -359,7 +359,7 @@ void Engine::stateRace(float dt)
 
 
 	for (auto& player : m_players)
-		player.drawPlayerScreen(m_world, m_window);
+		player.drawPlayerScreen(m_world, m_window, dt);
 
 
 	drawFPS(dt);
