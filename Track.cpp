@@ -101,7 +101,7 @@ void Track::loadTrack(std::string const& path)
 				}
 				if (std::isdigit(c))
 				{
-					m_playerStarts[c - '1'] = tile2index(x, y);
+					m_playerStarts.at(c - '1') = tile2index(x, y);
 				}
 				m_tiles.push_back(tileMap.at(c));
 			}

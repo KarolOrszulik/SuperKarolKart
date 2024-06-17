@@ -16,6 +16,6 @@ public:
 	~GroundItem() override { m_spawner->notifyObjectDeleted(); }
 
 private:
-	GroundItemSpawner* m_spawner;
+	GroundItemSpawner* m_spawner = nullptr;
 };
 

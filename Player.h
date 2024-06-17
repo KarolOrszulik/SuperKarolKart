@@ -31,5 +31,5 @@ enum class Player::ControlScheme
 	WASD,
 	ARROWS,
 	IJKL,
-	TFGH, // to jest jakieœ nieporozumienie, ale co zrobiæ
+	NUMBERS
 };

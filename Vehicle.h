@@ -11,6 +11,8 @@ public:
 
 	void applyAccelerator(float accelerator);
 	void applySteering(float steering);
+	void applyUse();
+	void applySkill();
 
 	size_t getCompletedLaps() const { return m_completedLaps; }
 	float getAngle() const { return m_angle; }
@@ -29,5 +31,7 @@ private:
 	size_t m_completedLaps = 0;
 	float m_speedMultiplier = 1.0f;
 	float m_timeToClearMultiplier = 0.0f;
+	bool m_use = false;
+	bool m_skill = false;
 };
 

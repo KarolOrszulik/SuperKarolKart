@@ -14,6 +14,16 @@ void Vehicle::applySteering(float steering)
 	m_steering += steering;
 }
 
+void Vehicle::applyUse()
+{
+	m_use = true;
+}
+
+void Vehicle::applySkill()
+{
+	m_skill = true;
+}
+
 void Vehicle::setSpeedMultiplier(float speedMultiplier, float time)
 {
 	m_speedMultiplier = speedMultiplier;
