@@ -10,5 +10,8 @@ public:
 private:
 	void handleMovement(float dt) override;
 	int getTextureOffset() override { return 2; }
+
+	float m_angularVelocity = 0.f;
+	sf::Vector2f m_velocity;
 };
 

@@ -103,6 +103,8 @@ void Vehicle::update(float dt)
 	handleClearMultiplier(dt);
 
 	handleMovement(dt); // this part is abstract
+	m_acceleratorInput = 0.f;
+	m_steeringInput = 0.f;
 
 	handleItemUse();
 	handleCheckpoints();
