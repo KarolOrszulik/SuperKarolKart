@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <unordered_set>
+#include <filesystem>
 
 #include "Track.h"
 #include "GameObject.h"
@@ -71,11 +72,12 @@ private:
 
 	sf::Font m_font;
 	std::unordered_map<State, Menu> m_menus;
-
+	std::filesystem::path m_assetsPath;
 	struct Settings
 	{
 		int numPlayers = -1;
-		std::string playerName[4]{};
+		std::string trackName;
+		std::string playerNames[4]{};
 		int vehicle[4]{};
 	} gameSettings;
 

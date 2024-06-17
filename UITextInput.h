@@ -12,12 +12,10 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void handleEvent(sf::Event& event) override;
 
-	void setPlaceHolder(const std::string& placeHolder)
-		{ m_placeHolder = placeHolder; }
+	void setPlaceHolder(const std::string& placeHolder) { m_placeHolder = placeHolder; }
+	void setMaxLength(int maxLength) { m_maxLength = maxLength; }
 
-	std::string getPlaceHolder() const
-		{ return m_placeHolder; }
-
+	std::string getPlaceHolder() const { return m_placeHolder; }
 	std::string getText() const;
 
 	std::function<void(const std::string&)> onTextEntered;
@@ -31,5 +29,6 @@ protected:
 
 private:
 	std::string m_placeHolder;
+	int m_maxLength = 0;
 };
 
