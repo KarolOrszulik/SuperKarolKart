@@ -17,12 +17,18 @@ public:
 	size_t getCompletedLaps() const { return m_completedLaps; }
 	float getAngle() const { return m_angle; }
 
-	void update(float dt) override;
-	void draw(sf::RenderTarget& window) override;
+	void update(float dt);
+	virtual void draw(sf::RenderTarget& window) = 0;
 
 	void setSpeedMultiplier(float speedMultiplier, float time);
 
-private:
+protected:
+	void handleCheckpoints();
+	void handleGroundItems();
+	void handleClearMultiplier(float dt);
+	void handleItemUse();
+	virtual void handleMovement(float dt) = 0;
+
 	float m_acceleration = 0.0f;
 	float m_steering = 0.0f;
 	float m_angle = 0.0f;

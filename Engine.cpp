@@ -10,6 +10,10 @@
 #include "UIRadioGroup.h"
 #include "UITextInput.h"
 
+#include "Kart.h"
+#include "Motorcycle.h"
+#include "Hovercraft.h"
+
 #include <iostream>
 
 
@@ -126,7 +130,7 @@ void Engine::populatePlayers(int numPlayers)
 
 	for (int i = 0; i < numPlayers; i++)
 	{
-		std::unique_ptr<Vehicle> vehicle = std::make_unique<Vehicle>(&m_track, m_track.getPlayerStartingPos(i));
+		std::unique_ptr<Vehicle> vehicle = std::make_unique<Kart>(&m_track, m_track.getPlayerStartingPos(i));
 
 		m_players.emplace_back(static_cast<Player::ControlScheme>(i), i);
 		m_players.back().setVehicle(vehicle.get());
