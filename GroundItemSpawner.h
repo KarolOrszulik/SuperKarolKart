@@ -16,7 +16,7 @@ public:
 private:
 	static constexpr float SPAWN_INTERVAL = 3.0f;
 
-	std::unique_ptr<GroundItem> m_prototype;
+	const std::unique_ptr<GroundItem> m_prototype;
 	float m_timeToSpawn = 0.0f;
 };
 

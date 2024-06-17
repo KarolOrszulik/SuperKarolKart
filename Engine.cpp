@@ -91,7 +91,7 @@ void Engine::onStart()
 {
 	m_track.loadTilemap("assets/track_tileset.png");
 
-	m_track.loadTrack("assets/track_02.txt");
+	m_track.loadTrack("assets/track_01.txt");
 	m_world.create(m_track.getSize().x, m_track.getSize().y);
 
 	if (!m_font.loadFromFile("assets/SKK.ttf"))

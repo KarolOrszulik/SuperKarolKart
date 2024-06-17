@@ -91,7 +91,8 @@ void Track::loadTrack(std::string const& path)
 				if (c == '!') // speed booster
 				{
 					std::unique_ptr<GroundItem> pBooster = std::make_unique<SpeedAdjuster>(2.0f);
-					std::unique_ptr<GroundItemSpawner> pSpawner = std::make_unique<GroundItemSpawner>(sf::Vector2f(x * GRID_SIZE_F, y * GRID_SIZE_F), std::move(pBooster));
+					std::unique_ptr<GroundItemSpawner> pSpawner =
+						std::make_unique<GroundItemSpawner>(sf::Vector2f((x + 0.5f) * GRID_SIZE_F, (y + 0.5f) * GRID_SIZE_F), std::move(pBooster));
 					Engine::getInstance()->addObject(std::move(pSpawner));
 				}
 				if (std::isalpha(c) || c == '~')
