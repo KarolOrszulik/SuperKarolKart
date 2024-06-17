@@ -34,6 +34,7 @@ private:
 	{
 		MAIN_MENU,
 		SETUP_MENU,
+		VEHICLE_MENU,
 		PRE_RACE,
 		RACE,
 		RESULTS
@@ -50,11 +51,12 @@ private:
 
 	void stateMainMenu(float dt);
 	void stateSetup(float dt);
+	void stateVehicleMenu(float dt);
 	void statePreRace(float dt);
 	void stateRace(float dt);
 	void stateResults(float dt);
 
-	void populatePlayers(int numPlayers);
+	void populatePlayers();
 
 	State m_state = State::MAIN_MENU;
 
@@ -74,6 +76,7 @@ private:
 	{
 		int numPlayers = -1;
 		std::string playerName[4]{};
+		int vehicle[4]{};
 	} gameSettings;
 
 	friend float operator ""_vh(long double);

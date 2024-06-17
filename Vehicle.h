@@ -24,6 +24,7 @@ public:
 	void draw(sf::RenderTarget& window);
 
 	void setSpeedMultiplier(float speedMultiplier, float time);
+	void setSteeringMultiplier(float steeringMultiplier, float time);
 
 protected:
 	void handleCheckpoints();
@@ -43,9 +44,13 @@ protected:
 	
 	float m_acceleratorInput = 0.0f;
 	float m_steeringInput = 0.0f;
+
+	float m_steeringMultiplier = 1.0f;
+	float m_timeToClearSteeringMultiplier = 0.0f;
+
 	bool m_use = false;
 	bool m_skill = false;
-	std::unique_ptr<PowerUp> m_powerUp = std::make_unique<BowlingBall>();
+	std::unique_ptr<PowerUp> m_powerUp;
 
 	sf::Texture m_texture;
 	virtual int getTextureOffset() = 0;

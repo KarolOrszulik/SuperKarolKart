@@ -112,6 +112,9 @@ void Engine::onUpdate(float dt)
 	case State::SETUP_MENU:
 		stateSetup(dt);
 		break;
+	case State::VEHICLE_MENU:
+		stateVehicleMenu(dt);
+		break;
 	case State::PRE_RACE:
 		statePreRace(dt);
 		break;
@@ -124,23 +127,22 @@ void Engine::onUpdate(float dt)
 	}
 }
 
-void Engine::populatePlayers(int numPlayers)
+void Engine::populatePlayers()
 {
 	m_players.clear();
 
-	for (int i = 0; i < numPlayers; i++)
+	for (int i = 0; i < gameSettings.numPlayers; i++)
 	{
 		std::unique_ptr<Vehicle> vehicle;
-		
-		switch (i)
+		switch (gameSettings.vehicle[i])
 		{
-		case 0:
+			case 0:
 			vehicle = std::make_unique<Kart>(&m_track, m_track.getPlayerStartingPos(i));
 			break;
-		case 1:
+			case 1:
 			vehicle = std::make_unique<Motorcycle>(&m_track, m_track.getPlayerStartingPos(i));
 			break;
-		default:
+			case 2:
 			vehicle = std::make_unique<Hovercraft>(&m_track, m_track.getPlayerStartingPos(i));
 			break;
 		}
@@ -316,8 +318,7 @@ void Engine::stateSetup(float dt)
 		btnGO.onRelease = [this]() {
 			// ZAIMPLEMENTOWAC REGEXA, ZEBY BYLY TYLKO LITERY W IMIONACH
 			if (gameSettings.numPlayers > 0) {
-				populatePlayers(gameSettings.numPlayers);
-				setGameState(State::PRE_RACE);
+				setGameState(State::VEHICLE_MENU);
 			}
 		};
 
@@ -328,8 +329,101 @@ void Engine::stateSetup(float dt)
 		setGameState(State::MAIN_MENU);
 }
 
+void Engine::stateVehicleMenu(float dt)
+{
+	if (!m_menus.contains(State::VEHICLE_MENU))
+	{
+		using UIToggle = UIToggleButton;
+		using namespace std;
+
+		UIButton::Style normStyle;
+		normStyle.bgColor = { 0, 0, 0, 0 };
+		normStyle.fontColor = { 255, 255, 255, 255 };
+
+		UIButton::Style hovStyle;
+		hovStyle.fontColor = { 255, 200, 0, 255 };
+
+		UIButton::Style selStyle;
+		selStyle.fontColor = { 255, 0, 0, 255 };
+
+		Menu& menu = m_menus[State::VEHICLE_MENU];
+		menu.setBgColor({ 20,170,150,255 });
+		menu.setSize(
+			{ (float)m_window.getSize().x, (float)m_window.getSize().y });
+
+		// <---- Title ---->
+		UIButton title(normStyle);
+		title.setPosition({ 0, 5.0_vh });
+		title.setText("Super Karol Kart");
+		title.setFont(m_font);
+		title.setCharacterSize(15_vh);
+		title.shrinkSizeToText();
+		title.centerHorizontally(menu.getWidth());
+
+		menu.addElement(make_unique<UIButton>(title));
+
+		// <---- Player Number Selection ---->
+
+		for (int i = 0; i < gameSettings.numPlayers; i++)
+		{
+			UIButton name(normStyle);
+			name.setPosition({ 5.0_vw + 24_vw * i, 30.0_vh });
+			name.setText(std::string("Player ") + std::to_string(i) + ":");
+			name.setFont(m_font);
+			name.setCharacterSize(5_vh);
+			name.shrinkSizeToText();
+			menu.addElement(make_unique<UIButton>(name));
+
+
+			auto vehSelect = std::make_unique<UIRadioGroup>();
+			std::string names[] = {"Kart", "Motorcycle", "Hovercraft"};
+			for (int j = 0; j < 3; j++)
+			{
+				UIToggle btn(normStyle, hovStyle, selStyle);
+				btn.setPosition({ 5.0_vw + 24_vw * i, 40.0_vh + 12.0_vh * j});
+				btn.setText(names[j]);
+				btn.setFont(m_font);
+				btn.setCharacterSize(5_vh);
+				btn.shrinkSizeToText();
+				btn.setOnSelected([this, i, j]() {gameSettings.vehicle[i] = j; });
+				vehSelect->addElement(make_unique<UIToggle>(btn));
+			}
+			menu.addElement(move(vehSelect));
+		}
+
+		// <---- Text input ---->
+		normStyle.bgColor = { 0, 0, 200, 255 };
+		normStyle.fontColor = { 255, 255, 255, 255 };
+		hovStyle.bgColor = { 0, 200, 0, 255 };
+		hovStyle.fontColor = { 255, 255, 255, 255 };
+		selStyle.bgColor = { 200, 0, 0, 255 };
+		selStyle.fontColor = { 255, 255, 255, 255 };
+
+		// <---- Start Button ---->
+		UIButton btnGO(normStyle, hovStyle, selStyle);
+		btnGO.setPosition({ 0, 90.0_vh });
+		btnGO.setText("START!");
+		btnGO.setFont(m_font);
+		btnGO.shrinkSizeToText();
+		btnGO.centerHorizontally(menu.getWidth());
+		btnGO.onRelease = [this]() {
+			populatePlayers();
+			setGameState(State::PRE_RACE);
+		};
+
+		menu.addElement(make_unique<UIButton>(btnGO));
+	}
+	m_window.draw(m_menus[State::VEHICLE_MENU]);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+		setGameState(State::SETUP_MENU);
+}
+
 void Engine::statePreRace(float dt)
 {
+	m_track.loadTilemap("assets/track_tileset.png");
+
+	m_track.loadTrack("assets/track_01.txt");
+	m_world.create(m_track.getSize().x, m_track.getSize().y);
 	setGameState(State::RACE);
 }
 
