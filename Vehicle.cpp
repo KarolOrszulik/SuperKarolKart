@@ -10,6 +10,8 @@ Vehicle::Vehicle(Track* track, sf::Vector2f position)
 	m_texture.loadFromFile("assets/vehicle_tileset.png");
 }
 
+// ZAST¥PIONE APPLYINPUT W PLIKU H
+
 //void Vehicle::applyAccelerator(float accelerator)
 //{
 //	m_acceleratorInput += accelerator;

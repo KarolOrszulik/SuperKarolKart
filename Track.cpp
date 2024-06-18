@@ -41,7 +41,9 @@ sf::Vector2f Track::index2posCenter(size_t idx) const
 	return index2pos(idx) + sf::Vector2f(GRID_SIZE_F / 2.f, GRID_SIZE_F / 2.f);
 }
 
-std::optional<int> Track::getCheckpointIndex(sf::Vector2f pos) const
+// TODO: wykorzystaæ radius, ¿eby sprawdzaæ czy gracz jest w okreœlonym checkpointcie
+// bêdzie musia³ zwracaæ zbiór checkpointów, bo jak sprawdza pole to mo¿e byæ w kilku checkpointach na raz
+std::optional<int> Track::getCheckpointIndex(sf::Vector2f pos, float radius) const 
 {
 	for (size_t i = 0; i < m_checkpoints.size(); i++)
 	{

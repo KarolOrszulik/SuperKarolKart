@@ -20,7 +20,7 @@ protected:
 		float lockAngle				= 0.f;
 		float maxSpeedRoad			= 0.f;
 		float maxSpeedGrass			= 0.f;
-		float maxReverseSpeedRatio	= 0.f;
+		float maxReverseSpeedRatio	= 0.f; // zmieniæ na maxSpeedReverse? nwm
 		float decelerationRoad		= 0.f;
 		float decelerationGrass		= 0.f;
 		float acceleration			= 0.f;
