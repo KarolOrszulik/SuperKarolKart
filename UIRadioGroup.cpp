@@ -23,7 +23,7 @@ void UIRadioGroup::handleEvent(sf::Event& event)
 			break;
 		}
 		case sf::Event::MouseMoved:
-		case sf::Event::MouseButtonReleased:
+		//case sf::Event::MouseButtonReleased: // MO¯LIWE, ¯E ZBÊDNE
 		{
 			for (auto& e : m_elements)
 			{
@@ -34,9 +34,9 @@ void UIRadioGroup::handleEvent(sf::Event& event)
 	}
 }
 
-void UIRadioGroup::addElement(std::unique_ptr<UIToggleButton> element)
+void UIRadioGroup::addElement(std::shared_ptr<UIToggleButton> element)
 {
-	m_elements.push_back(std::move(element));
+	m_elements.push_back(element);
 }
 
 void UIRadioGroup::draw(sf::RenderTarget& target, sf::RenderStates states) const

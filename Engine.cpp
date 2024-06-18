@@ -22,30 +22,25 @@ std::shared_ptr<Engine> Engine::s_instance = nullptr;
 
 float operator ""_vh(long double heightVh)
 {
-	auto engine = Engine::getInstance();
-	unsigned windowHeight = engine->m_window.getSize().y;
+	unsigned windowHeight = Engine::getInstance()->m_window.getSize().y;
 	return static_cast<float>(heightVh / 100.0 * windowHeight);
 }
 
 float operator ""_vw(long double widthVw)
 {
-	auto engine = Engine::getInstance();
-	unsigned windowWidth = engine->m_window.getSize().x;
+	unsigned windowWidth = Engine::getInstance()->m_window.getSize().x;
 	return static_cast<float>(widthVw / 100.0 * windowWidth);
 }
 
 unsigned operator""_vh(unsigned long long heightVh)
 {
-	auto engine = Engine::getInstance();
-	unsigned windowHeight = engine->m_window.getSize().y;
+	unsigned windowHeight = Engine::getInstance()->m_window.getSize().y;
 	return static_cast<unsigned>(heightVh / 100.0 * windowHeight);
 }
 
 unsigned operator""_vw(unsigned long long widthVw)
 {
-
-	auto engine = Engine::getInstance();
-	unsigned windowWidth = engine->m_window.getSize().x;
+	unsigned windowWidth = Engine::getInstance()->m_window.getSize().x;
 	return static_cast<unsigned>(widthVw / 100.0 * windowWidth);
 }
 
@@ -183,21 +178,21 @@ void Engine::stateMainMenu(float dt)
 		auto title = textFactory.createButtonPtr("Super Karol Kart", { 0, 5.0_vh });
 		title->centerHorizontally(menu.getWidth());
 
-		menu.addElement(std::make_unique<UIButton>(*title));
+		menu.addElement(title);
 
 		// <---- Start Button ---->
 		auto btnPlay = btnFactory.createButtonPtr("PLAY", { 0, 35.0_vh });
 		btnPlay->centerHorizontally(menu.getWidth());
 		btnPlay->onRelease = [this]() { setGameState(State::SETUP_MENU); };
 
-		menu.addElement(std::make_unique<UIButton>(*btnPlay));
+		menu.addElement(btnPlay);
 
 		// <---- Exit Button ---->
 		auto btnExit = btnFactory.createButtonPtr("EXIT", { 0, 60.0_vh });
 		btnExit->centerHorizontally(menu.getWidth());
 		btnExit->onRelease = [this]() { m_window.close(); };
 
-		menu.addElement(std::make_unique<UIButton>(*btnExit));
+		menu.addElement(btnExit);
 	}
 	m_window.draw(m_menus[State::MAIN_MENU]);
 }
@@ -227,10 +222,10 @@ void Engine::stateSetup(float dt)
 		// <---- Title ---->
 		auto title = textFactory.createButtonPtr("Super Karol Kart", { 0, 5.0_vh });
 		title->centerHorizontally(menu.getWidth());
-		menu.addElement(std::make_unique<UIButton>(*title));
+		menu.addElement(title);
 
 		//<---- Player Number Selection ---->
-		auto playerNumSelect = std::make_unique<UIRadioGroup>();
+		auto playerNumSelect = std::make_shared<UIRadioGroup>();
 		
 		std::vector<std::shared_ptr<UIToggleButton>> playerNumBtns{
 			btnFactory.createToggleButtonPtr("1 Player", { 5.0_vw, 30.0_vh }),
@@ -243,10 +238,10 @@ void Engine::stateSetup(float dt)
 		{
 			auto btn = playerNumBtns[i];
 			btn->setOnSelected([this, i]() { gameSettings.numPlayers = i + 1;});
-			playerNumSelect->addElement(std::make_unique<UIToggleButton>(*btn));
+			playerNumSelect->addElement(btn);
 		}
 
-		menu.addElement(move(playerNumSelect));
+		menu.addElement(playerNumSelect);
 
 		// <---- Start Button ---->
 		auto btnGO = btnFactory.createButtonPtr("START!", { 0, 90.0_vh });
@@ -257,7 +252,7 @@ void Engine::stateSetup(float dt)
 			}
 		};
 
-		menu.addElement(std::make_unique<UIButton>(*btnGO));
+		menu.addElement(btnGO);
 	}
 	m_window.draw(m_menus[State::SETUP_MENU]);
 }
@@ -278,42 +273,42 @@ void Engine::stateVehicleMenu(float dt)
 		hovStyle.fontColor  = { 255, 200,   0, 255 };
 		selStyle.fontColor  = { 255,   0,   0, 255 };
 
-		UIButton::Style inputTextNorm, inputTextHov, inputTextSel;
-		inputTextNorm.bgColor   = {   0,   0, 200, 255 };
-		inputTextNorm.fontColor = { 255, 255, 255, 255 };
-		inputTextHov.bgColor    = {   0, 200,   0, 255 };
-		inputTextHov.fontColor  = { 255, 255, 255, 255 };
-		inputTextSel.bgColor    = { 200,   0,   0, 255 };
-		inputTextSel.fontColor  = { 255, 255, 255, 255 };
+		UIButton::Style inpTxtNorm, inpTxtHov, inpTxtSel;
+		inpTxtNorm.bgColor   = {   0,   0, 200, 255 };
+		inpTxtNorm.fontColor = { 255, 255, 255, 255 };
+		inpTxtHov.bgColor    = {   0, 200,   0, 255 };
+		inpTxtHov.fontColor  = { 255, 255, 255, 255 };
+		inpTxtSel.bgColor    = { 200,   0,   0, 255 };
+		inpTxtSel.fontColor  = { 255, 255, 255, 255 };
 
 
 		// <---- Button factory ---->
 
-		UIButtonFactory textFactory(normStyle, normStyle, normStyle, m_font, 15_vh);
+		UIButtonFactory txtFactory(normStyle, normStyle, normStyle, m_font, 15_vh);
 		UIButtonFactory btnFactory(normStyle, hovStyle, selStyle, m_font, 5_vh);
-		UIButtonFactory inputTextFactory(inputTextNorm, inputTextHov, inputTextSel, m_font, 5_vh);
+		UIButtonFactory inpFactory(inpTxtNorm, inpTxtHov, inpTxtSel, m_font, 5_vh);
 
 		// <---- Title ---->
-		auto title = textFactory.createButtonPtr("Super Karol Kart", { 0, 5.0_vh });
+		auto title = txtFactory.createButtonPtr("Super Karol Kart", { 0, 5.0_vh });
 		title->centerHorizontally(menu.getWidth());
-		menu.addElement(std::make_unique<UIButton>(*title));
+		menu.addElement(title);
 
 		// <---- Player Number Selection ---->
 
-		textFactory.setCharacterSize(5_vh);
+		txtFactory.setCharacterSize(5_vh);
 		std::vector<std::string> vehicleNames { "Kart", "Motorcycle", "Hovercraft" };
 		for (int i = 0; i < gameSettings.numPlayers; i++)
 		{
 			// preparing radio group
-			auto vehicleSelect = std::make_unique<UIRadioGroup>();
+			auto vehicleSelect = std::make_shared<UIRadioGroup>();
 
 			// preparing button info
 			std::string playerName = "Player " + std::to_string(i + 1) + ":";
 			float columnPosition = 3.0_vw + 24.0_vw * i;
 
 			// creating toggle button for vehicle
-			auto playerDesc = textFactory.createButtonPtr(playerName, { columnPosition, 30.0_vh });
-			menu.addElement(std::make_unique<UIButton>(*playerDesc));
+			auto playerDesc = txtFactory.createButtonPtr(playerName, { columnPosition, 30.0_vh });
+			menu.addElement(playerDesc);
 
 			// adding buttons for each vehicle
 			for (int j = 0; j < vehicleNames.size(); j++)
@@ -324,17 +319,17 @@ void Engine::stateVehicleMenu(float dt)
 				btn->setOnSelected([this, i, j]() { gameSettings.vehicle[i] = j + 1; });
 
 				// add button to radio group
-				vehicleSelect->addElement(std::make_unique<UIToggleButton>(*btn));
+				vehicleSelect->addElement(btn);
 			}
-			menu.addElement(move(vehicleSelect));
+			menu.addElement(vehicleSelect);
 
 			// adding text input for player name
-			auto textInput = inputTextFactory.createTextInputPtr("",{ columnPosition, 75._vh }, "ENTER NAME", 9);
+			auto textInput = inpFactory.createTextInputPtr("",{ columnPosition, 75._vh }, "ENTER NAME", 9);
 			textInput->onTextEntered = [this, i](std::string const& text) {
 				gameSettings.playerNames[i] = text;
 			};
 			textInput->applyPadding(1_vh);
-			menu.addElement(std::make_unique<UITextInput>(*textInput));
+			menu.addElement(textInput);
 		}
 
 		// change in button factory
@@ -350,12 +345,12 @@ void Engine::stateVehicleMenu(float dt)
 			if(vehiclesSelected)
 				setGameState(State::PRE_RACE); 
 		};
-		menu.addElement(std::make_unique<UIButton>(*btnGO));
+		menu.addElement(btnGO);
 
 		// <---- Start Button ---->
 		auto btnBack = btnFactory.createButtonPtr("BACK", { 10.0_vw, 90.0_vh });
 		btnBack->onRelease = [this]() { setGameState(State::SETUP_MENU); };
-		menu.addElement(std::make_unique<UIButton>(*btnBack));
+		menu.addElement(btnBack);
 	}
 	m_window.draw(m_menus[State::VEHICLE_MENU]);
 }

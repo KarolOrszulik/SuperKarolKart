@@ -10,11 +10,10 @@ void Menu::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	}
 }
 
-void Menu::addElement(std::unique_ptr<UIElement> element)
+void Menu::addElement(std::shared_ptr<UIElement> element)
 {
-	elements.push_back(std::move(element));
+	elements.push_back(element);
 }
-#include <iostream>
 
 void Menu::handleEvent(sf::Event& event)
 {
