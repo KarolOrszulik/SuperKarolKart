@@ -1,5 +1,10 @@
 #include "Hovercraft.h"
 
+float Hovercraft::getSpeed() const
+{
+	return std::sqrt(m_velocity.x * m_velocity.x + m_velocity.y * m_velocity.y);
+}
+
 void Hovercraft::handleMovement(float dt)
 {
 	constexpr float MAX_SPEED = 500.f; // speed at which the hovercraft stops accelerating

@@ -358,7 +358,7 @@ void Engine::stateVehicleMenu(float dt)
 void Engine::statePreRace(float dt)
 {
 	m_track.loadTilemap("assets/track_tileset.png");
-	m_track.loadTrack("assets/track_02.txt");
+	m_track.loadTrack("assets/track_01.txt");
 
 	sf::Vector2u worldSize(m_track.getSize());
 	m_world.create(worldSize.x, worldSize.y);

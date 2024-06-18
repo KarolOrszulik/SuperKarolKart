@@ -15,7 +15,7 @@ private:
 	{
 		return GroundVehicle::DrivingParameters{
 			.wheelbase = 12.f,
-			.maxFriction = 300.f,
+			.maxFriction = 350.f,
 			.lockAngle = 30.f * 3.14f / 180.f,
 			.maxSpeedRoad = 120.f,
 			.maxSpeedGrass = 60.f,
