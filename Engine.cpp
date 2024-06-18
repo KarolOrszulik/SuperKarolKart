@@ -333,6 +333,7 @@ void Engine::stateVehicleMenu(float dt)
 			textInput->onTextEntered = [this, i](std::string const& text) {
 				gameSettings.playerNames[i] = text;
 			};
+			textInput->applyPadding(1_vh);
 			menu.addElement(std::make_unique<UITextInput>(*textInput));
 		}
 
