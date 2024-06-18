@@ -53,5 +53,6 @@ enum class Track::Tile
 	GRASS,
 	ROAD,
 	ROAD_CORNER,
-	FINISH
+	FINISH,
+	VLC,
 };

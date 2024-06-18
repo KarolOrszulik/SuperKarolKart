@@ -65,8 +65,9 @@ void Track::loadTrack(std::string const& path)
 	const std::map<char, Tile> tileMap
 	{
 		{ '#', Tile::GRASS },
-		{ '.', Tile::ROAD_CORNER},
-		{ '~', Tile::FINISH},
+		{ '.', Tile::ROAD_CORNER },
+		{ '~', Tile::FINISH },
+		{ '?', Tile::VLC }
 	};
 
 	std::string line;
@@ -153,7 +154,8 @@ void Track::renderTexture()
 		{ Tile::GRASS,		 sf::IntRect(0 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) },
 		{ Tile::ROAD,		 sf::IntRect(1 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) },
 		{ Tile::ROAD_CORNER, sf::IntRect(2 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) },
-		{ Tile::FINISH,      sf::IntRect(3 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) }
+		{ Tile::FINISH,      sf::IntRect(3 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) },
+		{ Tile::VLC,         sf::IntRect(4 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) }
 	};
 
 	for (uint32_t y = 0; y < m_size.y; ++y)
