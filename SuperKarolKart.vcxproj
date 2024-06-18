@@ -153,6 +153,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GroundItem.cpp" />
     <ClCompile Include="GroundItemSpawner.cpp" />
+    <ClCompile Include="GroundVehicle.cpp" />
     <ClCompile Include="Hovercraft.cpp" />
     <ClCompile Include="Kart.cpp" />
     <ClCompile Include="main.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GroundItem.h" />
     <ClInclude Include="GroundItemSpawner.h" />
+    <ClInclude Include="GroundVehicle.h" />
     <ClInclude Include="Hovercraft.h" />
     <ClInclude Include="Kart.h" />
     <ClInclude Include="Menu.h" />

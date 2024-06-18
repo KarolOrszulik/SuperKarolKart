@@ -44,21 +44,25 @@ void Player::controlVehicle()
 
 	auto mapping = keyMappings.at(m_control);
 
+	Vehicle::Input input;
+
 	if (sf::Keyboard::isKeyPressed(mapping.up))
-		m_vehicle->applyAccelerator(1.f);
+		input.accelerator += 1.f;
 
 	if (sf::Keyboard::isKeyPressed(mapping.down))
-		m_vehicle->applyAccelerator(-1.f);
+		input.accelerator -= 1.f;
 
 	if (sf::Keyboard::isKeyPressed(mapping.left))
-		m_vehicle->applySteering(-1.f);
+		input.steering -= 1.f;
 
 	if (sf::Keyboard::isKeyPressed(mapping.right))
-		m_vehicle->applySteering(1.f);
+		input.steering += 1.f;
 
 	if (sf::Keyboard::isKeyPressed(mapping.use))
-		m_vehicle->applyUse();
+		input.use = true;
 
 	if (sf::Keyboard::isKeyPressed(mapping.skill))
-		m_vehicle->applySkill();
+		input.skill = true;
+
+	m_vehicle->applyInput(input);
 }

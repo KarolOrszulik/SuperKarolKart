@@ -10,25 +10,26 @@ Vehicle::Vehicle(Track* track, sf::Vector2f position)
 	m_texture.loadFromFile("assets/vehicle_tileset.png");
 }
 
-void Vehicle::applyAccelerator(float accelerator)
-{
-	m_acceleratorInput += accelerator;
-}
+//void Vehicle::applyAccelerator(float accelerator)
+//{
+//	m_acceleratorInput += accelerator;
+//}
+//
+//void Vehicle::applySteering(float steering)
+//{
+//	m_steeringInput += steering;
+//}
+//
+//void Vehicle::applyUse()
+//{
+//	m_use = true;
+//}
+//
+//void Vehicle::applySkill()
+//{
+//	m_skill = true;
+//}
 
-void Vehicle::applySteering(float steering)
-{
-	m_steeringInput += steering;
-}
-
-void Vehicle::applyUse()
-{
-	m_use = true;
-}
-
-void Vehicle::applySkill()
-{
-	m_skill = true;
-}
 
 void Vehicle::setSpeedMultiplier(float speedMultiplier, float time)
 {
@@ -99,9 +100,9 @@ void Vehicle::handleClearMultiplier(float dt)
 
 void Vehicle::handleItemUse()
 {
-	if (m_use)
+	if (m_input.use)
 	{
-		m_use = false;
+		m_input.use = false;
 		if (m_powerUp) {
 			m_powerUp->use(*this);
 			if(!m_powerUp->canBeUsed())
@@ -115,9 +116,8 @@ void Vehicle::update(float dt)
 	handleGroundItems();
 	handleClearMultiplier(dt);
 
+	m_input.steering *= m_steeringMultiplier;
 	handleMovement(dt); // this part is abstract
-	m_acceleratorInput = 0.f;
-	m_steeringInput = 0.f;
 
 	handleItemUse();
 	handleCheckpoints();
