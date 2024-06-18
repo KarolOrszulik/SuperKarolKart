@@ -16,34 +16,27 @@ void GroundVehicle::handleMovement(float dt)
 		? p.maxSpeedGrass
 		: p.maxSpeedRoad);
 
+	const bool withinSpeedLimit = m_speed < maxSpeed && m_speed > -maxSpeed * p.maxReverseSpeedRatio;
+	const bool coasting = std::abs(m_input.accelerator) < 0.01f;
+	const bool braking = m_speed * m_input.accelerator < 0.f;
+	const bool accelerating = m_speed * m_input.accelerator > 0.f;
 
-	if (std::abs(m_input.accelerator) < 0.01f // no input or
-		|| m_speed >= maxSpeed				 // max speed in either direction
-		|| m_speed <= -maxSpeed * p.maxReverseSpeedRatio)
+	if (braking)
 	{
-		if (std::abs(m_speed) > 0.1f)
-		{
-			float dir = m_speed > 0.f ? 1.f : -1.f;
-			m_acceleration = -dir * deceleration;
-		}
-		else
-		{
-			m_speed = 0.f;
-		}
+		// braking strength +50% at max road speed, and no more than +50%
+		const float brakingFactor = std::min(1.5f, 1.0f + 0.5f * std::abs(m_speed / p.maxSpeedRoad));
+		m_acceleration = p.braking * m_input.accelerator * brakingFactor;
 	}
-	else // valid input
+	else if (accelerating && withinSpeedLimit)
 	{
-		if (m_input.accelerator * m_speed > 0.f) // accelerating
-		{
-			m_acceleration =
-				p.acceleration * m_input.accelerator * m_speedMultiplier;
-		}
-		else // braking
-		{
-			m_acceleration =
-				p.braking * m_input.accelerator * m_speedMultiplier;
-		}
+		m_acceleration = p.acceleration * m_input.accelerator * m_speedMultiplier;
 	}
+	else if (coasting || !withinSpeedLimit)
+	{
+		const float direction = m_speed > 0.f ? 1.f : -1.f;
+		m_acceleration = -direction * deceleration;
+	}
+
 
 	m_speed += m_acceleration * dt;
 
