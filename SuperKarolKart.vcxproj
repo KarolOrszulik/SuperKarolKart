@@ -163,8 +163,10 @@
     <ClCompile Include="PlayerScreen.cpp" />
     <ClCompile Include="PowerUp.cpp" />
     <ClCompile Include="SpeedAdjuster.cpp" />
+    <ClCompile Include="SteeringAdjuster.cpp" />
     <ClCompile Include="Track.cpp" />
     <ClCompile Include="UIButton.cpp" />
+    <ClCompile Include="UIButtonFactory.cpp" />
     <ClCompile Include="UIElement.cpp" />
     <ClCompile Include="UIRadioGroup.cpp" />
     <ClCompile Include="UITextInput.cpp" />
@@ -187,8 +189,10 @@
     <ClInclude Include="PlayerScreen.h" />
     <ClInclude Include="PowerUp.h" />
     <ClInclude Include="SpeedAdjuster.h" />
+    <ClInclude Include="SteeringAdjuster.h" />
     <ClInclude Include="Track.h" />
     <ClInclude Include="UIButton.h" />
+    <ClInclude Include="UIButtonFactory.h" />
     <ClInclude Include="UIElement.h" />
     <ClInclude Include="UIRadioGroup.h" />
     <ClInclude Include="UITextInput.h" />

@@ -63,6 +63,8 @@ void UITextInput::textEntered(sf::Uint32 unicode)
 		}
 		else
 		{
+			if(getText().size() >= m_maxLength) 
+				return;
 			text += std::toupper(unicode);
 		}
 		m_text.setString(text);

@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <unordered_set>
+#include <filesystem>
 
 #include "Track.h"
 #include "GameObject.h"
@@ -34,6 +35,7 @@ private:
 	{
 		MAIN_MENU,
 		SETUP_MENU,
+		VEHICLE_MENU,
 		PRE_RACE,
 		RACE,
 		RESULTS
@@ -50,11 +52,12 @@ private:
 
 	void stateMainMenu(float dt);
 	void stateSetup(float dt);
+	void stateVehicleMenu(float dt);
 	void statePreRace(float dt);
 	void stateRace(float dt);
 	void stateResults(float dt);
 
-	void populatePlayers(int numPlayers);
+	void populatePlayers();
 
 	State m_state = State::MAIN_MENU;
 
@@ -69,11 +72,13 @@ private:
 
 	sf::Font m_font;
 	std::unordered_map<State, Menu> m_menus;
-
+	std::filesystem::path m_assetsPath;
 	struct Settings
 	{
 		int numPlayers = -1;
-		std::string playerName[4]{};
+		std::string trackName;
+		std::string playerNames[4]{};
+		int vehicle[4]{};
 	} gameSettings;
 
 	friend float operator ""_vh(long double);

@@ -36,6 +36,12 @@ void Vehicle::setSpeedMultiplier(float speedMultiplier, float time)
 	m_timeToClearMultiplier = time;
 }
 
+void Vehicle::setSteeringMultiplier(float steeringMultiplier, float time)
+{
+	m_steeringMultiplier = steeringMultiplier;
+	m_timeToClearSteeringMultiplier = time;
+}
+
 void Vehicle::handleGroundItems()
 {
 	for (auto& obj : Engine::getInstance()->getObjects())
@@ -81,6 +87,13 @@ void Vehicle::handleClearMultiplier(float dt)
 
 		if (m_timeToClearMultiplier <= 0.0f)
 			m_speedMultiplier = 1.0f;
+	}
+	if (m_timeToClearSteeringMultiplier > 0.0f)
+	{
+		m_timeToClearSteeringMultiplier -= dt;
+
+		if (m_timeToClearSteeringMultiplier <= 0.0f)
+			m_steeringMultiplier = 1.0f;
 	}
 }
 

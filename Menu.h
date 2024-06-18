@@ -7,11 +7,10 @@ class Menu
 {
 public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-	void addElement(std::unique_ptr<UIElement> element);
-
 	virtual void handleEvent(sf::Event& event) override;
+	void addElement(std::shared_ptr<UIElement> element);
 
 private:
-	std::vector<std::unique_ptr<UIElement>> elements;
+	std::vector<std::shared_ptr<UIElement>> elements;
 };
 

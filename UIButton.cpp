@@ -73,6 +73,16 @@ void UIButton::shrinkSizeToText()
 	setSize(newSize);
 }
 
+void UIButton::applyPadding(unsigned padding)
+{
+	sf::Vector2f paddingVec(padding, padding);
+	sf::Vector2f newSize = getSize();
+	newSize += paddingVec * 2.f; // ???
+
+	setSize(newSize);
+	m_text.move(paddingVec / 2.f); // ???
+}
+
 void UIButton::setState(State state)
 {
 	if(m_state == state)
