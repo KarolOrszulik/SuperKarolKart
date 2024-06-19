@@ -5,6 +5,7 @@
 #include "OilSpill.h"
 #include <cmath>
 
+
 void Box::interactWithVehicle(Vehicle& vehicle)
 {
 	srand(time(NULL));
@@ -22,13 +23,13 @@ void Box::update(float dt)
 
 }
 
-void Box::draw(sf::RenderTarget& target)
-{
-	sf::RectangleShape shape({ 10.f, 10.f });
-	shape.setOrigin(5.f, 5.f);
-	shape.setPosition(m_position);
-	shape.setFillColor(sf::Color::Cyan);
-	target.draw(shape);
-}
+//void Box::draw(sf::RenderTarget& target)
+//{
+//	sf::RectangleShape shape({ 10.f, 10.f });
+//	shape.setOrigin(5.f, 5.f);
+//	shape.setPosition(m_position);
+//	shape.setFillColor(sf::Color::Cyan);
+//	target.draw(shape);
+//}
 
 

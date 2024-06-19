@@ -9,10 +9,12 @@ public:
 
 	void interactWithVehicle(Vehicle&) override;
 	void update(float dt) override;
-	void draw(sf::RenderTarget&) override;
+	//void draw(sf::RenderTarget&) override;
 	std::unique_ptr<GroundItem> copy() const override { return std::make_unique<SteeringAdjuster>(*this); }
 
 private:
+	std::filesystem::path getTexturePath() const override { return "assets/grounditems/steering_adjuster.png"; }
+
 	float m_steeringMultiplier = -1.f;
 	sf::Vector2f m_velocity;
 	bool m_singleUse = false;

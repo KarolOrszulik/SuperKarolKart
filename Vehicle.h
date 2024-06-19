@@ -26,7 +26,7 @@ public:
 	virtual float getSpeed() const = 0;
 
 	void update(float dt);
-	void draw(sf::RenderTarget& window);
+	void draw(sf::RenderTarget& window) override;
 
 	void setSpeedMultiplier(float speedMultiplier, float time);
 	void setSteeringMultiplier(float steeringMultiplier, float time);
@@ -39,6 +39,8 @@ public:
 		bool skill = false;
 	};
 protected:
+
+	virtual std::filesystem::path getTexturePath() const override = 0;
 
 	virtual void handleMovement(float dt) = 0;
 	void handleCheckpoints();				//
@@ -65,8 +67,5 @@ protected:
 	float m_timeToClearSteeringMultiplier = 0.0f;
 
 	std::unique_ptr<PowerUp> m_powerUp;
-
-	sf::Texture m_texture;
-	virtual int getTextureOffset() = 0;
 };
 

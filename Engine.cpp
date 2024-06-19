@@ -359,8 +359,8 @@ void Engine::stateVehicleMenu(float dt)
 
 void Engine::statePreRace(float dt)
 {
-	m_track.loadTilemap("assets/track_tileset.png");
-	m_track.loadTrack("assets/track_01.txt");
+	m_track.loadTilemap("assets/track/track_tileset.png");
+	m_track.loadTrack("assets/track/track_01.txt");
 
 	sf::Vector2u worldSize(m_track.getSize());
 	m_world.create(worldSize.x, worldSize.y);
@@ -384,6 +384,10 @@ void Engine::stateRace(float dt)
 	}
 	m_world.display(); // finalize drawing the world
 
+	// add objects from m_objectsToAdd to m_objects
+	for (auto& obj : m_objectsToAdd)
+		m_objects.emplace(std::move(obj));
+	m_objectsToAdd.clear();
 
 	// remove objects from m_objects which are in m_objectsToRemove
 	for (auto& obj : m_objectsToRemove)

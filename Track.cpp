@@ -42,15 +42,47 @@ sf::Vector2f Track::index2posCenter(size_t idx) const
 }
 
 // TODO: wykorzystaæ radius, ¿eby sprawdzaæ czy gracz jest w okreœlonym checkpointcie
-// bêdzie musia³ zwracaæ zbiór checkpointów, bo jak sprawdza pole to mo¿e byæ w kilku checkpointach na raz
 std::optional<int> Track::getCheckpointIndex(sf::Vector2f pos, float radius) const 
 {
+	float minDistance = std::numeric_limits<float>::max();
+	std::optional<int> closestCheckpoint;
+
+	auto squareCircleOverlap = [](sf::Vector2f squarePos, sf::Vector2f squareSize, sf::Vector2f circlePos, float radius) -> bool
+	{
+		float dx = std::abs(circlePos.x - squarePos.x);
+		float dy = std::abs(circlePos.y - squarePos.y);
+
+		if (dx > squareSize.x / 2.f + radius) return false;
+		if (dy > squareSize.y / 2.f + radius) return false;
+
+		if (dx <= squareSize.x / 2.f) return true;
+		if (dy <= squareSize.y / 2.f) return true;
+
+		float cornerDistance = std::hypot(dx - squareSize.x / 2.f, dy - squareSize.y / 2.f);
+		return cornerDistance <= radius;
+	};
+
 	for (size_t i = 0; i < m_checkpoints.size(); i++)
 	{
-		if (std::ranges::find(m_checkpoints[i], pos2index(pos)) != m_checkpoints[i].end())
-			return i;
+		for (size_t j = 0; j < m_checkpoints[i].size(); j++)
+		{
+			sf::Vector2f squareCenter = index2posCenter(m_checkpoints[i][j]);
+			if (squareCircleOverlap(squareCenter, { GRID_SIZE_F, GRID_SIZE_F }, pos, radius))
+			{
+				float distance = std::hypot(squareCenter.x - pos.x, squareCenter.y - pos.y);
+				if (distance < minDistance)
+				{
+					minDistance = distance;
+					closestCheckpoint = i;
+				}
+			}
+		}
 	}
-	return {};
+
+	if (minDistance < radius)
+		return closestCheckpoint;
+	else
+		return {};
 }
 
 void Track::loadTrack(std::string const& path)
@@ -94,14 +126,14 @@ void Track::loadTrack(std::string const& path)
 			{
 				if (c == '!') // speed booster
 				{
-					std::unique_ptr<GroundItem> pBooster = std::make_unique<SpeedAdjuster>(2.0f);
+					std::unique_ptr<GroundItem> pBooster = std::make_unique<SpeedAdjuster>("assets/grounditems/nitro.png", 2.0f);
 					std::unique_ptr<GroundItemSpawner> pSpawner =
 						std::make_unique<GroundItemSpawner>(sf::Vector2f((x + 0.5f) * GRID_SIZE_F, (y + 0.5f) * GRID_SIZE_F), std::move(pBooster));
 					Engine::getInstance()->addObject(std::move(pSpawner));
 				}
 				if (c == '@') // speed booster - non-single use
 				{
-					std::unique_ptr<GroundItem> pBooster = std::make_unique<SpeedAdjuster>(2.0f, sf::Vector2f{}, false);
+					std::unique_ptr<GroundItem> pBooster = std::make_unique<SpeedAdjuster>("assets/grounditems/plate.png", 2.0f, sf::Vector2f{}, false);
 					std::unique_ptr<GroundItemSpawner> pSpawner =
 						std::make_unique<GroundItemSpawner>(sf::Vector2f((x + 0.5f) * GRID_SIZE_F, (y + 0.5f) * GRID_SIZE_F), std::move(pBooster));
 					Engine::getInstance()->addObject(std::move(pSpawner));

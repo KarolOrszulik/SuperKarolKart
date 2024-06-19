@@ -22,10 +22,13 @@ public:
 	int getNumPlayers() const { return static_cast<int>(m_players.size()); }
 	sf::Vector2u getWindowSize() const { return m_window.getSize(); }
 
-	void addObject(std::unique_ptr<GameObject> object) { m_objects.insert(std::move(object)); }
+	void addObject(std::unique_ptr<GameObject> object) { m_objectsToAdd.push_back(std::move(object)); }
 	void flagForRemoval(GameObject* object) { m_objectsToRemove.push_back(object); }
 
 	auto& getObjects() { return m_objects; }
+
+	unsigned int getGridSize() const { return m_track.getGridSize(); }
+	float getGridSizeF() const { return m_track.getGridSizeF(); }
 
 	void init(uint32_t width, uint32_t height, std::string const& title);
 	void run();
@@ -68,6 +71,7 @@ private:
 
 	std::unordered_set<std::unique_ptr<GameObject>> m_objects;
 	std::vector<GameObject*> m_objectsToRemove;
+	std::vector<std::unique_ptr<GameObject>> m_objectsToAdd;
 	std::vector<Player> m_players;
 
 	sf::RenderTexture m_world;

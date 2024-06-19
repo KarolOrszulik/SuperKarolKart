@@ -8,8 +8,9 @@ public:
 	using Vehicle::Vehicle;
 
 private:
+	std::filesystem::path getTexturePath() const override { return "assets/vehicles/hovercraft.png"; }
+
 	void handleMovement(float dt) override;
-	int getTextureOffset() override { return 2; }
 
 	virtual float getSpeed() const override;
 

@@ -16,11 +16,11 @@ void SteeringAdjuster::update(float dt)
 	m_position += m_velocity * dt;
 }
 
-void SteeringAdjuster::draw(sf::RenderTarget& target)
-{
-	sf::RectangleShape shape({ 10.f, 10.f });
-	shape.setOrigin(5.f, 5.f);
-	shape.setPosition(m_position);
-	shape.setFillColor(sf::Color::Blue);
-	target.draw(shape);
-}
+//void SteeringAdjuster::draw(sf::RenderTarget& target)
+//{
+//	sf::RectangleShape shape({ 10.f, 10.f });
+//	shape.setOrigin(5.f, 5.f);
+//	shape.setPosition(m_position);
+//	shape.setFillColor(sf::Color::Blue);
+//	target.draw(shape);
+//}
