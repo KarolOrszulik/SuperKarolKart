@@ -24,6 +24,8 @@ private:
 	Vehicle* m_vehicle = nullptr;
 	ControlScheme m_control;
 	PlayerScreen m_screen;
+
+	friend class PlayerScreen;
 };
 
 enum class Player::ControlScheme

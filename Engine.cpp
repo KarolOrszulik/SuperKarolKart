@@ -69,22 +69,25 @@ void Engine::run()
 		while (m_window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed) m_window.close();
-			else if (event.type == sf::Event::Resized)
-			{
-				sf::Vector2f newSize(m_window.getSize());
-
-				sf::View view(sf::FloatRect({0.0, 0.0}, newSize));
-				m_window.setView(view);
-				m_menus.erase(m_state);
-			}
+			else if (event.type == sf::Event::Resized) resetWindowView();
 			else if(m_menus.contains(m_state)) m_menus[m_state].handleEvent(event);
 		}
+
 		m_window.clear();
 
 		onUpdate(clock.restart().asSeconds()); // reset clock and pass delta time in seconds
 
 		m_window.display();
 	}
+}
+
+void Engine::resetWindowView()
+{
+	sf::Vector2f newSize(m_window.getSize());
+
+	sf::View view(sf::FloatRect({ 0.0, 0.0 }, newSize));
+	m_window.setView(view);
+	m_menus.erase(m_state);
 }
 
 void Engine::onStart()

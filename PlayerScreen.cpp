@@ -1,10 +1,17 @@
 #include "PlayerScreen.h"
 #include "Engine.h"
+#include "UIElementFactory.h"
+#include <cmath>
 
 PlayerScreen::PlayerScreen(int number) : m_number(number)
 {
 	if (number < 0 || number > 3)
 		throw std::invalid_argument("Player number must be in range [0, 3]");
+
+	m_speedStyle.bgColor = sf::Color::Transparent;
+	m_speedStyle.fontColor = sf::Color::White;
+	m_speedStyle.bgColor = sf::Color::Transparent;
+	m_speedStyle.fontOutlineColor = sf::Color::Black;
 }
 
 void PlayerScreen::calculateSizeAndViewport()
@@ -35,13 +42,17 @@ void PlayerScreen::calculateSizeAndViewport()
 		m_viewport.top += 0.5f;
 }
 
-void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, sf::Vector2f center, float angle, float dt)
+
+
+void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, const Player& player, float dt)
 {
 	static float a = 0.f;
-	//a = std::lerp(a, angle, 1 - std::exp(-dt * 5.f));
+	auto center = player.m_vehicle->getPosition();
+	auto angle = player.m_vehicle->getAngle();
 
-	float newsin = std::lerp(std::sin(a), std::sin(angle), 1 - std::exp(-dt * 5.f));
-	float newcos = std::lerp(std::cos(a), std::cos(angle), 1 - std::exp(-dt * 5.f));
+	a = std::lerp(a, angle, 1 - std::exp(-dt * 5.f));
+	float newsin = std::lerp(std::sin(0), std::sin(angle), 1 - std::exp(-dt * 5.f));
+	float newcos = std::lerp(std::cos(0), std::cos(angle), 1 - std::exp(-dt * 5.f));
 	a = std::atan2(newsin, newcos);
 
 	calculateSizeAndViewport();
@@ -50,8 +61,29 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, sf:
 	view.setViewport(m_viewport);
 	view.zoom(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z) ? 0.25f : 0.5f); // to zmieniæ na zale¿ne od prêdkoœci jak ju¿ bêdzie coœ takiego jak prêdkoœæ
 	//view.rotate(angle * 180.f / 3.1415f + 90.f); // sztywna rotacja
-	//view.rotate(a * 180.f / 3.1415f + 90.f); // interpolowana rotacja
+	view.rotate(a * 180.f / 3.1415f + 90.f); // interpolowana rotacja
 	target.setView(view);
-	target.draw(sf::Sprite(source.getTexture()));
-	target.setView(target.getDefaultView());
+	sf::Sprite s(source.getTexture());
+	target.draw(s);
+
+	Engine::getInstance()->resetWindowView();
+
+
+	float vh = target.getSize().y / 100.0f;
+	m_speedStyle.fontOutlineThickness = 1 * vh;
+	float x = (target.getSize().x * (m_viewport.width + m_viewport.left)) * 0.98f;
+	float y = (target.getSize().y * (m_viewport.height + m_viewport.top)) * 0.98f;
+	UIElementFactory factory(m_speedStyle, m_speedStyle, m_speedStyle, 
+		Engine::getInstance()->m_font, 7 * vh);
+	auto speed = std::abs(std::roundf(player.m_vehicle->getSpeed()));
+	auto speedInt = static_cast<int>(speed);
+	auto speedDisp = factory.makeBtn(std::to_string(speedInt) + "km/h", {x,y}, UIElement::Origin::BOT_RIGHT);
+	speedDisp.draw(target, {});
+
+
+}
+
+sf::Vector2f PlayerScreen::calculateSpeedPos()
+{
+	return sf::Vector2f();
 }

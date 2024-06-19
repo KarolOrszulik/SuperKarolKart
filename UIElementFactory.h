@@ -19,7 +19,7 @@ public:
 		const std::string& text,
 		const sf::Vector2f& position,
 		UIElement::Origin origin = UIElement::Origin::TOP_LEFT,
-		bool shrinkToText = false,
+		bool shrinkToText = true,
 		const sf::Vector2f& size = { 0, 0 }) const;
 
 	void setCharacterSize(int size) { m_fontSize = size; };
