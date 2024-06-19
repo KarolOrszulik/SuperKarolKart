@@ -1,6 +1,6 @@
-#include "UIButtonFactory.h"
+#include "UIElementFactory.h"
 
-UIButtonFactory::UIButtonFactory(
+UIElementFactory::UIElementFactory(
 	UIButton::Style normStyle, 
 	UIButton::Style hovStyle, 
 	UIButton::Style selStyle, 
@@ -10,7 +10,7 @@ UIButtonFactory::UIButtonFactory(
 {
 }
 
-UIButton UIButtonFactory::makeBtn(
+UIButton UIElementFactory::makeBtn(
 	const std::string& text, 
 	const sf::Vector2f& position, 
 	UIElement::Origin origin,
@@ -29,7 +29,7 @@ UIButton UIButtonFactory::makeBtn(
 
 #include <iostream>
 
-std::shared_ptr<UIButton> UIButtonFactory::makeBtnPtr(
+std::shared_ptr<UIButton> UIElementFactory::makeBtnPtr(
 	const std::string& text,
 	const sf::Vector2f& position,
 	UIElement::Origin origin,
@@ -47,7 +47,7 @@ std::shared_ptr<UIButton> UIButtonFactory::makeBtnPtr(
 }
 
 
-UIToggleButton UIButtonFactory::makeToggle(
+UIToggleButton UIElementFactory::makeToggle(
 	const std::string& text, 
 	const sf::Vector2f& position, 
 	UIElement::Origin origin,
@@ -65,7 +65,7 @@ UIToggleButton UIButtonFactory::makeToggle(
 }
 
 
-std::shared_ptr<UIToggleButton> UIButtonFactory::makeTogglePtr(
+std::shared_ptr<UIToggleButton> UIElementFactory::makeTogglePtr(
 	const std::string& text, 
 	const sf::Vector2f& position, 
 	UIElement::Origin origin,
@@ -82,7 +82,7 @@ std::shared_ptr<UIToggleButton> UIButtonFactory::makeTogglePtr(
 	return btn;
 }
 
-UITextInput UIButtonFactory::makeTxtInp(
+UITextInput UIElementFactory::makeTxtInp(
 	const std::string& text, 
 	const sf::Vector2f& position, 
 	const std::string& placeholderText,
@@ -108,7 +108,7 @@ UITextInput UIButtonFactory::makeTxtInp(
 	return textInput;
 }
 
-std::shared_ptr<UITextInput> UIButtonFactory::makeTxtInpPtr(
+std::shared_ptr<UITextInput> UIElementFactory::makeTxtInpPtr(
 	const std::string& text, 
 	const sf::Vector2f& position, 
 	const std::string& placeholderText,

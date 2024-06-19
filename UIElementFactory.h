@@ -2,12 +2,13 @@
 
 #include "UIButton.h"
 #include "UIToggleButton.h"
+#include "UIRadioGroup.h"
 #include "UITextInput.h"
 
-class UIButtonFactory
+class UIElementFactory
 {
 public:
-	UIButtonFactory(
+	UIElementFactory(
 		UIButton::Style normalStyle,
 		UIButton::Style hoverStyle,
 		UIButton::Style selectedStyle,

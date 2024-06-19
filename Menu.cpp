@@ -4,7 +4,7 @@ void Menu::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	UIElement::draw(target, states);
 
-	for (auto const& element : elements)
+	for (auto const& element : m_elements)
 	{
 		element->draw(target, getTransform());
 	}
@@ -12,7 +12,7 @@ void Menu::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 void Menu::addElement(std::shared_ptr<UIElement> element)
 {
-	elements.push_back(element);
+	m_elements.push_back(element);
 }
 
 void Menu::handleEvent(sf::Event& event)
@@ -32,7 +32,7 @@ void Menu::handleEvent(sf::Event& event)
 			event.mouseMove.y -= static_cast<int>(getPosition().y);
 		}
 	}
-	for (auto const& element : elements)
+	for (auto const& element : m_elements)
 	{
 		element->handleEvent(event);
 	}
