@@ -12,6 +12,8 @@
 #include "Player.h"
 #include "Menu.h"
 
+#include "AveragingCounter.h"
+
 #include <iostream>
 
 class Engine
@@ -52,6 +54,7 @@ private:
 	void onStart();
 	void onUpdate(float dt);
 
+	AveragingCounter m_fpsCounter;
 	void drawFPS(float dt);
 
 	void setGameState(State state);
