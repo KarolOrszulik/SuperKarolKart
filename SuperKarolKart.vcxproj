@@ -204,8 +204,7 @@
     <ClInclude Include="Vehicle.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="assets\track_01.txt" />
-    <Text Include="assets\track_02.txt" />
+    <Text Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
