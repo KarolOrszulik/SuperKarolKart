@@ -32,11 +32,9 @@ public:
 
 	void init(uint32_t width, uint32_t height, std::string const& title);
 	void run();
-	void resetWindowView();
 
-	// !!!
-	sf::Font m_font;
-	// !!!
+	void resetWindowView();
+	const sf::Font& getFont() const { return m_font; };
 
 private:
 	enum class State
@@ -78,6 +76,8 @@ private:
 
 	sf::RenderWindow m_window;
 	Track m_track;
+
+	sf::Font m_font;
 
 	std::unordered_map<State, Menu> m_menus;
 	std::filesystem::path m_assetsPath;

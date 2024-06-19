@@ -15,6 +15,11 @@ public:
 		const sf::Font& font,
 		int fontSize);
 
+	UIElementFactory(
+		UIButton::Style normalStyle,
+		const sf::Font& font,
+		int fontSize);
+
 	UIButton makeBtn(
 		const std::string& text,
 		const sf::Vector2f& position,

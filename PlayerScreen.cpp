@@ -47,12 +47,16 @@ void PlayerScreen::calculateSizeAndViewport()
 void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, const Player& player, float dt)
 {
 	static float a = 0.f;
-	auto center = player.m_vehicle->getPosition();
-	auto angle = player.m_vehicle->getAngle();
+	const Vehicle& vehicle = *(player.m_vehicle);
+	Engine& engine = *Engine::getInstance();
+	auto center = vehicle.getPosition();
+	auto angle = vehicle.getAngle();
 
-	a = std::lerp(a, angle, 1 - std::exp(-dt * 5.f));
-	float newsin = std::lerp(std::sin(0), std::sin(angle), 1 - std::exp(-dt * 5.f));
-	float newcos = std::lerp(std::cos(0), std::cos(angle), 1 - std::exp(-dt * 5.f));
+
+	float newsin = static_cast<float>(
+		std::lerp(std::sin(a), std::sin(angle), 1 - std::exp(-dt * 5.f)));
+	float newcos = static_cast<float>(
+		std::lerp(std::cos(a), std::cos(angle), 1 - std::exp(-dt * 5.f)));
 	a = std::atan2(newsin, newcos);
 
 	calculateSizeAndViewport();
@@ -63,23 +67,29 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 	//view.rotate(angle * 180.f / 3.1415f + 90.f); // sztywna rotacja
 	view.rotate(a * 180.f / 3.1415f + 90.f); // interpolowana rotacja
 	target.setView(view);
-	sf::Sprite s(source.getTexture());
-	target.draw(s);
+	target.draw(sf::Sprite(source.getTexture()));
 
-	Engine::getInstance()->resetWindowView();
+	engine.resetWindowView();
 
 
 	float vh = target.getSize().y / 100.0f;
-	m_speedStyle.fontOutlineThickness = 1 * vh;
-	float x = (target.getSize().x * (m_viewport.width + m_viewport.left)) * 0.98f;
-	float y = (target.getSize().y * (m_viewport.height + m_viewport.top)) * 0.98f;
-	UIElementFactory factory(m_speedStyle, m_speedStyle, m_speedStyle, 
-		Engine::getInstance()->m_font, 7 * vh);
-	auto speed = std::abs(std::roundf(player.m_vehicle->getSpeed()));
-	auto speedInt = static_cast<int>(speed);
-	auto speedDisp = factory.makeBtn(std::to_string(speedInt) + "km/h", {x,y}, UIElement::Origin::BOT_RIGHT);
-	speedDisp.draw(target, {});
 
+	sf::Vector2f offset = (m_viewport.getSize() + m_viewport.getPosition());
+	sf::Vector2f pos = { offset.x * target.getSize().x, offset.y * target.getSize().y };
+
+	auto speed = std::abs(std::roundf(vehicle.getSpeed()));
+	auto speedInt = static_cast<int>(speed);
+	std::string speedStr = std::to_string(speedInt) + "km/h";
+
+
+	sf::Uint8 whiteLevel = 255 * (1.f - std::min(speed / 200.f, 1.f));
+	m_speedStyle.fontColor = { 255 , whiteLevel, whiteLevel, 255 };
+	m_speedStyle.fontOutlineThickness = 1 * vh;
+
+
+	UIElementFactory factory(m_speedStyle, engine.getFont(), 7 * vh);
+	auto speedDisp = factory.makeBtn(speedStr, pos, UIElement::Origin::BOT_RIGHT);
+	speedDisp.draw(target, {});
 
 }
 

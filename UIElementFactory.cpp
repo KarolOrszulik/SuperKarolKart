@@ -10,6 +10,14 @@ UIElementFactory::UIElementFactory(
 {
 }
 
+UIElementFactory::UIElementFactory(
+	UIButton::Style normStyle,
+	const sf::Font& font,
+	int fontSize)
+	: m_normStyle(normStyle), m_hovStyle(normStyle), m_selStyle(normStyle),
+	m_font(font), m_fontSize(fontSize)
+{}
+
 UIButton UIElementFactory::makeBtn(
 	const std::string& text, 
 	const sf::Vector2f& position, 
@@ -102,7 +110,7 @@ UITextInput UIElementFactory::makeTxtInp(
 		textInput.shrinkSizeToText();
 	
 	if (maxInputLength == -1)
-		textInput.setMaxLength(placeholderText.size());
+		textInput.setMaxLength(static_cast<int>(placeholderText.size()));
 	else
 		textInput.setMaxLength(maxInputLength);
 	return textInput;
@@ -128,7 +136,7 @@ std::shared_ptr<UITextInput> UIElementFactory::makeTxtInpPtr(
 		textInput->shrinkSizeToText();
 
 	if (maxInputLength == -1)
-		textInput->setMaxLength(placeholderText.size());
+		textInput->setMaxLength(static_cast<int>(placeholderText.size()));
 	else
 		textInput->setMaxLength(maxInputLength);
 	return textInput;
