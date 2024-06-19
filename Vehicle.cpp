@@ -66,7 +66,7 @@ void Vehicle::handleGroundItems()
 
 void Vehicle::handleCheckpoints()
 {
-	std::optional<int> checkpointIndex = m_track->getCheckpointIndex(m_position);
+	std::optional<int> checkpointIndex = m_track->getCheckpointIndex(m_position, 8.f);
 	if (checkpointIndex.has_value())
 	{
 		if (checkpointIndex == m_nextCheckpoint)

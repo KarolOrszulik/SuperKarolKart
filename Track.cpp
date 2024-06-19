@@ -42,15 +42,30 @@ sf::Vector2f Track::index2posCenter(size_t idx) const
 }
 
 // TODO: wykorzystaæ radius, ¿eby sprawdzaæ czy gracz jest w okreœlonym checkpointcie
-// bêdzie musia³ zwracaæ zbiór checkpointów, bo jak sprawdza pole to mo¿e byæ w kilku checkpointach na raz
 std::optional<int> Track::getCheckpointIndex(sf::Vector2f pos, float radius) const 
 {
+	float minDistance = std::numeric_limits<float>::max();
+	std::optional<int> closestCheckpoint;
+
 	for (size_t i = 0; i < m_checkpoints.size(); i++)
 	{
-		if (std::ranges::find(m_checkpoints[i], pos2index(pos)) != m_checkpoints[i].end())
-			return i;
+		for (size_t j = 0; j < m_checkpoints[i].size(); j++)
+		{
+			sf::Vector2f checkpointPos = index2posCenter(m_checkpoints[i][j]);
+			float distance = std::hypot(checkpointPos.x - pos.x, checkpointPos.y - pos.y);
+
+			if (distance < minDistance)
+			{
+				minDistance = distance;
+				closestCheckpoint = i;
+			}
+		}
 	}
-	return {};
+
+	if (minDistance < radius)
+		return closestCheckpoint;
+	else
+		return {};
 }
 
 void Track::loadTrack(std::string const& path)
