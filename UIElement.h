@@ -10,41 +10,48 @@ public:
 	UIElement() = default;
 	virtual ~UIElement() = default;
 
-	inline sf::Color getBgColor() const
-		{ return m_background.getFillColor(); };
+	enum class Origin
+	{
+		TOP_LEFT,
+		MID_LEFT,
+		BOT_LEFT,
+		TOP_CENTER,
+		MID_CENTER,
+		BOT_CENTER,
+		TOP_RIGHT,
+		MID_RIGHT,
+		BOT_RIGHT
+	};
 
-	inline sf::Vector2f getSize() const 
-		{ return m_background.getSize(); };
-
-	inline float getWidth() const
-		{ return m_background.getSize().x; };
-
-	inline float getHeight() const
-		{ return m_background.getSize().y; };
+	sf::Color getBgColor() const { return m_background.getFillColor(); };
+	sf::Vector2f getSize() const { return m_background.getSize(); };
+	float getWidth() const { return m_background.getSize().x; };
+	float getHeight() const{ return m_background.getSize().y; };
 	
 
-	inline void setBgColor(const sf::Color& color)
+	void setBgColor(const sf::Color& color)
 		{ m_background.setFillColor(color); };
 
-	inline void setBgOutlineColor(const sf::Color& color)
+	void setBgOutlineColor(const sf::Color& color)
 		{ m_background.setOutlineColor(color); };
 
-	inline void setBgOutlineThickness(float thickness)
+	void setBgOutlineThickness(float thickness)
 		{ m_background.setOutlineThickness(thickness); };
 
-	inline void setSize(sf::Vector2f size)
-		{ m_background.setSize(size); };
-
-	inline void setWidth(float width)
+	void setWidth(float width)
 		{ m_background.setSize(sf::Vector2f{ width, getHeight() }); };
 
-	inline void setHeight(float height)
+	void setHeight(float height)
 		{ m_background.setSize(sf::Vector2f{ getWidth(), height }); };
+
+	void setSize(sf::Vector2f size);
+	void setOrigin(Origin origin);
 
 	bool contains(sf::Vector2f point) const;
 	bool contains(sf::Vector2i point) const;
 
 	void centerHorizontally(float parentWidth);
+
 	void centerVertically(float parentHeight);
 	
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -54,5 +61,6 @@ protected:
 	sf::Vector2i translateRelativeToElement(sf::Vector2i globalPoint) const;
 
 private:
+	Origin m_origin = Origin::TOP_LEFT;
 	sf::RectangleShape m_background;
 };

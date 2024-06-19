@@ -10,9 +10,10 @@ UIButtonFactory::UIButtonFactory(
 {
 }
 
-UIButton UIButtonFactory::createButton(
+UIButton UIButtonFactory::makeBtn(
 	const std::string& text, 
 	const sf::Vector2f& position, 
+	UIElement::Origin origin,
 	bool shrinkToText,
 	const sf::Vector2f& size) const
 {
@@ -20,15 +21,18 @@ UIButton UIButtonFactory::createButton(
 	btn.setText(text);
 	btn.setFont(m_font);
 	btn.setCharacterSize(m_fontSize);
+	btn.setOrigin(origin);
 	btn.setPosition(position);
 	if (shrinkToText) btn.shrinkSizeToText();
 	return btn;
 }
 
+#include <iostream>
 
-std::shared_ptr<UIButton> UIButtonFactory::createButtonPtr(
+std::shared_ptr<UIButton> UIButtonFactory::makeBtnPtr(
 	const std::string& text,
 	const sf::Vector2f& position,
+	UIElement::Origin origin,
 	bool shrinkToText,
 	const sf::Vector2f& size) const
 {
@@ -36,15 +40,17 @@ std::shared_ptr<UIButton> UIButtonFactory::createButtonPtr(
 	btn->setText(text);
 	btn->setFont(m_font);
 	btn->setCharacterSize(m_fontSize);
+	btn->setOrigin(origin);
 	btn->setPosition(position);
 	if (shrinkToText) btn->shrinkSizeToText();
 	return btn;
 }
 
 
-UIToggleButton UIButtonFactory::createToggleButton(
+UIToggleButton UIButtonFactory::makeToggle(
 	const std::string& text, 
 	const sf::Vector2f& position, 
+	UIElement::Origin origin,
 	bool shrinkToText,
 	const sf::Vector2f& size) const
 {
@@ -52,15 +58,17 @@ UIToggleButton UIButtonFactory::createToggleButton(
 	btn.setText(text);
 	btn.setFont(m_font);
 	btn.setCharacterSize(m_fontSize);
+	btn.setOrigin(origin);
 	btn.setPosition(position);
 	if (shrinkToText) btn.shrinkSizeToText();
 	return btn;
 }
 
 
-std::shared_ptr<UIToggleButton> UIButtonFactory::createToggleButtonPtr(
+std::shared_ptr<UIToggleButton> UIButtonFactory::makeTogglePtr(
 	const std::string& text, 
 	const sf::Vector2f& position, 
+	UIElement::Origin origin,
 	bool shrinkToText, 
 	const sf::Vector2f& size) const
 {
@@ -68,16 +76,18 @@ std::shared_ptr<UIToggleButton> UIButtonFactory::createToggleButtonPtr(
 	btn->setText(text);
 	btn->setFont(m_font);
 	btn->setCharacterSize(m_fontSize);
+	btn->setOrigin(origin);
 	btn->setPosition(position);
 	if (shrinkToText) btn->shrinkSizeToText();
 	return btn;
 }
 
-UITextInput UIButtonFactory::createTextInput(
+UITextInput UIButtonFactory::makeTxtInp(
 	const std::string& text, 
 	const sf::Vector2f& position, 
 	const std::string& placeholderText,
 	int maxInputLength,
+	UIElement::Origin origin,
 	bool shrinkToText, 
 	const sf::Vector2f& size) const
 {
@@ -86,6 +96,7 @@ UITextInput UIButtonFactory::createTextInput(
 	textInput.setFont(m_font);
 	textInput.setCharacterSize(m_fontSize);
 	textInput.setPlaceHolder(placeholderText);
+	textInput.setOrigin(origin);
 	textInput.setPosition(position);
 	if (shrinkToText) 
 		textInput.shrinkSizeToText();
@@ -97,11 +108,12 @@ UITextInput UIButtonFactory::createTextInput(
 	return textInput;
 }
 
-std::shared_ptr<UITextInput> UIButtonFactory::createTextInputPtr(
+std::shared_ptr<UITextInput> UIButtonFactory::makeTxtInpPtr(
 	const std::string& text, 
 	const sf::Vector2f& position, 
 	const std::string& placeholderText,
 	int maxInputLength,
+	UIElement::Origin origin,
 	bool shrinkToText, 
 	const sf::Vector2f& size) const
 {
@@ -110,6 +122,7 @@ std::shared_ptr<UITextInput> UIButtonFactory::createTextInputPtr(
 	textInput->setFont(m_font);
 	textInput->setCharacterSize(m_fontSize);
 	textInput->setPlaceHolder(placeholderText);
+	textInput->setOrigin(origin);
 	textInput->setPosition(position);
 	if (shrinkToText) 
 		textInput->shrinkSizeToText();
