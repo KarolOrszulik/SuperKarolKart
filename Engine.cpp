@@ -175,20 +175,20 @@ void Engine::stateMainMenu(float dt)
 		menu.setSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
 
 		// <---- Title ---->
-		auto title = textFactory.createButtonPtr("Super Karol Kart", { 0, 5.0_vh });
+		auto title = textFactory.makeBtnPtr("Super Karol Kart", { 0, 5.0_vh });
 		title->centerHorizontally(menu.getWidth());
 
 		menu.addElement(title);
 
 		// <---- Start Button ---->
-		auto btnPlay = btnFactory.createButtonPtr("PLAY", { 0, 35.0_vh });
+		auto btnPlay = btnFactory.makeBtnPtr("PLAY", { 0, 35.0_vh });
 		btnPlay->centerHorizontally(menu.getWidth());
 		btnPlay->onRelease = [this]() { setGameState(State::SETUP_MENU); };
 
 		menu.addElement(btnPlay);
 
 		// <---- Exit Button ---->
-		auto btnExit = btnFactory.createButtonPtr("EXIT", { 0, 60.0_vh });
+		auto btnExit = btnFactory.makeBtnPtr("EXIT", { 0, 60.0_vh });
 		btnExit->centerHorizontally(menu.getWidth());
 		btnExit->onRelease = [this]() { m_window.close(); };
 
@@ -220,7 +220,7 @@ void Engine::stateSetup(float dt)
 		UIButtonFactory btnFactory(normStyle, hovStyle, selStyle, m_font, 5_vh);
 		
 		// <---- Title ---->
-		auto title = textFactory.createButtonPtr("Super Karol Kart", { 0, 5.0_vh });
+		auto title = textFactory.makeBtnPtr("Super Karol Kart", { 0, 5.0_vh });
 		title->centerHorizontally(menu.getWidth());
 		menu.addElement(title);
 
@@ -228,23 +228,23 @@ void Engine::stateSetup(float dt)
 		auto playerNumSelect = std::make_shared<UIRadioGroup>();
 		
 		std::vector<std::shared_ptr<UIToggleButton>> playerNumBtns{
-			btnFactory.createToggleButtonPtr("1 Player", { 5.0_vw, 30.0_vh }),
-			btnFactory.createToggleButtonPtr("2 Players", { 5.0_vw, 45.0_vh }),
-			btnFactory.createToggleButtonPtr("3 Players", { 5.0_vw, 60.0_vh }),
-			btnFactory.createToggleButtonPtr("4 Players", { 5.0_vw, 75.0_vh })
+			btnFactory.makeTogglePtr("1 Player", { 5.0_vw, 30.0_vh }),
+			btnFactory.makeTogglePtr("2 Players", { 5.0_vw, 45.0_vh }),
+			btnFactory.makeTogglePtr("3 Players", { 5.0_vw, 60.0_vh }),
+			btnFactory.makeTogglePtr("4 Players", { 5.0_vw, 75.0_vh })
 		};
+		
+		playerNumBtns[0]->setOnSelected([this]() { gameSettings.numPlayers = 1; });
+		playerNumBtns[1]->setOnSelected([this]() { gameSettings.numPlayers = 2; });
+		playerNumBtns[2]->setOnSelected([this]() { gameSettings.numPlayers = 3; });
+		playerNumBtns[3]->setOnSelected([this]() { gameSettings.numPlayers = 4; });
 
-		for (int i = 0; i < playerNumBtns.size(); i++)
-		{
-			auto btn = playerNumBtns[i];
-			btn->setOnSelected([this, i]() { gameSettings.numPlayers = i + 1;});
-			playerNumSelect->addElement(btn);
-		}
+		playerNumSelect->addElements(playerNumBtns);
 
 		menu.addElement(playerNumSelect);
 
 		// <---- Start Button ---->
-		auto btnGO = btnFactory.createButtonPtr("START!", { 0, 90.0_vh });
+		auto btnGO = btnFactory.makeBtnPtr("START!", { 0, 90.0_vh });
 		btnGO->centerHorizontally(menu.getWidth());
 		btnGO->onRelease = [this]() {
 			if (gameSettings.numPlayers > 0) {
@@ -283,20 +283,18 @@ void Engine::stateVehicleMenu(float dt)
 
 
 		// <---- Button factory ---->
-
 		UIButtonFactory txtFactory(normStyle, normStyle, normStyle, m_font, 15_vh);
 		UIButtonFactory btnFactory(normStyle, hovStyle, selStyle, m_font, 5_vh);
 		UIButtonFactory inpFactory(inpTxtNorm, inpTxtHov, inpTxtSel, m_font, 5_vh);
 
 		// <---- Title ---->
-		auto title = txtFactory.createButtonPtr("Super Karol Kart", { 0, 5.0_vh });
+		auto title = txtFactory.makeBtnPtr("Super Karol Kart", { 0, 5._vh });
 		title->centerHorizontally(menu.getWidth());
 		menu.addElement(title);
 
 		// <---- Player Number Selection ---->
 
 		txtFactory.setCharacterSize(5_vh);
-		std::vector<std::string> vehicleNames { "Kart", "Motorcycle", "Hovercraft" };
 		for (int i = 0; i < gameSettings.numPlayers; i++)
 		{
 			// preparing radio group
@@ -304,27 +302,27 @@ void Engine::stateVehicleMenu(float dt)
 
 			// preparing button info
 			std::string playerName = "Player " + std::to_string(i + 1) + ":";
-			float columnPosition = 3.0_vw + 24.0_vw * i;
+			float columnPosition = 3._vw + 24._vw * i;
 
 			// creating toggle button for vehicle
-			auto playerDesc = txtFactory.createButtonPtr(playerName, { columnPosition, 30.0_vh });
+			auto playerDesc = txtFactory.makeBtnPtr(playerName, { columnPosition, 30._vh });
 			menu.addElement(playerDesc);
 
-			// adding buttons for each vehicle
-			for (int j = 0; j < vehicleNames.size(); j++)
-			{
-				// prepare button
-				const float rowPosition = 45.0_vh + 8.0_vh * j;
-				auto btn = btnFactory.createToggleButtonPtr(vehicleNames[j], { columnPosition, rowPosition });
-				btn->setOnSelected([this, i, j]() { gameSettings.vehicle[i] = j + 1; });
+			std::vector<std::shared_ptr<UIToggleButton>> vehicleBtns = {
+				btnFactory.makeTogglePtr("Kart", { columnPosition, 45.0_vh }),
+				btnFactory.makeTogglePtr("Motorcycle", { columnPosition, 53.0_vh }),
+				btnFactory.makeTogglePtr("Hovercraft", { columnPosition, 61.0_vh })
+			};
 
-				// add button to radio group
-				vehicleSelect->addElement(btn);
-			}
+			vehicleBtns[0]->setOnSelected([this, i]() { gameSettings.vehicle[i] = 1; });
+			vehicleBtns[1]->setOnSelected([this, i]() { gameSettings.vehicle[i] = 2; });
+			vehicleBtns[2]->setOnSelected([this, i]() { gameSettings.vehicle[i] = 3; });
+			vehicleSelect->addElements(vehicleBtns);
+
 			menu.addElement(vehicleSelect);
 
 			// adding text input for player name
-			auto textInput = inpFactory.createTextInputPtr("",{ columnPosition, 75._vh }, "ENTER NAME", 9);
+			auto textInput = inpFactory.makeTxtInpPtr("",{ columnPosition, 75._vh }, "ENTER NAME", 9);
 			textInput->onTextEntered = [this, i](std::string const& text) {
 				gameSettings.playerNames[i] = text;
 			};
@@ -336,7 +334,8 @@ void Engine::stateVehicleMenu(float dt)
 		btnFactory.setCharacterSize(7_vh);
 
 		// <---- Start Button ---->
-		auto btnGO = btnFactory.createButtonPtr("START!", { 80.0_vw, 90.0_vh });
+		auto btnGO = btnFactory.makeBtnPtr("START!", 
+			{ 90._vw, 90._vh }, UIElement::Origin::TOP_RIGHT);
 		btnGO->onRelease = [this]() {
 			bool vehiclesSelected = true;
 			for (int i = 0; i < gameSettings.numPlayers; i++)
@@ -348,7 +347,7 @@ void Engine::stateVehicleMenu(float dt)
 		menu.addElement(btnGO);
 
 		// <---- Start Button ---->
-		auto btnBack = btnFactory.createButtonPtr("BACK", { 10.0_vw, 90.0_vh });
+		auto btnBack = btnFactory.makeBtnPtr("BACK", { 10.0_vw, 90.0_vh });
 		btnBack->onRelease = [this]() { setGameState(State::SETUP_MENU); };
 		menu.addElement(btnBack);
 	}

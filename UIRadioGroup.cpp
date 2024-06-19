@@ -39,6 +39,14 @@ void UIRadioGroup::addElement(std::shared_ptr<UIToggleButton> element)
 	m_elements.push_back(element);
 }
 
+void UIRadioGroup::addElements(std::vector<std::shared_ptr<UIToggleButton>> elements)
+{
+	for (auto& e : elements)
+	{
+		m_elements.push_back(e);
+	}
+}
+
 void UIRadioGroup::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	for (auto& e : m_elements)

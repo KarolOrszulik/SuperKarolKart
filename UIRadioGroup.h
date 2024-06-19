@@ -13,7 +13,7 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void handleEvent(sf::Event& event) override;
 	void addElement(std::shared_ptr<UIToggleButton> element);
-
+	void addElements(std::vector<std::shared_ptr<UIToggleButton>> elements);
 	//void setActiveElement(int idx);
 
 private:
