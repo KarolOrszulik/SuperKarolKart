@@ -7,9 +7,6 @@ float Hovercraft::getSpeed() const
 
 void Hovercraft::handleMovement(float dt)
 {
-	constexpr float MAX_SPEED = 500.f; // speed at which the hovercraft stops accelerating
-	constexpr float MAX_ANGULAR_VELOCITY = 150.f / 180.f * 3.1415f;
-
 	sf::Vector2f force;
 
 	if (std::abs(m_input.accelerator) < 0.01f)
@@ -20,7 +17,7 @@ void Hovercraft::handleMovement(float dt)
 	else
 	{
 		float speed = std::sqrt(m_velocity.x * m_velocity.x + m_velocity.y * m_velocity.y);
-		float acceleration = 180.f * m_input.accelerator * (1.f - speed / MAX_SPEED);
+		float acceleration = 180.f * m_input.accelerator * (1.f - speed / m_MAX_SPEED);
 		m_velocity += getUnitVector() * acceleration * dt;
 	}
 
@@ -33,8 +30,8 @@ void Hovercraft::handleMovement(float dt)
 	}
 	else
 	{
-		m_angularVelocity = m_input.steering * MAX_ANGULAR_VELOCITY; // don't bother with lerping or smoothing
-		m_angularVelocity = std::clamp(m_angularVelocity, -MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
+		m_angularVelocity = m_input.steering * m_MAX_ANGULAR_VELOCITY; // don't bother with lerping or smoothing
+		m_angularVelocity = std::clamp(m_angularVelocity, -m_MAX_ANGULAR_VELOCITY, m_MAX_ANGULAR_VELOCITY);
 	}
 
 	m_angle += m_angularVelocity * dt;

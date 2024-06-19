@@ -10,6 +10,7 @@
 #include "UIRadioGroup.h"
 #include "UITextInput.h"
 #include "UIElementFactory.h"
+#include "UIImage.h"
 
 #include "Kart.h"
 #include "Motorcycle.h"
@@ -194,6 +195,10 @@ void Engine::stateMainMenu(float dt)
 		hovStyle.fontColor  =	{ 255, 200,   0, 255 };
 		selStyle.fontColor  =	{ 255,   0,   0, 255 };
 
+		auto image = std::make_shared<UIImage>(normStyle, getTexture("bowling"));
+		image->setSize({ 10._vh, 10._vh });
+		image->expandImageToSize();
+
 		UIElementFactory textFactory(normStyle, normStyle, normStyle, getFont("SKK"), 15_vh);
 		UIElementFactory btnFactory(normStyle, hovStyle, selStyle, getFont("SKK"), 10_vh);
 
@@ -206,6 +211,7 @@ void Engine::stateMainMenu(float dt)
 		title->centerHorizontally(menu.getWidth());
 
 		menu.addElement(title);
+		menu.addElement(image);
 
 		// <---- Start Button ---->
 		auto btnPlay = btnFactory.makeBtnPtr("PLAY", { 0, 35.0_vh });

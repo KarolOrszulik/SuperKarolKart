@@ -26,6 +26,7 @@ public:
 	sf::Vector2f getUnitVector() const { return { std::cos(m_angle), std::sin(m_angle) }; }
 
 	virtual float getSpeed() const = 0;
+	virtual float getMaxSpeed() const = 0;
 
 	void update(float dt);
 	void draw(sf::RenderTarget& window) override;

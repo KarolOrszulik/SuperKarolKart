@@ -170,6 +170,7 @@
     <ClCompile Include="UIButton.cpp" />
     <ClCompile Include="UIElementFactory.cpp" />
     <ClCompile Include="UIElement.cpp" />
+    <ClCompile Include="UIImage.cpp" />
     <ClCompile Include="UIRadioGroup.cpp" />
     <ClCompile Include="UITextInput.cpp" />
     <ClCompile Include="UIToggleButton.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="UIButton.h" />
     <ClInclude Include="UIElementFactory.h" />
     <ClInclude Include="UIElement.h" />
+    <ClInclude Include="UIImage.h" />
     <ClInclude Include="UIRadioGroup.h" />
     <ClInclude Include="UITextInput.h" />
     <ClInclude Include="UIToggleButton.h" />

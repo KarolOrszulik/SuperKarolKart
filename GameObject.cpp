@@ -1,6 +1,13 @@
 #include "GameObject.h"
 
 
+sf::Uint8 GameObject::checkboard[] = {
+	0,  0,   0, 255,
+	128,  0, 128, 255,
+	128,  0, 128, 255,
+	0,  0,  0,  255
+};
+
 GameObject::GameObject(sf::Vector2f position)
 	: m_position(position)
 {
@@ -8,41 +15,27 @@ GameObject::GameObject(sf::Vector2f position)
 
 void GameObject::draw(sf::RenderTarget& target)
 {
-	const sf::Texture& texture = getTexture();
-	sf::Sprite sprite(getTexture());
-	sprite.setPosition(m_position);
-	sprite.setOrigin(sf::Vector2f(texture.getSize()) / 2.f);
-	target.draw(sprite);
+	m_sprite.setPosition(m_position);
+	target.draw(m_sprite);
 }
 
 void GameObject::assignTexture(const sf::Texture& texture)
 {
-	m_texture = texture;
+	getTexture();
+	m_sprite.setTexture(texture);
+	m_sprite.setOrigin(sf::Vector2f(texture.getSize()) / 2.f);
 }
 
 const sf::Texture& GameObject::getTexture()
 {
-	if (!m_texture.has_value())
+	if (m_sprite.getTexture())
 	{
-		m_texture.emplace();
-		auto& texture = m_texture.value();
-		sf::Uint8 checkboard[] = {
-			  0,  0,   0, 255,
-			128,  0, 128, 255,
-			128,  0, 128, 255,
-			  0,  0,  0,  255
-		};
-
 		sf::Image img;
 		img.create(2, 2, checkboard);
+		
+		sf::Texture texture;
 		texture.loadFromImage(img);
 		texture.setRepeated(true);
 	}
-	else
-	{
-		auto& texture = m_texture.value();
-		texture = m_texture.value();
-		texture.setRepeated(false);
-	}
-	return m_texture.value();
+	return *m_sprite.getTexture();
 }

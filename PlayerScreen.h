@@ -23,4 +23,7 @@ private:
 	UIButton::Style m_speedStyle;
 	float m_screenAngle = 0.f;
 	AveragingCounter m_speedCounter;
+
+	const float m_zoomingOffCooldown = 2.f;
+	float m_zoomingTimer = 0.f;
 };

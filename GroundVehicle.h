@@ -11,6 +11,7 @@ protected:
 	void handleMovement(float dt) override;
 
 	virtual float getSpeed() const { return m_speed; }
+	virtual float getMaxSpeed() const { return getDrivingParameters().maxSpeedRoad; };
 
 	struct DrivingParameters
 	{
@@ -26,7 +27,7 @@ protected:
 		float braking				= 0.f;
 	};
 
-	virtual DrivingParameters getDrivingParameters() = 0;
+	virtual DrivingParameters getDrivingParameters() const = 0;
 
 	float m_acceleration = 0.f;
 	float m_speed = 0.f;

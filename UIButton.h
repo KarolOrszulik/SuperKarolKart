@@ -57,7 +57,7 @@ public:
 	void handleEvent(sf::Event& event);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	virtual void shrinkSizeToText();
-	void applyPadding(unsigned padding);
+	virtual void applyPadding(unsigned padding);
 
 	// TODO add setters and getters
 	std::function<void()> onClick;

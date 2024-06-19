@@ -25,7 +25,8 @@ protected:
 	float m_angle = 0.0f;
 
 private:
-	std::optional<sf::Texture> m_texture;
-	bool m_textureLoaded = false;
+	sf::Sprite m_sprite;
+
+	static sf::Uint8 checkboard[];
 };
 

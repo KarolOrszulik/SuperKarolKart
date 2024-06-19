@@ -10,7 +10,7 @@ public:
 private:
 	void handleMovement(float dt) override;
 
-	GroundVehicle::DrivingParameters getDrivingParameters() override
+	GroundVehicle::DrivingParameters getDrivingParameters() const override
 	{
 		return GroundVehicle::DrivingParameters{
 			.wheelbase = 10.f,
