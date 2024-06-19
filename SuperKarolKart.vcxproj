@@ -163,6 +163,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerScreen.cpp" />
     <ClCompile Include="PowerUp.cpp" />
+    <ClCompile Include="AveragingCounter.cpp" />
     <ClCompile Include="SpeedAdjuster.cpp" />
     <ClCompile Include="SteeringAdjuster.cpp" />
     <ClCompile Include="Track.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerScreen.h" />
     <ClInclude Include="PowerUp.h" />
+    <ClInclude Include="AveragingCounter.h" />
     <ClInclude Include="SpeedAdjuster.h" />
     <ClInclude Include="SteeringAdjuster.h" />
     <ClInclude Include="Track.h" />

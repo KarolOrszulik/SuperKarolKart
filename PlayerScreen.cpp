@@ -46,14 +46,12 @@ void PlayerScreen::calculateSizeAndViewport()
 
 void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, const Player& player, float dt)
 {
-	static float a = 0.f;
 	auto center = player.m_vehicle->getPosition();
 	auto angle = player.m_vehicle->getAngle();
 
-	a = std::lerp(a, angle, 1 - std::exp(-dt * 5.f));
-	float newsin = std::lerp(std::sin(0), std::sin(angle), 1 - std::exp(-dt * 5.f));
-	float newcos = std::lerp(std::cos(0), std::cos(angle), 1 - std::exp(-dt * 5.f));
-	a = std::atan2(newsin, newcos);
+	float newsin = std::lerp(std::sin(m_screenAngle), std::sin(angle), 1 - std::exp(-dt * 5.f));
+	float newcos = std::lerp(std::cos(m_screenAngle), std::cos(angle), 1 - std::exp(-dt * 5.f));
+	m_screenAngle = std::atan2(newsin, newcos);
 
 	calculateSizeAndViewport();
 
@@ -61,7 +59,7 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 	view.setViewport(m_viewport);
 	view.zoom(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z) ? 0.25f : 0.5f); // to zmieniæ na zale¿ne od prêdkoœci jak ju¿ bêdzie coœ takiego jak prêdkoœæ
 	//view.rotate(angle * 180.f / 3.1415f + 90.f); // sztywna rotacja
-	view.rotate(a * 180.f / 3.1415f + 90.f); // interpolowana rotacja
+	view.rotate(m_screenAngle * 180.f / 3.1415f + 90.f); // interpolowana rotacja
 	target.setView(view);
 	sf::Sprite s(source.getTexture());
 	target.draw(s);

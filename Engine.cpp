@@ -426,28 +426,15 @@ void Engine::stateResults(float dt)
 	m_state = State::MAIN_MENU;
 }
 
+
 void Engine::drawFPS(float dt)
 {
-	constexpr float UPDATE_INTERVAL = 0.5f;
+	m_fpsCounter.update(dt, 1.f / dt);
 
-	static float totalTime = 0.f;
-	static int   frames   = 0;
-	static sf::Text text("...", m_font, 24);
-	// Tyle statycznych zmiennych, ¿e to w zasadzie powinna byæ klasa. Ale w specyfikacji nie ma takiej klasy, wiêc trudno.
-
+	std::string fps = std::to_string((int)m_fpsCounter.getValue()) + " FPS";
+	sf::Text text(fps, m_font, 24);
 	text.setFillColor(sf::Color::White);
 	text.setOutlineColor(sf::Color::Black);
 	text.setOutlineThickness(2);
-
 	m_window.draw(text);
-
-	totalTime += dt;
-	frames++;
-
-	if (totalTime < UPDATE_INTERVAL) return;
-
-	text.setString("FPS: " + std::to_string(static_cast<int>(frames / totalTime)));
-
-	totalTime = 0.f;
-	frames = 0;
 }
