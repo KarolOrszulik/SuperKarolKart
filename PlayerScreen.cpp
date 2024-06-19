@@ -46,7 +46,6 @@ void PlayerScreen::calculateSizeAndViewport()
 
 void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, const Player& player, float dt)
 {
-	static float a = 0.f;
 	const Vehicle& vehicle = *(player.m_vehicle);
 	Engine& engine = *Engine::getInstance();
 	auto center = vehicle.getPosition();
@@ -54,10 +53,10 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 
 
 	float newsin = static_cast<float>(
-		std::lerp(std::sin(a), std::sin(angle), 1 - std::exp(-dt * 5.f)));
+		std::lerp(std::sin(m_screenAngle), std::sin(angle), 1 - std::exp(-dt * 5.f)));
 	float newcos = static_cast<float>(
-		std::lerp(std::cos(a), std::cos(angle), 1 - std::exp(-dt * 5.f)));
-	a = std::atan2(newsin, newcos);
+		std::lerp(std::cos(m_screenAngle), std::cos(angle), 1 - std::exp(-dt * 5.f)));
+	m_screenAngle = std::atan2(newsin, newcos);
 
 	calculateSizeAndViewport();
 

@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "UIButton.h"
+#include "AveragingCounter.h"
 
 class Player;
 
