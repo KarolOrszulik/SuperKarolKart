@@ -14,6 +14,8 @@ public:
 	void notifyObjectDeleted();
 
 private:
+	std::filesystem::path getTexturePath() const override { return "assets/notexture.png"; }
+
 	static constexpr float SPAWN_INTERVAL = 3.0f;
 
 	const std::unique_ptr<GroundItem> m_prototype;

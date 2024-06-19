@@ -40,6 +40,8 @@ public:
 	};
 protected:
 
+	//virtual std::filesystem::path getTexturePath() const;
+
 	virtual void handleMovement(float dt) = 0;
 	void handleCheckpoints();				//
 	void handleGroundItems();				//
@@ -65,8 +67,5 @@ protected:
 	float m_timeToClearSteeringMultiplier = 0.0f;
 
 	std::unique_ptr<PowerUp> m_powerUp;
-
-	sf::Texture m_texture;
-	virtual int getTextureOffset() = 0;
 };
 

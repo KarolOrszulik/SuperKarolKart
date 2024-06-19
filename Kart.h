@@ -8,8 +8,9 @@ public:
 	using GroundVehicle::GroundVehicle;
 
 private:
+	std::filesystem::path getTexturePath() const override { return "assets/vehicles/kart.png"; }
+
 	void handleMovement(float dt) override;
-	int getTextureOffset() override { return 0; }
 
 	GroundVehicle::DrivingParameters getDrivingParameters() override
 	{

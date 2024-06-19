@@ -2,14 +2,15 @@
 
 #include "GroundVehicle.h"
 
-class Motorcycle :  public GroundVehicle
+class Motorcycle : public GroundVehicle
 {
 public:
 	using GroundVehicle::GroundVehicle;
 
 private:
+	std::filesystem::path getTexturePath() const override { return "assets/vehicles/motorcycle.png"; }
+
 	void handleMovement(float dt) override;
-	int getTextureOffset() override { return 1; }
 
 	GroundVehicle::DrivingParameters getDrivingParameters() override
 	{

@@ -9,7 +9,6 @@ public:
 
 protected:
 	void handleMovement(float dt) override;
-	virtual int getTextureOffset() = 0;
 
 	virtual float getSpeed() const { return m_speed; }
 

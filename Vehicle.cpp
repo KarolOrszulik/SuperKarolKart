@@ -5,9 +5,14 @@
 #include <iostream>
 
 Vehicle::Vehicle(Track* track, sf::Vector2f position)
-	: GameObject(position) , m_track(track)
+	: GameObject(position), m_track(track)
 {
-	m_texture.loadFromFile("assets/vehicle_tileset.png");
+	std::string texturePath = getTexturePath().string();
+	if (!m_texture.loadFromFile(texturePath))
+	{
+		std::cerr << "Failed to load texture " << getTexturePath() << ", using notexture.png\n";
+		m_texture.loadFromFile("assets/notexture.png");
+	}
 }
 
 void Vehicle::setSpeedMultiplier(float speedMultiplier, float time)
@@ -112,6 +117,5 @@ void Vehicle::draw(sf::RenderTarget& window)
 	sprite.setPosition(m_position);
 	sprite.setOrigin(gridSizeF / 2.f, gridSizeF / 2.f);
 	sprite.setRotation(m_angle * 180.f / 3.14f + 90.f);
-	sprite.setTextureRect(sf::IntRect(getTextureOffset() * gridSize, 0, gridSize, gridSize));
 	window.draw(sprite);
 }
