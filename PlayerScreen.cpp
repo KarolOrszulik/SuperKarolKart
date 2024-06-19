@@ -65,7 +65,7 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 	view.setViewport(m_viewport);
 	view.zoom(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z) ? 0.25f : 0.5f); // to zmieniæ na zale¿ne od prêdkoœci jak ju¿ bêdzie coœ takiego jak prêdkoœæ
 	//view.rotate(angle * 180.f / 3.1415f + 90.f); // sztywna rotacja
-	view.rotate(m_screenAngle * 180.f / 3.1415f + 90.f); // interpolowana rotacja
+	//view.rotate(m_screenAngle * 180.f / 3.1415f + 90.f); // interpolowana rotacja
 	target.setView(view);
 	target.draw(sf::Sprite(source.getTexture()));
 

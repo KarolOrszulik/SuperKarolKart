@@ -1,0 +1,3 @@
+Dodaæ wyœwietlanie trzymanego itemu
+Dorobiæ resztê torów
+Dorobiæ mo¿liwoœæ wyboru toru
