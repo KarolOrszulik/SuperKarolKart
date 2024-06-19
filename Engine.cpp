@@ -381,6 +381,10 @@ void Engine::stateRace(float dt)
 	}
 	m_world.display(); // finalize drawing the world
 
+	// add objects from m_objectsToAdd to m_objects
+	for (auto& obj : m_objectsToAdd)
+		m_objects.emplace(std::move(obj));
+	m_objectsToAdd.clear();
 
 	// remove objects from m_objects which are in m_objectsToRemove
 	for (auto& obj : m_objectsToRemove)
