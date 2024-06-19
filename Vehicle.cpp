@@ -6,14 +6,7 @@
 
 Vehicle::Vehicle(Track* track, sf::Vector2f position)
 	: GameObject(position), m_track(track)
-{
-	std::string texturePath = getTexturePath().string();
-	if (!m_texture.loadFromFile(texturePath))
-	{
-		std::cerr << "Failed to load texture " << getTexturePath() << ", using notexture.png\n";
-		m_texture.loadFromFile("assets/notexture.png");
-	}
-}
+{}
 
 void Vehicle::setSpeedMultiplier(float speedMultiplier, float time)
 {
@@ -110,6 +103,20 @@ void Vehicle::update(float dt)
 
 void Vehicle::draw(sf::RenderTarget& window)
 {
+	if (!m_textureLoaded)
+	{
+		m_textureLoaded = m_texture.loadFromFile(getTexturePath().string());
+
+		if (!m_textureLoaded)
+		{
+			m_textureLoaded = m_texture.loadFromFile("assets/notexture.png");
+		}
+		if (!m_textureLoaded)
+		{
+			throw std::runtime_error("Failed to load texture for Vehicle"); // TODO: to jest identyczny kod co w GameObject.cpp, mo¿na by go przenieœæ do jakiejœ funkcji
+		}
+	}
+
 	const unsigned gridSize  = m_track->getGridSize();
 	const float    gridSizeF = m_track->getGridSizeF();
 

@@ -40,7 +40,7 @@ public:
 	};
 protected:
 
-	//virtual std::filesystem::path getTexturePath() const;
+	virtual std::filesystem::path getTexturePath() const override = 0;
 
 	virtual void handleMovement(float dt) = 0;
 	void handleCheckpoints();				//

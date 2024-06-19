@@ -19,7 +19,7 @@ public:
 
 protected:
 	sf::Vector2f m_position;
-	virtual std::filesystem::path getTexturePath() const { return "assets/notexture.png"; };
+	virtual std::filesystem::path getTexturePath() const = 0; 
 
 //private:
 	sf::Texture m_texture;
