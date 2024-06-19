@@ -105,16 +105,7 @@ void Vehicle::draw(sf::RenderTarget& window)
 {
 	if (!m_textureLoaded)
 	{
-		m_textureLoaded = m_texture.loadFromFile(getTexturePath().string());
-
-		if (!m_textureLoaded)
-		{
-			m_textureLoaded = m_texture.loadFromFile("assets/notexture.png");
-		}
-		if (!m_textureLoaded)
-		{
-			throw std::runtime_error("Failed to load texture for Vehicle"); // TODO: to jest identyczny kod co w GameObject.cpp, mo¿na by go przenieœæ do jakiejœ funkcji
-		}
+		m_textureLoaded = GameObject::loadTextureWithFallback(m_texture, getTexturePath());
 	}
 
 	const unsigned gridSize  = m_track->getGridSize();

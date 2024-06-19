@@ -5,8 +5,8 @@
 class SpeedAdjuster : public GroundItem
 {
 public:
-	SpeedAdjuster(float speedMultiplier = 2.0, sf::Vector2f velocity = {0.f, 0.f}, bool singleUse = true)
-		: m_speedMultiplier(speedMultiplier), m_velocity(velocity), m_singleUse(singleUse) {}
+	SpeedAdjuster(std::filesystem::path texturePath, float speedMultiplier = 2.0, sf::Vector2f velocity = {0.f, 0.f}, bool singleUse = true)
+		: m_texturePath(texturePath), m_speedMultiplier(speedMultiplier), m_velocity(velocity), m_singleUse(singleUse) {}
 
 	void interactWithVehicle(Vehicle&) override;
 	void update(float dt) override;
