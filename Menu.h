@@ -11,6 +11,6 @@ public:
 	void addElement(std::shared_ptr<UIElement> element);
 
 private:
-	std::vector<std::shared_ptr<UIElement>> elements;
+	std::vector<std::shared_ptr<UIElement>> m_elements;
 };
 

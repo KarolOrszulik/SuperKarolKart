@@ -9,7 +9,7 @@
 #include "UIToggleButton.h"
 #include "UIRadioGroup.h"
 #include "UITextInput.h"
-#include "UIButtonFactory.h"
+#include "UIElementFactory.h"
 
 #include "Kart.h"
 #include "Motorcycle.h"
@@ -167,8 +167,8 @@ void Engine::stateMainMenu(float dt)
 		hovStyle.fontColor  =	{ 255, 200,   0, 255 };
 		selStyle.fontColor  =	{ 255,   0,   0, 255 };
 
-		UIButtonFactory textFactory(normStyle, normStyle, normStyle, m_font, 15_vh);
-		UIButtonFactory btnFactory(normStyle, hovStyle, selStyle, m_font, 10_vh);
+		UIElementFactory textFactory(normStyle, normStyle, normStyle, m_font, 15_vh);
+		UIElementFactory btnFactory(normStyle, hovStyle, selStyle, m_font, 10_vh);
 
 		Menu& menu = m_menus[State::MAIN_MENU];
 		menu.setBgColor({ 20,170,150,255 });
@@ -216,8 +216,8 @@ void Engine::stateSetup(float dt)
 
 		// <---- Button factory ---->
 
-		UIButtonFactory textFactory(normStyle, normStyle, normStyle, m_font, 15_vh);
-		UIButtonFactory btnFactory(normStyle, hovStyle, selStyle, m_font, 5_vh);
+		UIElementFactory textFactory(normStyle, normStyle, normStyle, m_font, 15_vh);
+		UIElementFactory btnFactory(normStyle, hovStyle, selStyle, m_font, 5_vh);
 		
 		// <---- Title ---->
 		auto title = textFactory.makeBtnPtr("Super Karol Kart", { 0, 5.0_vh });
@@ -234,11 +234,11 @@ void Engine::stateSetup(float dt)
 			btnFactory.makeTogglePtr("4 Players", { 5.0_vw, 75.0_vh })
 		};
 		
-		playerNumBtns[0]->setOnSelected([this]() { gameSettings.numPlayers = 1; });
-		playerNumBtns[1]->setOnSelected([this]() { gameSettings.numPlayers = 2; });
-		playerNumBtns[2]->setOnSelected([this]() { gameSettings.numPlayers = 3; });
-		playerNumBtns[3]->setOnSelected([this]() { gameSettings.numPlayers = 4; });
-
+		for (int i = 0; i < playerNumBtns.size(); i++) {
+			playerNumBtns[i]->setOnSelected(
+				[this, i]() { gameSettings.numPlayers = i + 1; }
+			);
+		}
 		playerNumSelect->addElements(playerNumBtns);
 
 		menu.addElement(playerNumSelect);
@@ -283,9 +283,9 @@ void Engine::stateVehicleMenu(float dt)
 
 
 		// <---- Button factory ---->
-		UIButtonFactory txtFactory(normStyle, normStyle, normStyle, m_font, 15_vh);
-		UIButtonFactory btnFactory(normStyle, hovStyle, selStyle, m_font, 5_vh);
-		UIButtonFactory inpFactory(inpTxtNorm, inpTxtHov, inpTxtSel, m_font, 5_vh);
+		UIElementFactory txtFactory(normStyle, normStyle, normStyle, m_font, 15_vh);
+		UIElementFactory btnFactory(normStyle, hovStyle, selStyle, m_font, 5_vh);
+		UIElementFactory inpFactory(inpTxtNorm, inpTxtHov, inpTxtSel, m_font, 5_vh);
 
 		// <---- Title ---->
 		auto title = txtFactory.makeBtnPtr("Super Karol Kart", { 0, 5._vh });
