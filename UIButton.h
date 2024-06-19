@@ -17,7 +17,7 @@ public:
 	struct Style
 	{
 		sf::Color bgColor = {0, 0, 0, 0};
-		sf::Color bgOutlineColor = {0, 0, 0, 0};
+		sf::Color bgOutlineColor = {0, 0, 0, 255};
 		float bgOutlineThickness = 0.f;
 		sf::Color fontColor = { 255, 255, 255, 255 };
 		sf::Color fontOutlineColor = { 0, 0, 0, 255 };

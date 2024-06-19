@@ -94,12 +94,35 @@ void Engine::onStart()
 {
 	m_state = State::MAIN_MENU;
 	m_assetsPath = "assets/";
-
-	if(!std::filesystem::exists(m_assetsPath))
+	std::filesystem::path texturesPath = m_assetsPath / "textures";
+	std::filesystem::path fontsPath = m_assetsPath / "fonts";
+	
+	if (!std::filesystem::exists(m_assetsPath))
 		throw std::runtime_error("Assets folder could not be found");
 
-	if (!m_font.loadFromFile((m_assetsPath / "SKK.ttf").string()))
-		throw std::runtime_error("Font could not be found");
+	if(!std::filesystem::exists(texturesPath))
+		throw std::runtime_error("Textures folder could not be found");
+
+	if(!std::filesystem::exists(fontsPath))
+		throw std::runtime_error("Fonts folder could not be found");
+
+	for (auto& p : std::filesystem::directory_iterator(texturesPath))
+	{
+		std::string path = p.path().string();
+		std::string name = p.path().stem().string();
+		if (!m_textures[name].loadFromFile(path))
+			throw std::runtime_error("Texture " + name + " could not be loaded");
+
+	}
+
+	for(auto& p : std::filesystem::directory_iterator(fontsPath))
+	{
+		std::string path = p.path().string();
+		std::string name = p.path().stem().string();
+		std::cout << path << std::endl;
+		if(!m_fonts[name].loadFromFile(path))
+			throw std::runtime_error("Font" + name + "could not be loaded");
+	}
 }
 
 void Engine::onUpdate(float dt)
@@ -134,16 +157,17 @@ void Engine::populatePlayers()
 	for (int i = 0; i < gameSettings.numPlayers; i++)
 	{
 		std::unique_ptr<Vehicle> vehicle;
+		sf::Vector2f startingPos = m_track.getPlayerStartingPos(i);
 		switch (gameSettings.vehicle[i])
 		{
 			case 1:
-				vehicle = std::make_unique<Kart>(&m_track, m_track.getPlayerStartingPos(i));
+				vehicle = std::make_unique<Kart>(getTexture("kart"), &m_track, startingPos);
 				break;
 			case 2:
-				vehicle = std::make_unique<Motorcycle>(&m_track, m_track.getPlayerStartingPos(i));
+				vehicle = std::make_unique<Motorcycle>(getTexture("motorcycle"), &m_track, startingPos);
 				break;
 			case 3:
-				vehicle = std::make_unique<Hovercraft>(&m_track, m_track.getPlayerStartingPos(i));
+				vehicle = std::make_unique<Hovercraft>(getTexture("hovercraft"), &m_track, startingPos);
 				break;
 		}
 
@@ -170,8 +194,8 @@ void Engine::stateMainMenu(float dt)
 		hovStyle.fontColor  =	{ 255, 200,   0, 255 };
 		selStyle.fontColor  =	{ 255,   0,   0, 255 };
 
-		UIElementFactory textFactory(normStyle, normStyle, normStyle, m_font, 15_vh);
-		UIElementFactory btnFactory(normStyle, hovStyle, selStyle, m_font, 10_vh);
+		UIElementFactory textFactory(normStyle, normStyle, normStyle, getFont("SKK"), 15_vh);
+		UIElementFactory btnFactory(normStyle, hovStyle, selStyle, getFont("SKK"), 10_vh);
 
 		Menu& menu = m_menus[State::MAIN_MENU];
 		menu.setBgColor({ 20,170,150,255 });
@@ -219,8 +243,8 @@ void Engine::stateSetup(float dt)
 
 		// <---- Button factory ---->
 
-		UIElementFactory textFactory(normStyle, normStyle, normStyle, m_font, 15_vh);
-		UIElementFactory btnFactory(normStyle, hovStyle, selStyle, m_font, 5_vh);
+		UIElementFactory textFactory(normStyle, normStyle, normStyle, getFont("SKK"), 15_vh);
+		UIElementFactory btnFactory(normStyle, hovStyle, selStyle, getFont("SKK"), 5_vh);
 		
 		// <---- Title ---->
 		auto title = textFactory.makeBtnPtr("Super Karol Kart", { 0, 5.0_vh });
@@ -286,9 +310,9 @@ void Engine::stateVehicleMenu(float dt)
 
 
 		// <---- Button factory ---->
-		UIElementFactory txtFactory(normStyle, normStyle, normStyle, m_font, 15_vh);
-		UIElementFactory btnFactory(normStyle, hovStyle, selStyle, m_font, 5_vh);
-		UIElementFactory inpFactory(inpTxtNorm, inpTxtHov, inpTxtSel, m_font, 5_vh);
+		UIElementFactory txtFactory(normStyle, normStyle, normStyle, getFont("SKK"), 15_vh);
+		UIElementFactory btnFactory(normStyle, hovStyle, selStyle, getFont("SKK"), 5_vh);
+		UIElementFactory inpFactory(inpTxtNorm, inpTxtHov, inpTxtSel, getFont("SKK"), 5_vh);
 
 		// <---- Title ---->
 		auto title = txtFactory.makeBtnPtr("Super Karol Kart", { 0, 5._vh });
@@ -406,7 +430,7 @@ void Engine::stateRace(float dt)
 	drawFPS(dt);
 
 
-	sf::Text text("Escape to end race", m_font, 24);
+	sf::Text text("Escape to end race", getFont("SKK"), 24);
 	text.setFillColor(sf::Color::White);
 	text.move(0, 30);
 	m_window.draw(text);
@@ -431,10 +455,12 @@ void Engine::drawFPS(float dt)
 {
 	m_fpsCounter.update(dt, 1.f / dt);
 
-	std::string fps = std::to_string((int)m_fpsCounter.getValue()) + " FPS";
-	sf::Text text(fps, m_font, 24);
-	text.setFillColor(sf::Color::White);
-	text.setOutlineColor(sf::Color::Black);
-	text.setOutlineThickness(2);
-	m_window.draw(text);
+	UIButton::Style normStyle;
+	normStyle.fontOutlineThickness = 2.f;
+
+	UIElementFactory factory(normStyle, getFont("SKK"), 3_vh);
+	
+	auto fps = std::to_string(static_cast<int>(m_fpsCounter.getValue()));
+	UIButton btn = factory.makeBtn(fps);
+	btn.draw(m_window, {});
 }

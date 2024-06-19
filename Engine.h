@@ -36,7 +36,8 @@ public:
 	void run();
 
 	void resetWindowView();
-	const sf::Font& getFont() const { return m_font; };
+	sf::Texture const& getTexture(std::string const& name) const { return m_textures.at(name); }
+	sf::Font const& getFont(std::string const& name) const { return m_fonts.at(name); }
 
 private:
 	enum class State
@@ -80,7 +81,8 @@ private:
 	sf::RenderWindow m_window;
 	Track m_track;
 
-	sf::Font m_font;
+	std::unordered_map<std::string, sf::Font> m_fonts;
+	std::unordered_map<std::string, sf::Texture> m_textures;
 
 	std::unordered_map<State, Menu> m_menus;
 	std::filesystem::path m_assetsPath;

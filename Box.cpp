@@ -6,6 +6,14 @@
 #include <cmath>
 
 
+Box::Box(const sf::Texture& texture, 
+	sf::Vector2f velocity, 
+	bool singleUse)
+	: GroundItem(velocity, singleUse)
+{
+	this->assignTexture(texture);
+}
+
 void Box::interactWithVehicle(Vehicle& vehicle)
 {
 	srand(time(NULL));
@@ -16,20 +24,13 @@ void Box::interactWithVehicle(Vehicle& vehicle)
 		vehicle.setPowerUp(std::make_unique<OilSpill>());
 	auto engine = Engine::getInstance();
 	engine->flagForRemoval(this);
+
+	GroundItem::interactWithVehicle(vehicle);
 }
 
 void Box::update(float dt)
 {
 
 }
-
-//void Box::draw(sf::RenderTarget& target)
-//{
-//	sf::RectangleShape shape({ 10.f, 10.f });
-//	shape.setOrigin(5.f, 5.f);
-//	shape.setPosition(m_position);
-//	shape.setFillColor(sf::Color::Cyan);
-//	target.draw(shape);
-//}
 
 

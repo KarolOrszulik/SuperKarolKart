@@ -22,7 +22,7 @@ public:
 
 	UIButton makeBtn(
 		const std::string& text,
-		const sf::Vector2f& position,
+		const sf::Vector2f& position = {0, 0},
 		UIElement::Origin origin = UIElement::Origin::TOP_LEFT,
 		bool shrinkToText = true,
 		const sf::Vector2f& size = { 0, 0 }) const;
@@ -31,28 +31,28 @@ public:
 
 	std::shared_ptr<UIButton> makeBtnPtr(
 		const std::string& text,
-		const sf::Vector2f& position,
+		const sf::Vector2f& position = {0, 0},
 		UIElement::Origin origin = UIElement::Origin::TOP_LEFT,
 		bool shrinkToText = true,
 		const sf::Vector2f& size = { 0, 0 }) const;
 
 	UIToggleButton makeToggle(
 		const std::string& text,
-		const sf::Vector2f& position,
+		const sf::Vector2f& position = {0, 0},
 		UIElement::Origin origin = UIElement::Origin::TOP_LEFT,
 		bool shrinkToText = true,
 		const sf::Vector2f& size = { 0, 0 }) const;
 
 	std::shared_ptr<UIToggleButton> makeTogglePtr(
 		const std::string& text,
-		const sf::Vector2f& position,
+		const sf::Vector2f& position = {0, 0},
 		UIElement::Origin origin = UIElement::Origin::TOP_LEFT,
 		bool shrinkToText = true,
 		const sf::Vector2f& size = { 0, 0 }) const;
 
 	UITextInput makeTxtInp(
 		const std::string& text,
-		const sf::Vector2f& position,
+		const sf::Vector2f& position = {0, 0},
 		const std::string& placeholderText = "",
 		int maxInputLength = -1,
 		UIElement::Origin origin = UIElement::Origin::TOP_LEFT,
@@ -61,7 +61,7 @@ public:
 
 	std::shared_ptr<UITextInput> makeTxtInpPtr(
 		const std::string& text,
-		const sf::Vector2f& position,
+		const sf::Vector2f& position = {0, 0},
 		const std::string& placeholderText = "",
 		int maxInputLength = -1,
 		UIElement::Origin origin = UIElement::Origin::TOP_LEFT,

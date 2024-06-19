@@ -7,8 +7,9 @@ void BowlingBall::usePowerUp(Vehicle& owner)
 
 	sf::Vector2f unitVec = owner.getUnitVector();
 
-	auto ball = std::make_unique<SpeedAdjuster>("assets/grounditems/bowling.png", 0.2f, unitVec * 150.f);
+	Engine& engine = *Engine::getInstance();
+	auto ball = std::make_unique<SpeedAdjuster>(
+		engine.getTexture("bowling"), 0.2f, unitVec * 150.f);
 	ball->setPosition(owner.getPosition() + unitVec * 20.f);
-	Engine::getInstance()->addObject(std::move(ball));
+	engine.addObject(std::move(ball));
 }
-

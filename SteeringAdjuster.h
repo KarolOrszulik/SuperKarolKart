@@ -4,19 +4,19 @@
 class SteeringAdjuster : public GroundItem
 {
 public:
-	SteeringAdjuster(float steeringMultiplier = 2.0, sf::Vector2f velocity = { 0.f, 0.f }, bool singleUse = true)
-		: m_steeringMultiplier(steeringMultiplier), m_velocity(velocity), m_singleUse(singleUse) {}
+	SteeringAdjuster(
+		const sf::Texture& texture,
+		float steeringMultiplier = -1.f, 
+		sf::Vector2f velocity = {},
+		bool singleUse = true);
 
 	void interactWithVehicle(Vehicle&) override;
 	void update(float dt) override;
 	//void draw(sf::RenderTarget&) override;
 	std::unique_ptr<GroundItem> copy() const override { return std::make_unique<SteeringAdjuster>(*this); }
 
+	float getSteeringMultiplier() const { return m_steeringMultiplier; }
 private:
-	std::filesystem::path getTexturePath() const override { return "assets/grounditems/steering_adjuster.png"; }
-
 	float m_steeringMultiplier = -1.f;
-	sf::Vector2f m_velocity;
-	bool m_singleUse = false;
 };
 

@@ -9,7 +9,9 @@ class Vehicle : public GameObject
 public:
 	struct Input;
 
-	Vehicle(Track* track, sf::Vector2f position = { 0.0f, 0.0f });
+	Vehicle(const sf::Texture& texture, 
+		Track* track, 
+		sf::Vector2f position = { 0.0f, 0.0f });
 
 	//void applyAccelerator(float accelerator);
 	//void applySteering(float steering);
@@ -40,8 +42,6 @@ public:
 	};
 protected:
 
-	virtual std::filesystem::path getTexturePath() const override = 0;
-
 	virtual void handleMovement(float dt) = 0;
 	void handleCheckpoints();				//
 	void handleGroundItems();				//
@@ -52,8 +52,6 @@ protected:
 	size_t m_nextCheckpoint = 0;
 	size_t m_completedLaps = 0;
 
-	float m_angle = 0.0f;
-	
 	float m_speedMultiplier = 1.0f;
 	float m_timeToClearMultiplier = 0.0f;
 

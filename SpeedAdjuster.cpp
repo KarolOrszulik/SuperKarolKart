@@ -2,13 +2,21 @@
 #include "Vehicle.h"
 #include "Engine.h"
 
+SpeedAdjuster::SpeedAdjuster(
+	const sf::Texture& texture,
+	float speedMultiplier,
+	sf::Vector2f velocity,
+	bool singleUse)
+	: m_speedMultiplier(speedMultiplier), GroundItem(velocity, singleUse)
+{
+	assignTexture(texture);
+}
+
 void SpeedAdjuster::interactWithVehicle(Vehicle& vehicle)
 {
 	vehicle.setSpeedMultiplier(m_speedMultiplier, 2.f);
-	auto engine = Engine::getInstance();
 
-	if (m_singleUse)
-		engine->flagForRemoval(this);
+	GroundItem::interactWithVehicle(vehicle);
 }
 
 void SpeedAdjuster::update(float dt)

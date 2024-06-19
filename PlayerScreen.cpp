@@ -3,7 +3,8 @@
 #include "UIElementFactory.h"
 #include <cmath>
 
-PlayerScreen::PlayerScreen(int number) : m_number(number)
+PlayerScreen::PlayerScreen(int number) 
+	: m_number(number), m_screenAngle(0.f), m_speedCounter(0.25f)
 {
 	if (number < 0 || number > 3)
 		throw std::invalid_argument("Player number must be in range [0, 3]");
@@ -77,16 +78,17 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 	sf::Vector2f pos = { offset.x * target.getSize().x, offset.y * target.getSize().y };
 
 	auto speed = std::abs(std::roundf(vehicle.getSpeed()));
-	auto speedInt = static_cast<int>(speed);
-	std::string speedStr = std::to_string(speedInt) + "km/h";
 
+	m_speedCounter.update(dt, speed);
+	auto speedInt = static_cast<int>(m_speedCounter.getValue());
+	std::string speedStr = std::to_string(speedInt) + "km/h";
 
 	sf::Uint8 whiteLevel = 255 * (1.f - std::min(speed / 200.f, 1.f));
 	m_speedStyle.fontColor = { 255 , whiteLevel, whiteLevel, 255 };
 	m_speedStyle.fontOutlineThickness = 1 * vh;
 
 
-	UIElementFactory factory(m_speedStyle, engine.getFont(), 7 * vh);
+	UIElementFactory factory(m_speedStyle, engine.getFont("SKK"), 7 * vh);
 	auto speedDisp = factory.makeBtn(speedStr, pos, UIElement::Origin::BOT_RIGHT);
 	speedDisp.draw(target, {});
 

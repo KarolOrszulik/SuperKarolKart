@@ -8,8 +8,6 @@ public:
 	using GroundVehicle::GroundVehicle;
 
 private:
-	std::filesystem::path getTexturePath() const override { return "assets/vehicles/motorcycle.png"; }
-
 	void handleMovement(float dt) override;
 
 	GroundVehicle::DrivingParameters getDrivingParameters() override

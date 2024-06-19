@@ -2,7 +2,7 @@
 class AveragingCounter
 {
 public:
-	AveragingCounter(float value = 0.5f) : m_totalValue(value) {}
+	AveragingCounter(float interval = 0.5f) : m_updateInterval(interval) {}
 
 	void update(float dt, float value);
 

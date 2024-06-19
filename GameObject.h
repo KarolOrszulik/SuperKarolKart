@@ -15,16 +15,17 @@ public:
 	sf::Vector2f getPosition() const { return m_position; }
 	void setPosition(sf::Vector2f position) { m_position = position; } // kochom OOP
 
-	static bool loadTextureWithFallback(sf::Texture& texture, const std::filesystem::path& path, const std::filesystem::path& fallbackPath = "assets/notexture.png");
+	const sf::Texture& getTexture();
+	void assignTexture(const sf::Texture& texture);
 
 	virtual ~GameObject() = default;
 
 protected:
 	sf::Vector2f m_position;
-	virtual std::filesystem::path getTexturePath() const = 0; 
+	float m_angle = 0.0f;
 
-//private:
-	sf::Texture m_texture;
+private:
+	std::optional<sf::Texture> m_texture;
 	bool m_textureLoaded = false;
 };
 

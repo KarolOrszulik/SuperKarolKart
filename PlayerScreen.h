@@ -22,4 +22,5 @@ private:
 	sf::FloatRect m_viewport {0.f, 0.f, 1.f, 1.f};
 	UIButton::Style m_speedStyle;
 	float m_screenAngle = 0.f;
+	AveragingCounter m_speedCounter;
 };

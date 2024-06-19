@@ -4,9 +4,14 @@
 
 #include <iostream>
 
-Vehicle::Vehicle(Track* track, sf::Vector2f position)
+Vehicle::Vehicle(
+	const sf::Texture& texture, 
+	Track* track, 
+	sf::Vector2f position)
 	: GameObject(position), m_track(track)
-{}
+{
+	assignTexture(texture);
+}
 
 void Vehicle::setSpeedMultiplier(float speedMultiplier, float time)
 {
@@ -89,6 +94,8 @@ void Vehicle::handleItemUse()
 	}
 }
 
+
+
 void Vehicle::update(float dt)
 {
 	handleGroundItems();
@@ -103,15 +110,10 @@ void Vehicle::update(float dt)
 
 void Vehicle::draw(sf::RenderTarget& window)
 {
-	if (!m_textureLoaded)
-	{
-		m_textureLoaded = GameObject::loadTextureWithFallback(m_texture, getTexturePath());
-	}
-
 	const unsigned gridSize  = m_track->getGridSize();
 	const float    gridSizeF = m_track->getGridSizeF();
 
-	sf::Sprite sprite(m_texture);
+	sf::Sprite sprite(getTexture());
 	sprite.setPosition(m_position);
 	sprite.setOrigin(gridSizeF / 2.f, gridSizeF / 2.f);
 	sprite.setRotation(m_angle * 180.f / 3.14f + 90.f);

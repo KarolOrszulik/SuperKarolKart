@@ -2,13 +2,23 @@
 #include "Engine.h"
 #include "Vehicle.h"
 
+
+
+SteeringAdjuster::SteeringAdjuster(
+	const sf::Texture& texture, 
+	float steeringMult, 
+	sf::Vector2f velocity, 
+	bool singleUse)
+	: m_steeringMultiplier(steeringMult), GroundItem(velocity, singleUse)
+{
+	assignTexture(texture);
+}
+
 void SteeringAdjuster::interactWithVehicle(Vehicle& vehicle)
 {
 	vehicle.setSteeringMultiplier(this->m_steeringMultiplier, 2.f);
-	auto engine = Engine::getInstance();
 
-	if (m_singleUse)
-		engine->flagForRemoval(this);
+	GroundItem::interactWithVehicle(vehicle);
 }
 
 void SteeringAdjuster::update(float dt)

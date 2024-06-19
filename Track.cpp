@@ -33,7 +33,8 @@ size_t Track::pos2index(sf::Vector2f pos) const
 
 sf::Vector2f Track::index2pos(size_t idx) const
 {
-	return sf::Vector2f(idx % m_size.x, idx / m_size.x) * static_cast<float>(GRID_SIZE);
+	return sf::Vector2f(float(idx % m_size.x), float(idx / m_size.x)) 
+		* static_cast<float>(GRID_SIZE);
 }
 
 sf::Vector2f Track::index2posCenter(size_t idx) const
@@ -87,6 +88,7 @@ std::optional<int> Track::getCheckpointIndex(sf::Vector2f pos, float radius) con
 
 void Track::loadTrack(std::string const& path)
 {
+	std::shared_ptr<Engine> engine = Engine::getInstance();
 	std::map<char, Checkpoint> tmpCheckpoints;
 
 	std::ifstream file(path);
@@ -126,24 +128,24 @@ void Track::loadTrack(std::string const& path)
 			{
 				if (c == '!') // speed booster
 				{
-					std::unique_ptr<GroundItem> pBooster = std::make_unique<SpeedAdjuster>("assets/grounditems/nitro.png", 2.0f);
+					std::unique_ptr<GroundItem> pBooster = std::make_unique<SpeedAdjuster>(engine->getTexture("nitro"), 2.0f);
 					std::unique_ptr<GroundItemSpawner> pSpawner =
-						std::make_unique<GroundItemSpawner>(sf::Vector2f((x + 0.5f) * GRID_SIZE_F, (y + 0.5f) * GRID_SIZE_F), std::move(pBooster));
-					Engine::getInstance()->addObject(std::move(pSpawner));
+						std::make_unique<GroundItemSpawner>(sf::Vector2f(x + 0.5f, y + 0.5f) * GRID_SIZE_F, std::move(pBooster));
+					engine->addObject(std::move(pSpawner));
 				}
 				if (c == '@') // speed booster - non-single use
 				{
-					std::unique_ptr<GroundItem> pBooster = std::make_unique<SpeedAdjuster>("assets/grounditems/plate.png", 2.0f, sf::Vector2f{}, false);
+					std::unique_ptr<GroundItem> pBooster = std::make_unique<SpeedAdjuster>(engine->getTexture("plate"), 2.0f, sf::Vector2f{}, false);
 					std::unique_ptr<GroundItemSpawner> pSpawner =
-						std::make_unique<GroundItemSpawner>(sf::Vector2f((x + 0.5f) * GRID_SIZE_F, (y + 0.5f) * GRID_SIZE_F), std::move(pBooster));
-					Engine::getInstance()->addObject(std::move(pSpawner));
+						std::make_unique<GroundItemSpawner>(sf::Vector2f(x + 0.5f, y + 0.5f) * GRID_SIZE_F, std::move(pBooster));
+					engine->addObject(std::move(pSpawner));
 				}
 				if (c == '$')
 				{
-					std::unique_ptr<GroundItem> box = std::make_unique<Box>();
+					std::unique_ptr<GroundItem> box = std::make_unique<Box>(engine->getTexture("box"));
 					std::unique_ptr<GroundItemSpawner> pSpawner =
-						std::make_unique<GroundItemSpawner>(sf::Vector2f((x + 0.5f) * GRID_SIZE_F, (y + 0.5f) * GRID_SIZE_F), std::move(box));
-					Engine::getInstance()->addObject(std::move(pSpawner));
+						std::make_unique<GroundItemSpawner>(sf::Vector2f(x + 0.5f, y + 0.5f) * GRID_SIZE_F, std::move(box));
+					engine->addObject(std::move(pSpawner));
 				}
 				if (std::isalpha(c) || c == '~')
 				{

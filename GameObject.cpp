@@ -1,36 +1,48 @@
 #include "GameObject.h"
 
-#include <iostream>
 
 GameObject::GameObject(sf::Vector2f position)
 	: m_position(position)
-{}
+{
+}
 
 void GameObject::draw(sf::RenderTarget& target)
 {
-	if (!m_textureLoaded)
-	{
-		m_textureLoaded = loadTextureWithFallback(m_texture, getTexturePath());
-	}
-
-	sf::Sprite sprite(m_texture);
+	const sf::Texture& texture = getTexture();
+	sf::Sprite sprite(getTexture());
 	sprite.setPosition(m_position);
-	sprite.setOrigin(m_texture.getSize().x / 2.0f, m_texture.getSize().y / 2.0f);
+	sprite.setOrigin(sf::Vector2f(texture.getSize()) / 2.f);
 	target.draw(sprite);
 }
 
-bool GameObject::loadTextureWithFallback(sf::Texture& texture, const std::filesystem::path& path, const std::filesystem::path& fallbackPath)
+void GameObject::assignTexture(const sf::Texture& texture)
 {
-	bool success = texture.loadFromFile(path.string());
-	bool fallbackSuccess = false;
+	m_texture = texture;
+}
 
-	if (!success)
+const sf::Texture& GameObject::getTexture()
+{
+	if (!m_texture.has_value())
 	{
-		fallbackSuccess = texture.loadFromFile(fallbackPath.string());
+		m_texture.emplace();
+		auto& texture = m_texture.value();
+		sf::Uint8 checkboard[] = {
+			  0,  0,   0, 255,
+			128,  0, 128, 255,
+			128,  0, 128, 255,
+			  0,  0,  0,  255
+		};
 
-		if (!fallbackSuccess)
-			throw std::runtime_error("Failed to load texture (even fallback!)");
+		sf::Image img;
+		img.create(2, 2, checkboard);
+		texture.loadFromImage(img);
+		texture.setRepeated(true);
 	}
-
-	return success;
+	else
+	{
+		auto& texture = m_texture.value();
+		texture = m_texture.value();
+		texture.setRepeated(false);
+	}
+	return m_texture.value();
 }

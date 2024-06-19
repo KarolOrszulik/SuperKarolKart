@@ -1,5 +1,5 @@
 #include "Engine.h"
-
+#include <SFML/Graphics.hpp>
 int main()
 {
 	auto engine = Engine::getInstance();
