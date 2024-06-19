@@ -47,17 +47,34 @@ std::optional<int> Track::getCheckpointIndex(sf::Vector2f pos, float radius) con
 	float minDistance = std::numeric_limits<float>::max();
 	std::optional<int> closestCheckpoint;
 
+	auto squareCircleOverlap = [](sf::Vector2f squarePos, sf::Vector2f squareSize, sf::Vector2f circlePos, float radius) -> bool
+	{
+		float dx = std::abs(circlePos.x - squarePos.x);
+		float dy = std::abs(circlePos.y - squarePos.y);
+
+		if (dx > squareSize.x / 2.f + radius) return false;
+		if (dy > squareSize.y / 2.f + radius) return false;
+
+		if (dx <= squareSize.x / 2.f) return true;
+		if (dy <= squareSize.y / 2.f) return true;
+
+		float cornerDistance = std::hypot(dx - squareSize.x / 2.f, dy - squareSize.y / 2.f);
+		return cornerDistance <= radius;
+	};
+
 	for (size_t i = 0; i < m_checkpoints.size(); i++)
 	{
 		for (size_t j = 0; j < m_checkpoints[i].size(); j++)
 		{
-			sf::Vector2f checkpointPos = index2posCenter(m_checkpoints[i][j]);
-			float distance = std::hypot(checkpointPos.x - pos.x, checkpointPos.y - pos.y);
-
-			if (distance < minDistance)
+			sf::Vector2f squareCenter = index2posCenter(m_checkpoints[i][j]);
+			if (squareCircleOverlap(squareCenter, { GRID_SIZE_F, GRID_SIZE_F }, pos, radius))
 			{
-				minDistance = distance;
-				closestCheckpoint = i;
+				float distance = std::hypot(squareCenter.x - pos.x, squareCenter.y - pos.y);
+				if (distance < minDistance)
+				{
+					minDistance = distance;
+					closestCheckpoint = i;
+				}
 			}
 		}
 	}

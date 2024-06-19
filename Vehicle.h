@@ -26,7 +26,7 @@ public:
 	virtual float getSpeed() const = 0;
 
 	void update(float dt);
-	void draw(sf::RenderTarget& window);
+	void draw(sf::RenderTarget& window) override;
 
 	void setSpeedMultiplier(float speedMultiplier, float time);
 	void setSteeringMultiplier(float steeringMultiplier, float time);

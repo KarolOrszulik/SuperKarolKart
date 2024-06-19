@@ -10,29 +10,6 @@ Vehicle::Vehicle(Track* track, sf::Vector2f position)
 	m_texture.loadFromFile("assets/vehicle_tileset.png");
 }
 
-// ZAST¥PIONE APPLYINPUT W PLIKU H
-
-//void Vehicle::applyAccelerator(float accelerator)
-//{
-//	m_acceleratorInput += accelerator;
-//}
-//
-//void Vehicle::applySteering(float steering)
-//{
-//	m_steeringInput += steering;
-//}
-//
-//void Vehicle::applyUse()
-//{
-//	m_use = true;
-//}
-//
-//void Vehicle::applySkill()
-//{
-//	m_skill = true;
-//}
-
-
 void Vehicle::setSpeedMultiplier(float speedMultiplier, float time)
 {
 	m_speedMultiplier = speedMultiplier;
@@ -52,11 +29,12 @@ void Vehicle::handleGroundItems()
 		if (GroundItem* gi = dynamic_cast<GroundItem*>(obj.get()))
 		{
 			sf::Vector2f gipos = gi->getPosition();
-			float dx = m_position.x - gipos.x;
-			float dy = m_position.y - gipos.y;
-			float distancesq = dx * dx + dy * dy;
+			const float dx = m_position.x - gipos.x;
+			const float dy = m_position.y - gipos.y;
+			const float distanceSq = dx * dx + dy * dy;
 
-			if (distancesq <= 16.f * 16.f) // pls refactor me
+			const float gridsize = Engine::getInstance()->getGridSizeF();
+			if (distanceSq <= gridsize * gridsize)
 			{
 				gi->interactWithVehicle(*this);
 			}
@@ -66,7 +44,7 @@ void Vehicle::handleGroundItems()
 
 void Vehicle::handleCheckpoints()
 {
-	std::optional<int> checkpointIndex = m_track->getCheckpointIndex(m_position, 8.f);
+	std::optional<int> checkpointIndex = m_track->getCheckpointIndex(m_position, Engine::getInstance()->getGridSizeF());
 	if (checkpointIndex.has_value())
 	{
 		if (checkpointIndex == m_nextCheckpoint)
@@ -127,10 +105,13 @@ void Vehicle::update(float dt)
 
 void Vehicle::draw(sf::RenderTarget& window)
 {
+	const unsigned gridSize  = m_track->getGridSize();
+	const float    gridSizeF = m_track->getGridSizeF();
+
 	sf::Sprite sprite(m_texture);
 	sprite.setPosition(m_position);
-	sprite.setOrigin(8.f, 8.f);
+	sprite.setOrigin(gridSizeF / 2.f, gridSizeF / 2.f);
 	sprite.setRotation(m_angle * 180.f / 3.14f + 90.f);
-	sprite.setTextureRect(sf::IntRect(getTextureOffset() * 16, 0, 16, 16));
+	sprite.setTextureRect(sf::IntRect(getTextureOffset() * gridSize, 0, gridSize, gridSize));
 	window.draw(sprite);
 }
