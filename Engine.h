@@ -34,6 +34,8 @@ public:
 	float getGridSizeF() const { return m_track.getGridSizeF(); }
 	size_t getNumLaps() const { return m_gameSettings.laps; }
 
+	bool raceHasStarted() const { return m_raceTime > 0.f; }
+
 	void init(uint32_t width, uint32_t height, std::string const& title);
 	void run();
 

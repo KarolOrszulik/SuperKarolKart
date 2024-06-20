@@ -7,7 +7,11 @@ void GroundItem::interactWithVehicle(Vehicle&)
 
 	if (isSingleUse())
 	{
-		m_spawner->notifyObjectDeleted();
 		engine->flagForRemoval(this);
+	}
+
+	if (m_spawner)
+	{
+		m_spawner->notifyObjectDeleted();
 	}
 }
