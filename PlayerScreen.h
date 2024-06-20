@@ -14,6 +14,14 @@ public:
 	void draw(sf::RenderTexture& source, sf::RenderTarget& target, const Player& player, float dt);
 
 private:
+	static constexpr float ZOOM_MIN = 0.3f;
+	static constexpr float ZOOM_MAX = 0.5f;
+	static constexpr float ZOOM_SPEED_START = 50.f;
+	static constexpr float ZOOM_SPEED_END = 250.f;
+	// zoom stays at ZOOM_MIN when speed is below ZOOM_SPEED_START
+	// zoom grows linearly from ZOOM_MIN to ZOOM_MAX when speed is between ZOOM_SPEED_START and ZOOM_SPEED_END
+	// zoom stays at ZOOM_MAX when speed is above ZOOM_SPEED_END
+
 	void calculateSizeAndViewport();
 
 	int m_number;
@@ -22,7 +30,5 @@ private:
 	UIButton::Style m_speedStyle;
 	float m_screenAngle = 0.f;
 	AveragingCounter m_speedCounter;
-
-	const float m_zoomingOffCooldown = 2.f;
-	float m_zoomingTimer = 0.f;
+	float m_zoom = ZOOM_MIN;
 };

@@ -133,25 +133,32 @@ void Track::loadTrack(std::string const& path)
 						std::make_unique<GroundItemSpawner>(sf::Vector2f(x + 0.5f, y + 0.5f) * GRID_SIZE_F, std::move(pBooster));
 					engine->addObject(std::move(pSpawner));
 				}
-				if (c == '@') // speed booster - non-single use
+				else if (c == '@') // speed booster - non-single use
 				{
 					std::unique_ptr<GroundItem> pBooster = std::make_unique<SpeedAdjuster>(engine->getTexture("plate"), 2.0f, sf::Vector2f{}, false);
 					std::unique_ptr<GroundItemSpawner> pSpawner =
 						std::make_unique<GroundItemSpawner>(sf::Vector2f(x + 0.5f, y + 0.5f) * GRID_SIZE_F, std::move(pBooster));
 					engine->addObject(std::move(pSpawner));
 				}
-				if (c == '$')
+				else if (c == '$') // lootbox
 				{
 					std::unique_ptr<GroundItem> box = std::make_unique<Box>(engine->getTexture("box"));
 					std::unique_ptr<GroundItemSpawner> pSpawner =
 						std::make_unique<GroundItemSpawner>(sf::Vector2f(x + 0.5f, y + 0.5f) * GRID_SIZE_F, std::move(box));
 					engine->addObject(std::move(pSpawner));
 				}
-				if (std::isalpha(c) || c == '~')
+				else if (c == '%') // oil spill
+				{
+					std::unique_ptr<GroundItem> oil = std::make_unique<SpeedAdjuster>(engine->getTexture("oil"), 0.5f, sf::Vector2f{}, false);
+					std::unique_ptr<GroundItemSpawner> pSpawner =
+						std::make_unique<GroundItemSpawner>(sf::Vector2f(x + 0.5f, y + 0.5f) * GRID_SIZE_F, std::move(oil));
+					engine->addObject(std::move(pSpawner));
+				}
+				else if (std::isalpha(c) || c == '~')
 				{
 					tmpCheckpoints[c].push_back(tile2index( x, y ));
 				}
-				if (std::isdigit(c))
+				else if (std::isdigit(c))
 				{
 					m_playerStarts.at(c - '1') = tile2index(x, y);
 				}

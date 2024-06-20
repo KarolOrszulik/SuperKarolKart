@@ -68,7 +68,10 @@ private:
 	void stateResults(float dt);
 
 	void populatePlayers();
+	
 
+	void updateAllObjects(float dt);
+	void drawAllObjects();
 	void addObjectsToAdd();
 	void removeObjectsForRemoval();
 	void displayCountdown();
