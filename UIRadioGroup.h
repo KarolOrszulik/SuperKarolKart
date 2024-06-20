@@ -15,10 +15,10 @@ public:
 	void handleEvent(sf::Event& event) override;
 	void addElement(std::shared_ptr<UIToggleButton> element);
 	void addElements(std::vector<std::shared_ptr<UIToggleButton>> m_elements);
-	//void setActiveElement(int idx);
+	void setActiveElement(int idx);
 
 private:
-	int m_activeElIdx = -1;
+	int m_activeElIdx;
 	std::vector<std::shared_ptr<UIToggleButton>> m_elements;
 };
 

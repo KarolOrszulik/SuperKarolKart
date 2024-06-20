@@ -174,11 +174,11 @@ void Engine::populatePlayers()
 {
 	m_players.clear();
 
-	for (int i = 0; i < gameSettings.numPlayers; i++)
+	for (int i = 0; i < m_gameSettings.numPlayers; i++)
 	{
 		std::unique_ptr<Vehicle> vehicle;
 		sf::Vector2f startingPos = m_track.getPlayerStartingPos(i);
-		switch (gameSettings.vehicle[i])
+		switch (m_gameSettings.vehicle[i])
 		{
 			case 1:
 				vehicle = std::make_unique<Kart>(getTexture("kart"), &m_track, startingPos);
@@ -234,7 +234,10 @@ void Engine::stateMainMenu(float dt)
 		// <---- Start Button ---->
 		auto btnPlay = btnFactory.makeBtnPtr("PLAY", { 0, 35.0_vh });
 		btnPlay->centerHorizontally(menu.getWidth());
-		btnPlay->onRelease = [this]() { setGameState(State::SETUP_MENU); };
+		btnPlay->onRelease = [this]() { 
+			m_gameSettings = Settings();
+			setGameState(State::SETUP_MENU); 
+		};
 
 		menu.addElement(btnPlay);
 
@@ -252,9 +255,6 @@ void Engine::stateSetup(float dt)
 {
 	if (!m_menus.contains(State::SETUP_MENU))
 	{
-		// <---- Preparing settings ---->
-		gameSettings.numPlayers = -1;
-
 		UIButton::Style normStyle, hovStyle, selStyle;
 		normStyle.bgColor   = {   0,   0,   0,   0 };
 		normStyle.fontColor = { 255, 255, 255, 255 };
@@ -287,18 +287,50 @@ void Engine::stateSetup(float dt)
 		
 		for (int i = 0; i < playerNumBtns.size(); i++) {
 			playerNumBtns[i]->setOnSelected(
-				[this, i]() { gameSettings.numPlayers = i + 1; }
+				[this, i]() { m_gameSettings.numPlayers = i + 1; }
 			);
 		}
 		playerNumSelect->addElements(playerNumBtns);
 
+		if(m_gameSettings.numPlayers == -1)
+			playerNumSelect->setActiveElement(0);
+		else
+			playerNumSelect->setActiveElement(m_gameSettings.numPlayers - 1);
+
 		menu.addElement(playerNumSelect);
+
+
+		////<---- Track selection ---->
+		auto trackSelection = std::make_shared<UIRadioGroup>();
+
+		std::vector<std::shared_ptr<UIToggleButton>> trackBtns{
+			btnFactory.makeTogglePtr("Szombierki", { 50.0_vw, 30.0_vh }),
+			btnFactory.makeTogglePtr("Opole", { 50.0_vw, 45.0_vh }),
+			btnFactory.makeTogglePtr("Spa", { 50.0_vw, 60.0_vh })
+		};
+
+		trackBtns[0]->setOnSelected([this]() {
+			m_gameSettings.trackName = "track_00.txt";
+			std::cout << m_gameSettings.trackName << std::endl;
+		});
+		trackBtns[1]->setOnSelected([this]() {
+			m_gameSettings.trackName = "track_01.txt";
+			std::cout << m_gameSettings.trackName << std::endl;
+		});
+		trackBtns[2]->setOnSelected([this]() {
+			m_gameSettings.trackName = "track_02.txt";
+			std::cout << m_gameSettings.trackName << std::endl;
+		});
+
+		trackSelection->addElements(trackBtns);
+		menu.addElement(trackSelection);
+
 
 		// <---- Start Button ---->
 		auto btnGO = btnFactory.makeBtnPtr("START!", { 0, 90.0_vh });
 		btnGO->centerHorizontally(menu.getWidth());
 		btnGO->onRelease = [this]() {
-			if (gameSettings.numPlayers > 0) {
+			if (m_gameSettings.numPlayers > 0) {
 				setGameState(State::VEHICLE_MENU);
 			}
 		};
@@ -346,11 +378,8 @@ void Engine::stateVehicleMenu(float dt)
 		// <---- Player Number Selection ---->
 
 		txtFactory.setCharacterSize(5_vh);
-		for (int i = 0; i < gameSettings.numPlayers; i++)
+		for (int i = 0; i < m_gameSettings.numPlayers; i++)
 		{
-			// preparing radio group
-			auto vehicleSelect = std::make_shared<UIRadioGroup>();
-
 			// preparing button info
 			std::string playerName = "Player " + std::to_string(i + 1) + ":";
 			float columnPosition = 3._vw + 24._vw * i;
@@ -359,23 +388,32 @@ void Engine::stateVehicleMenu(float dt)
 			auto playerDesc = txtFactory.makeBtnPtr(playerName, { columnPosition, 30._vh });
 			menu.addElement(playerDesc);
 
+			// preparing radio group
+			auto vehicleSelect = std::make_shared<UIRadioGroup>();
+
 			std::vector<std::shared_ptr<UIToggleButton>> vehicleBtns = {
 				btnFactory.makeTogglePtr("Kart", { columnPosition, 45.0_vh }),
 				btnFactory.makeTogglePtr("Motorcycle", { columnPosition, 53.0_vh }),
 				btnFactory.makeTogglePtr("Hovercraft", { columnPosition, 61.0_vh })
 			};
 
-			vehicleBtns[0]->setOnSelected([this, i]() { gameSettings.vehicle[i] = 1; });
-			vehicleBtns[1]->setOnSelected([this, i]() { gameSettings.vehicle[i] = 2; });
-			vehicleBtns[2]->setOnSelected([this, i]() { gameSettings.vehicle[i] = 3; });
+			vehicleBtns[0]->setOnSelected([this, i]() { m_gameSettings.vehicle[i] = 1; });
+			vehicleBtns[1]->setOnSelected([this, i]() { m_gameSettings.vehicle[i] = 2; });
+			vehicleBtns[2]->setOnSelected([this, i]() { m_gameSettings.vehicle[i] = 3; });
 			vehicleSelect->addElements(vehicleBtns);
+
+			if (m_gameSettings.vehicle[i])
+				vehicleSelect->setActiveElement(m_gameSettings.vehicle[i] - 1);
+			else
+				vehicleSelect->setActiveElement(0);
+
 
 			menu.addElement(vehicleSelect);
 
 			// adding text input for player name
 			auto textInput = inpFactory.makeTxtInpPtr("",{ columnPosition, 75._vh }, "ENTER NAME", 9);
 			textInput->onTextEntered = [this, i](std::string const& text) {
-				gameSettings.playerNames[i] = text;
+				m_gameSettings.playerNames[i] = text;
 			};
 			textInput->applyPadding(1_vh);
 			menu.addElement(textInput);
@@ -389,8 +427,8 @@ void Engine::stateVehicleMenu(float dt)
 			{ 90._vw, 90._vh }, UIElement::Origin::TOP_RIGHT);
 		btnGO->onRelease = [this]() {
 			bool vehiclesSelected = true;
-			for (int i = 0; i < gameSettings.numPlayers; i++)
-				vehiclesSelected &= gameSettings.vehicle[i] != 0;
+			for (int i = 0; i < m_gameSettings.numPlayers; i++)
+				vehiclesSelected &= m_gameSettings.vehicle[i] != 0;
 
 			if(vehiclesSelected)
 				setGameState(State::PRE_RACE); 
@@ -407,8 +445,9 @@ void Engine::stateVehicleMenu(float dt)
 
 void Engine::statePreRace(float dt)
 {
-	m_track.loadTilemap("assets/track/track_tileset.png");
-	m_track.loadTrack("assets/track/track_00.txt");
+	std::string trackPath = (m_assetsPath / "track").string();
+	m_track.loadTilemap(trackPath + "/track_tileset.png");
+	m_track.loadTrack(trackPath + "/" + m_gameSettings.trackName);
 
 	sf::Vector2u worldSize(m_track.getSize());
 	m_world.create(worldSize.x, worldSize.y);
@@ -511,7 +550,7 @@ bool Engine::allPlayersFinished() const
 {
 	return std::ranges::all_of(m_players, 
 		[this](Player const& p) { 
-			return p.getCompletedLaps() >= gameSettings.laps; 
+			return p.getCompletedLaps() >= m_gameSettings.laps; 
 		}
 	);
 }

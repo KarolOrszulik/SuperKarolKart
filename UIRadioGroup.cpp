@@ -13,10 +13,7 @@ void UIRadioGroup::handleEvent(sf::Event& event)
 			{
 				if(m_elements[i]->contains(mousePos))
 				{
-					if(m_activeElIdx != -1)
-						m_elements[m_activeElIdx]->setState(UIButton::State::NORMAL);
-					m_elements[i]->mouseClick(mousePos);
-					m_activeElIdx = i;
+					setActiveElement(i);
 					break;
 				}
 			}
@@ -44,6 +41,15 @@ void UIRadioGroup::addElements(std::vector<std::shared_ptr<UIToggleButton>> elem
 	{
 		m_elements.push_back(e);
 	}
+}
+#include <iostream>
+void UIRadioGroup::setActiveElement(int idx)
+{
+	if(m_activeElIdx != -1)
+		m_elements[m_activeElIdx]->setState(UIButton::State::NORMAL);
+	sf::Vector2i mousePos(m_elements[idx]->getPosition());
+	m_elements[idx]->mouseClick(mousePos);
+	m_activeElIdx = idx;
 }
 
 void UIRadioGroup::draw(sf::RenderTarget& target, sf::RenderStates states) const

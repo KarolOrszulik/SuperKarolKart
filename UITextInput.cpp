@@ -1,4 +1,5 @@
 #include "UITextInput.h"
+#include <regex>
 
 void UITextInput::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
@@ -50,6 +51,7 @@ void UITextInput::mouseRelease(sf::Vector2i mousePos)
 		onRelease();
 	}
 }
+#include <iostream>
 
 void UITextInput::textEntered(sf::Uint32 unicode)
 {
@@ -65,7 +67,10 @@ void UITextInput::textEntered(sf::Uint32 unicode)
 		{
 			if(getText().size() >= m_maxLength) 
 				return;
-			text += std::toupper(unicode);
+			std::regex reg("[a-zA-Z0-9]");
+			std::string ch(1, static_cast<char>(unicode));
+			if(std::regex_match(ch, reg))
+				text += std::toupper(unicode);
 		}
 		m_text.setString(text);
 
