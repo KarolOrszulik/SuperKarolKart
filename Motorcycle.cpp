@@ -2,9 +2,9 @@
 
 void Motorcycle::handleMovement(float dt)
 {
-	if (m_input.skill)
+	if (m_input.skill && m_speedMultiplier >= 0.99f)
 	{
-		setSpeedMultiplier(2.f, 0.1f);
+		setSpeedMultiplier(SKILL_SPEED_MULTIPLIER, 0.1f);
 		setSteeringMultiplier(0.f, 0.1f);
 	}
 

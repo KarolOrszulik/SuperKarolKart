@@ -10,6 +10,8 @@ public:
 private:
 	void handleMovement(float dt) override;
 
+	static constexpr float SKILL_SPEED_MULTIPLIER = 1.3f;
+
 	GroundVehicle::DrivingParameters getDrivingParameters() const override
 	{
 		return GroundVehicle::DrivingParameters{

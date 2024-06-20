@@ -56,8 +56,8 @@ void Vehicle::handleCheckpoints()
 			std::cout << "Gracz " << this << " przeszedl checkpoint " << checkpointIndex.value() << std::endl;
 			if (m_nextCheckpoint == 0)
 			{
-				std::cout << "Gracz " << this << " rozpoczal nowe okrazenie" << std::endl;
 				++m_completedLaps;
+				std::cout << "Gracz " << this << " rozpoczal okrazenie " << m_completedLaps << std::endl;
 			}
 		}
 	}

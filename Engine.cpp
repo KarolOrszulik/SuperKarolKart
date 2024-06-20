@@ -17,7 +17,8 @@
 #include "Hovercraft.h"
 
 #include <iostream>
-
+#include <future>
+#include <thread>
 
 std::shared_ptr<Engine> Engine::s_instance = nullptr;
 
@@ -126,21 +127,29 @@ void Engine::onStart()
 	if(!std::filesystem::exists(fontsPath))
 		throw std::runtime_error("Fonts folder could not be found");
 
-	for (auto& p : std::filesystem::directory_iterator(texturesPath))
+	std::jthread texturesLoaderThread([this, texturesPath]() { loadTextures(texturesPath); });
+	std::jthread fontsLoaderThread([this, fontsPath]() { loadFonts(fontsPath); });
+}
+
+void Engine::loadTextures(std::filesystem::path const& path)
+{
+	for (auto& p : std::filesystem::directory_iterator(path))
 	{
 		std::string path = p.path().string();
 		std::string name = p.path().stem().string();
 		if (!m_textures[name].loadFromFile(path))
 			throw std::runtime_error("Texture " + name + " could not be loaded");
-
 	}
+}
 
-	for(auto& p : std::filesystem::directory_iterator(fontsPath))
+void Engine::loadFonts(std::filesystem::path const& path)
+{
+	for (auto& p : std::filesystem::directory_iterator(path))
 	{
 		std::string path = p.path().string();
 		std::string name = p.path().stem().string();
 		std::cout << path << std::endl;
-		if(!m_fonts[name].loadFromFile(path))
+		if (!m_fonts[name].loadFromFile(path))
 			throw std::runtime_error("Font" + name + "could not be loaded");
 	}
 }
@@ -465,8 +474,13 @@ void Engine::stateRace(float dt)
 {
 	m_raceTime += dt;
 
+	std::vector<std::future<void>> futures;
 	for (auto& player : m_players)
-		player.controlVehicle();
+		futures.push_back(std::async(std::launch::async, &Player::controlVehicle, &player));
+
+	for (auto& f : futures)
+		f.get();
+
 
 	m_world.clear(m_track.getBackgroundColor());
 
@@ -484,8 +498,15 @@ void Engine::stateRace(float dt)
 	//drawFPS(dt);
 	displayCountdown();
 
+	for (auto& player : m_players)
+	{
+		if (player.getCompletedLaps() >= gameSettings.laps && player.getFinishTime() < 0.1f)
+			player.setFinishTime(m_raceTime);
+	}
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-		m_state = State::RESULTS;
+		m_state = State::MAIN_MENU;
+
 
 	if (allPlayersFinished())
 		setGameState(State::RESULTS);
@@ -557,9 +578,35 @@ bool Engine::allPlayersFinished() const
 
 void Engine::stateResults(float dt)
 {
+	struct Result
+	{
+		float time;
+		int player;
+	};
+
+	std::vector<Result> finishTimes;
+
+	for (int i = 0; i < m_players.size(); i++)
+	{
+		finishTimes.push_back({ m_players[i].getFinishTime(), i });
+	}
+
+	std::ranges::sort(finishTimes, {}, &Result::time);
+
+	for (int i = 0; i < finishTimes.size(); i++)
+	{
+		auto& [time, player] = finishTimes[i];
+		std::cout << "Player " << player + 1 << " finished in " << time << " seconds" << std::endl;
+	}
+
+	if (m_players.size() > 0)
+		std::cout << "Enter aby wyjsc" << std::endl;
+
 	m_players.clear();
 	m_objects.clear();
-	m_state = State::MAIN_MENU;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Return))
+		m_state = State::MAIN_MENU;
 }
 
 

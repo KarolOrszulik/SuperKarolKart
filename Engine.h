@@ -70,7 +70,8 @@ private:
 	void stateResults(float dt);
 
 	void populatePlayers();
-	
+	void loadTextures(std::filesystem::path const& path);
+	void loadFonts(std::filesystem::path const& path);
 
 	void updateAllObjects(float dt);
 	void drawAllObjects();

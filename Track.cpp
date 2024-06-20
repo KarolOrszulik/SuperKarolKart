@@ -88,6 +88,10 @@ std::optional<int> Track::getCheckpointIndex(sf::Vector2f pos, float radius) con
 
 void Track::loadTrack(std::string const& path)
 {
+	m_tiles.clear();
+	m_checkpoints.clear();
+	m_playerStarts.fill(0);
+
 	std::shared_ptr<Engine> engine = Engine::getInstance();
 	std::map<char, Checkpoint> tmpCheckpoints;
 
@@ -183,22 +187,6 @@ void Track::loadTrack(std::string const& path)
 
 	addRowOfTires();
 	m_size.y++;	   // Add last row of tires
-
-	//std::vector<Tile> tilesWithBounds;
-	//for (int i = 0; i < m_size.x + 2; i++)
-	//	tilesWithBounds.push_back(Tile::TIRES);
-	//for (int i = 0; i < m_size.y; i++)
-	//{
-	//	tilesWithBounds.push_back(Tile::TIRES);
-	//	for (int j = 0; j < m_size.x; j++)
-	//		tilesWithBounds.push_back(m_tiles[tile2index(j,i)]);
-	//	tilesWithBounds.push_back(Tile::TIRES);
-	//}
-	//for (int i = 0; i < m_size.x + 2; i++)
-	//	tilesWithBounds.push_back(Tile::TIRES);
-
-	//m_tiles = std::move(tilesWithBounds);
-	//m_size += {2, 2};
 
 
 	renderTexture();

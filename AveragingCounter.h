@@ -11,7 +11,7 @@ public:
 private:
 	const float m_updateInterval = 0.5f;
 
-	float m_totalTime = 0.f;
+	float m_finishTime = 0.f;
 	float m_totalValue = 0.f;
 	size_t m_count = 0;
 
