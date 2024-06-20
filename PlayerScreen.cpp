@@ -47,6 +47,9 @@ void PlayerScreen::calculateSizeAndViewport()
 
 void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, const Player& player, float dt)
 {
+	constexpr float ANGLE_INTERPOLATION_SPEED = 5.f;
+	constexpr float ZOOM_INTERPOLATION_SPEED = 2.f;
+
 	const Vehicle& vehicle = *(player.m_vehicle);
 	Engine& engine = *Engine::getInstance();
 	auto center = vehicle.getPosition();
@@ -55,9 +58,9 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 
 
 	float newsin = static_cast<float>(
-		std::lerp(std::sin(m_screenAngle), std::sin(angle), 1 - std::exp(-dt * 5.f)));
+		std::lerp(std::sin(m_screenAngle), std::sin(angle), 1 - std::exp(-dt * ANGLE_INTERPOLATION_SPEED)));
 	float newcos = static_cast<float>(
-		std::lerp(std::cos(m_screenAngle), std::cos(angle), 1 - std::exp(-dt * 5.f)));
+		std::lerp(std::cos(m_screenAngle), std::cos(angle), 1 - std::exp(-dt * ANGLE_INTERPOLATION_SPEED)));
 	m_screenAngle = std::atan2(newsin, newcos);
 
 	calculateSizeAndViewport();
@@ -65,8 +68,12 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 	sf::View view(center, m_size);
 	view.setViewport(m_viewport);
 
-	float zoom = 0.25f * (1 + (speed / vehicle.getMaxSpeed()));
-	view.zoom(zoom); // to zmieniæ na zale¿ne od prêdkoœci jak ju¿ bêdzie coœ takiego jak prêdkoœæ
+	const float SLOPE = (ZOOM_MAX - ZOOM_MIN) / (ZOOM_SPEED_END - ZOOM_SPEED_START);
+	const float TARGET_ZOOM = std::clamp(SLOPE * (speed - ZOOM_SPEED_START) + ZOOM_MIN, ZOOM_MIN, ZOOM_MAX);
+
+	m_zoom = std::lerp(m_zoom, TARGET_ZOOM, 1 - std::exp(-dt * ZOOM_INTERPOLATION_SPEED));
+
+	view.zoom(m_zoom); // to zmieniæ na zale¿ne od prêdkoœci jak ju¿ bêdzie coœ takiego jak prêdkoœæ
 	//view.rotate(angle * 180.f / 3.1415f + 90.f); // sztywna rotacja
 	view.rotate(m_screenAngle * 180.f / 3.1415f + 90.f); // interpolowana rotacja
 	target.setView(view);
