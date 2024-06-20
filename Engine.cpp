@@ -74,7 +74,7 @@ void Engine::run()
 			else if(m_menus.contains(m_state)) m_menus[m_state].handleEvent(event);
 		}
 
-		m_window.clear();
+		m_window.clear(m_track.getBackgroundColor());
 
 		onUpdate(clock.restart().asSeconds()); // reset clock and pass delta time in seconds
 
@@ -425,7 +425,8 @@ void Engine::stateRace(float dt)
 	for (auto& player : m_players)
 		player.controlVehicle();
 
-	m_world.clear();
+	m_world.clear(m_track.getBackgroundColor());
+
 	m_track.draw(m_world);
 
 	if (m_raceTime > 0.f)

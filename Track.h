@@ -33,6 +33,8 @@ public:
 	sf::Vector2f getSize() const { return sf::Vector2f(m_size * GRID_SIZE); }
 	sf::Vector2f getPlayerStartingPos(size_t idx) const { return index2posCenter(m_playerStarts[idx]); }
 
+	sf::Color getBackgroundColor() const;
+
 private:
 	static constexpr unsigned int GRID_SIZE = 16;
 	static constexpr float GRID_SIZE_F = static_cast<float>(GRID_SIZE);

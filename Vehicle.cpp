@@ -36,7 +36,7 @@ void Vehicle::handleGroundItems()
 			const float dy = m_position.y - gipos.y;
 			const float distanceSq = dx * dx + dy * dy;
 
-			const float radius = 0.5f * Engine::getInstance()->getGridSizeF();
+			const float radius = 0.8f * Engine::getInstance()->getGridSizeF();
 			if (distanceSq <= radius * radius)
 			{
 				gi->interactWithVehicle(*this);

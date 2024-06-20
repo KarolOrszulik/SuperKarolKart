@@ -215,11 +215,12 @@ void Track::loadTilemap(std::string const& path)
 	{
 		throw std::runtime_error("Failed to load tilemap: " + path);
 	}
+	m_tilemap.setRepeated(true);
 }
 
 void Track::renderTexture()
 {
-	m_texture.create((m_size.x + 2) * GRID_SIZE, (m_size.y + 2) * GRID_SIZE);
+	m_texture.create((m_size.x) * GRID_SIZE, (m_size.y) * GRID_SIZE);
 	m_texture.clear(sf::Color::Black);
 
 	const std::map<Tile, sf::IntRect> tileRects
@@ -277,4 +278,12 @@ void Track::renderTexture()
 void Track::draw(sf::RenderTarget& target) const
 {
 	target.draw(sf::Sprite{m_texture.getTexture()});
+}
+
+sf::Color Track::getBackgroundColor() const
+{
+	if (m_tilemap.getSize().x == 0 || m_tilemap.getSize().y == 0)
+		return sf::Color::Black;
+
+	return m_tilemap.copyToImage().getPixel(0, 0);
 }
