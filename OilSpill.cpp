@@ -8,7 +8,7 @@ void OilSpill::usePowerUp(Vehicle& owner)
 	std::shared_ptr<Engine> engine = Engine::getInstance();
 	sf::Vector2f unitVec = -owner.getUnitVector();
 
-	auto oilSpill = std::make_unique<SteeringAdjuster>(engine->getTexture("oil"));
-	oilSpill->setPosition(owner.getPosition() + unitVec * 30.f);
+	auto oilSpill = std::make_unique<SpeedAdjuster>(engine->getTexture("oil"), 0.2f);
+	oilSpill->setPosition(owner.getPosition() + unitVec * engine->getGridSizeF() * 1.2f);
 	engine->addObject(std::move(oilSpill));
 }
