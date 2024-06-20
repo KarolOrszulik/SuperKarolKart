@@ -8,11 +8,6 @@ PlayerScreen::PlayerScreen(int number)
 {
 	if (number < 0 || number > 3)
 		throw std::invalid_argument("Player number must be in range [0, 3]");
-
-	m_speedStyle.bgColor = sf::Color::Transparent;
-	m_speedStyle.fontColor = sf::Color::White;
-	m_speedStyle.bgColor = sf::Color::Transparent;
-	m_speedStyle.fontOutlineColor = sf::Color::Black;
 }
 
 void PlayerScreen::calculateSizeAndViewport()
@@ -82,21 +77,21 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 	engine.resetWindowView();
 
 
-	float vh = target.getSize().y / 100.0f;
+	sf::Vector2f windowSize(target.getSize());
+	float vh = windowSize.y / 100.0f;
 
-	sf::Vector2f speedOffset = (m_viewport.getSize() + m_viewport.getPosition());
-	sf::Vector2f speedPos = { speedOffset.x * target.getSize().x, speedOffset.y * target.getSize().y };
 
 	UIButton speedDisplay = generateSpeedDisplay(speed, vh, dt);
-	speedDisplay.setPosition(speedPos);
+	speedDisplay.setPosition(getCornerPosition(Corner::BOT_RIGHT, windowSize));
 	speedDisplay.draw(target, {});
 
 	UIImage itemImage = generateItemImage(vehicle, vh);
-	itemImage.setPosition(
-		{m_viewport.getPosition().x * target.getSize().x,
-		 m_viewport.getPosition().y * target.getSize().y});
-
+	itemImage.setPosition(getCornerPosition(Corner::TOP_LEFT, windowSize));
 	itemImage.draw(target, {});
+
+	UIButton lapCounter = generateLapCounter(player, vh);
+	lapCounter.setPosition(getCornerPosition(Corner::BOT_LEFT, windowSize));
+	lapCounter.draw(target, {});
 }
 
 UIButton PlayerScreen::generateSpeedDisplay(float speed, float vh, float dt)
@@ -109,12 +104,32 @@ UIButton PlayerScreen::generateSpeedDisplay(float speed, float vh, float dt)
 	auto engine = Engine::getInstance();
 	const sf::Font& font = engine->getFont("SKK");
 
+	UIButton::Style speedStyle;
 	sf::Uint8 whiteLevel = static_cast<int>(255 * (1.f - std::min(speed / 200.f, 1.f)));
-	m_speedStyle.fontColor = { 255 , whiteLevel, whiteLevel, 255 };
-	m_speedStyle.fontOutlineThickness = 1 * vh;
+	speedStyle.fontColor = { 255 , whiteLevel, whiteLevel, 255 };
+	speedStyle.fontOutlineThickness = 1 * vh;
 
-	UIElementFactory factory(m_speedStyle, font, static_cast<int>(7 * vh));
+	UIElementFactory factory(speedStyle, font, static_cast<int>(5 * vh));
 	return factory.makeBtn(speedStr, {}, UIElement::Origin::BOT_RIGHT);
+}
+
+UIButton PlayerScreen::generateLapCounter(const Player& player, float vh)
+{
+	auto engine = Engine::getInstance();
+	const sf::Font& font = engine->getFont("SKK");
+	size_t playerLaps = player.getCompletedLaps() + 1;
+	size_t totalLaps = engine->getNumLaps();
+	
+	UIButton::Style lapStyle;
+	lapStyle.fontOutlineThickness = 1 * vh;
+
+	std::string lapCount = "Lap " +
+		std::to_string(playerLaps) 
+		+ " / "  
+		+ std::to_string(totalLaps);
+
+	UIElementFactory factory(lapStyle, font, static_cast<int>(5 * vh));
+	return factory.makeBtn(lapCount, {}, UIElement::Origin::BOT_LEFT);
 }
 
 UIImage PlayerScreen::generateItemImage(const Vehicle& vehicle, float vh)
@@ -135,4 +150,19 @@ UIImage PlayerScreen::generateItemImage(const Vehicle& vehicle, float vh)
 		{}, UIElement::Origin::TOP_LEFT,
 		paddingPercent * vh, 
 		sizePercent * sf::Vector2f{ vh, vh });
+}
+
+sf::Vector2f PlayerScreen::getCornerPosition(
+	Corner corner, 
+	sf::Vector2f targetSize) const
+{
+	sf::Vector2f leftCorner = m_viewport.getPosition();
+	
+	if(corner == Corner::BOT_LEFT || corner == Corner::BOT_RIGHT)
+		leftCorner += {0.f, m_viewport.getSize().y};
+	
+	if(corner == Corner::TOP_RIGHT || corner == Corner::BOT_RIGHT)
+		leftCorner += {m_viewport.getSize().x, 0.f};
+	
+	return {leftCorner.x * targetSize.x, leftCorner.y * targetSize.y};
 }
