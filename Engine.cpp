@@ -92,6 +92,10 @@ void Engine::resetWindowView()
 	sf::View view(sf::FloatRect({ 0.0, 0.0 }, newSize));
 	m_window.setView(view);
 	m_menus.erase(m_state);
+
+	// update font outline
+	m_normStyle.fontOutlineThickness = 1.f * 1_vh;
+	m_selStyle.fontOutlineThickness = 1.f * 1_vh;
 }
 
 const sf::Texture& Engine::getTexture(const std::string& name)
@@ -115,6 +119,13 @@ const sf::Texture& Engine::getTexture(const std::string& name)
 
 void Engine::onStart()
 {
+	m_normStyle.bgColor = { 0,   0,   0,   0 };
+	m_normStyle.fontColor = { 255, 255, 255, 255 };
+	m_normStyle.fontOutlineThickness = 1.f * 1_vh;
+	m_hovStyle.fontColor = { 220, 220, 220, 255 };
+	m_selStyle.fontOutlineThickness = 1.f * 1_vh;
+	m_selStyle.fontColor = { 180, 180, 180, 255 };
+
 	m_state = State::MAIN_MENU;
 	m_assetsPath = "assets/";
 	std::filesystem::path texturesPath = m_assetsPath / "textures";
@@ -150,7 +161,6 @@ void Engine::loadFonts(std::filesystem::path const& path)
 	{
 		std::string path = p.path().string();
 		std::string name = p.path().stem().string();
-		std::cout << path << std::endl;
 		if (!m_fonts[name].loadFromFile(path))
 			throw std::runtime_error("Font" + name + "could not be loaded");
 	}
@@ -221,20 +231,13 @@ void Engine::stateMainMenu(float dt)
 {
 	if (!m_menus.contains(State::MAIN_MENU))
 	{
-		UIButton::Style normStyle, hovStyle, selStyle;
-		normStyle.bgColor   =	{   0,   0,   0,   0 };
-		normStyle.fontColor =	{ 255, 255, 255, 255 };
-		hovStyle.fontColor  =	{ 255, 200,   0, 255 };
-		selStyle.fontColor  =	{ 255,   0,   0, 255 };
-
-		UIElementFactory textFactory(normStyle, normStyle, normStyle, getFont("SKK"), 15_vh);
-		UIElementFactory btnFactory(normStyle, hovStyle, selStyle, getFont("SKK"), 10_vh);
+		UIElementFactory textFactory(m_normStyle, m_normStyle, m_normStyle, getFont("SKK"), 15_vh);
+		UIElementFactory btnFactory(m_normStyle, m_hovStyle, m_selStyle, getFont("SKK"), 10_vh);
 
 		Menu& menu = m_menus[State::MAIN_MENU];
 		menu.setBgColor({ 20,170,150,255 });
 		menu.setSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
 
-		//auto img = std::make_shared<UIImage>(normStyle, getTexture("kart"));
 		auto img = textFactory.makeImgPtr(getTexture("kart"));
 		menu.addElement(img);
 
@@ -268,20 +271,14 @@ void Engine::stateSetup(float dt)
 {
 	if (!m_menus.contains(State::SETUP_MENU))
 	{
-		UIButton::Style normStyle, hovStyle, selStyle;
-		normStyle.bgColor   = {   0,   0,   0,   0 };
-		normStyle.fontColor = { 255, 255, 255, 255 };
-		hovStyle.fontColor  = { 255, 200,   0, 255 };
-		selStyle.fontColor  = { 255,   0,   0, 255 };
-
 		Menu& menu = m_menus[State::SETUP_MENU];
 		menu.setBgColor({ 20,170,150,255 });
 		menu.setSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
 
 		// <---- Button factory ---->
 
-		UIElementFactory textFactory(normStyle, normStyle, normStyle, getFont("SKK"), 15_vh);
-		UIElementFactory btnFactory(normStyle, hovStyle, selStyle, getFont("SKK"), 5_vh);
+		UIElementFactory textFactory(m_normStyle, m_normStyle, m_normStyle, getFont("SKK"), 15_vh);
+		UIElementFactory btnFactory(m_normStyle, m_hovStyle, m_selStyle, getFont("SKK"), 5_vh);
 		
 		// <---- Title ---->
 		auto title = textFactory.makeBtnPtr("Super Karol Kart", { 0, 5.0_vh });
@@ -319,23 +316,24 @@ void Engine::stateSetup(float dt)
 		std::vector<std::shared_ptr<UIToggleButton>> trackBtns{
 			btnFactory.makeTogglePtr("Szombierki", { 50.0_vw, 30.0_vh }),
 			btnFactory.makeTogglePtr("Opole", { 50.0_vw, 45.0_vh }),
-			btnFactory.makeTogglePtr("Spa", { 50.0_vw, 60.0_vh })
+			btnFactory.makeTogglePtr("Spa", { 50.0_vw, 60.0_vh }),
+			btnFactory.makeTogglePtr("Small", { 50.0_vw, 75.0_vh })
 		};
 
 		trackBtns[0]->setOnSelected([this]() {
 			m_gameSettings.trackName = "track_00.txt";
-			std::cout << m_gameSettings.trackName << std::endl;
 		});
 		trackBtns[1]->setOnSelected([this]() {
 			m_gameSettings.trackName = "track_01.txt";
-			std::cout << m_gameSettings.trackName << std::endl;
 		});
 		trackBtns[2]->setOnSelected([this]() {
 			m_gameSettings.trackName = "track_02.txt";
-			std::cout << m_gameSettings.trackName << std::endl;
 		});
-
+		trackBtns[3]->setOnSelected([this]() {
+			m_gameSettings.trackName = "Small.txt";
+		});
 		trackSelection->addElements(trackBtns);
+		trackSelection->setActiveElement(0);
 		menu.addElement(trackSelection);
 
 
@@ -362,13 +360,6 @@ void Engine::stateVehicleMenu(float dt)
 		menu.setSize(
 			{ (float)m_window.getSize().x, (float)m_window.getSize().y });
 
-		// <---- Styles ---->
-		UIButton::Style normStyle, hovStyle, selStyle;
-		normStyle.bgColor   = {   0,   0,   0,   0 };
-		normStyle.fontColor = { 255, 255, 255, 255 };
-		hovStyle.fontColor  = { 255, 200,   0, 255 };
-		selStyle.fontColor  = { 255,   0,   0, 255 };
-
 		UIButton::Style inpTxtNorm, inpTxtHov, inpTxtSel;
 		inpTxtNorm.bgColor   = {   0,   0, 200, 255 };
 		inpTxtNorm.fontColor = { 255, 255, 255, 255 };
@@ -377,10 +368,9 @@ void Engine::stateVehicleMenu(float dt)
 		inpTxtSel.bgColor    = { 200,   0,   0, 255 };
 		inpTxtSel.fontColor  = { 255, 255, 255, 255 };
 
-
 		// <---- Button factory ---->
-		UIElementFactory txtFactory(normStyle, normStyle, normStyle, getFont("SKK"), 15_vh);
-		UIElementFactory btnFactory(normStyle, hovStyle, selStyle, getFont("SKK"), 5_vh);
+		UIElementFactory txtFactory(m_normStyle, m_normStyle, m_normStyle, getFont("SKK"), 15_vh);
+		UIElementFactory btnFactory(m_normStyle, m_hovStyle, m_selStyle, getFont("SKK"), 5_vh);
 		UIElementFactory inpFactory(inpTxtNorm, inpTxtHov, inpTxtSel, getFont("SKK"), 5_vh);
 
 		// <---- Title ---->
@@ -419,7 +409,6 @@ void Engine::stateVehicleMenu(float dt)
 				vehicleSelect->setActiveElement(m_gameSettings.vehicle[i] - 1);
 			else
 				vehicleSelect->setActiveElement(0);
-
 
 			menu.addElement(vehicleSelect);
 
@@ -502,6 +491,9 @@ void Engine::stateRace(float dt)
 	for (auto& player : m_players)
 		player.drawPlayerScreen(m_world, m_window, dt);
 
+	// draw borders for split screen
+	displayBorders();
+
 	// draw the UI elements for initial countdown
 	displayCountdown();
 
@@ -517,6 +509,31 @@ void Engine::stateRace(float dt)
 	// proper exit
 	if (allPlayersFinished())
 		setGameState(State::RESULTS);
+}
+
+void Engine::displayBorders()
+{
+	if (getNumPlayers() >= 2)
+	{
+		sf::RectangleShape blackStripeV({ 1._vh, 100._vh });
+		blackStripeV.setPosition({ 49.5_vw, 0 });
+		blackStripeV.setFillColor(sf::Color::Black);
+		m_window.draw(blackStripeV);
+	}
+	if (getNumPlayers() >= 3)
+	{
+		sf::RectangleShape blackStripeH({ 100._vw, 1._vh });
+		blackStripeH.setFillColor(sf::Color::Black);
+		blackStripeH.setPosition({ 0, 49.5_vh });
+		m_window.draw(blackStripeH);
+	}
+	if (getNumPlayers() == 3)
+	{
+		sf::RectangleShape blackBox({ 50._vw, 50._vh });
+		blackBox.setFillColor(sf::Color::Black);
+		blackBox.setPosition({ 50._vw, 50._vh });
+		m_window.draw(blackBox);
+	}
 }
 
 void Engine::displayCountdown()
@@ -601,15 +618,9 @@ void Engine::stateResults(float dt)
 		}
 
 		std::ranges::sort(finishTimes, {}, &Result::time);
-		UIButton::Style normStyle, hovStyle, selStyle;
-		normStyle.bgColor   = {   0,   0,   0,   0 };
-		normStyle.fontColor = { 255, 255, 255, 255 };
-		hovStyle.fontColor  = { 255, 200,   0, 255 };
-		selStyle.fontColor  = { 255,   0,   0, 255 };
 
-		UIElementFactory factory(normStyle, getFont("SKK"), 15_vh);
-		UIElementFactory factoryBtn(normStyle, hovStyle, selStyle, getFont("SKK"), 10_vh);
-
+		UIElementFactory factory(m_normStyle, getFont("SKK"), 15_vh);
+		UIElementFactory factoryBtn(m_normStyle, m_hovStyle, m_selStyle, getFont("SKK"), 10_vh);
 
 		Menu& menu = m_menus[State::RESULTS];
 		menu.setBgColor({ 20,170,150,255 });

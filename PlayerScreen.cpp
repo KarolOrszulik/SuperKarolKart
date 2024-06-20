@@ -83,10 +83,12 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 
 	UIButton speedDisplay = generateSpeedDisplay(speed, vh, dt);
 	speedDisplay.setPosition(getCornerPosition(Corner::BOT_RIGHT, windowSize));
+	speedDisplay.move({ -1.f * vh, -1 * vh });
 	speedDisplay.draw(target, {});
 
 	UIImage itemImage = generateItemImage(vehicle, vh);
 	itemImage.setPosition(getCornerPosition(Corner::TOP_LEFT, windowSize));
+	itemImage.move({ 1.f * vh, 1 * vh });
 	itemImage.draw(target, {});
 
 	UIButton lapCounter = generateLapCounter(player, vh);

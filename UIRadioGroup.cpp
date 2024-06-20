@@ -54,11 +54,8 @@ void UIRadioGroup::setActiveElement(int idx)
 
 void UIRadioGroup::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-
-	UIElement::draw(target, states);
-
 	for (auto const& element : m_elements)
 	{
-		element->draw(target, getTransform());
+		element->draw(target, states);
 	}
 }

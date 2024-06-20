@@ -79,6 +79,7 @@ private:
 	void drawAllObjects();
 	void addObjectsToAdd();
 	void removeObjectsForRemoval();
+	void displayBorders();
 	void displayCountdown();
 	bool allPlayersFinished() const;
 
@@ -99,13 +100,14 @@ private:
 	std::unordered_map<std::string, sf::Texture> m_textures;
 
 	std::unordered_map<State, Menu> m_menus;
+	UIButton::Style m_normStyle, m_hovStyle, m_selStyle;
 
 	float m_raceTime;
 	struct Settings
 	{
 		int numPlayers = -1;
 		std::string playerNames[4]{};
-		std::string trackName;
+		std::string trackName{};
 		int vehicle[4]{};
 		int laps = 3;
 		bool drawFPS = true;
