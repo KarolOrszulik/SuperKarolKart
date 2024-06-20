@@ -80,7 +80,9 @@ void Engine::run()
 		onUpdate(clock.restart().asSeconds()); // reset clock and pass delta time in seconds
 
 		m_window.display();
-	}
+		if(m_gameSettings.shouldClose)
+			m_window.close();
+	}	
 }
 
 void Engine::resetWindowView()
@@ -211,8 +213,8 @@ void Engine::populatePlayers()
 
 void Engine::setGameState(State state)
 {
-	m_state = state;
 	m_menus.erase(m_state);
+	m_state = state;
 }
 
 void Engine::stateMainMenu(float dt)
@@ -255,7 +257,7 @@ void Engine::stateMainMenu(float dt)
 		// <---- Exit Button ---->
 		auto btnExit = btnFactory.makeBtnPtr("EXIT", { 0, 60.0_vh });
 		btnExit->centerHorizontally(menu.getWidth());
-		btnExit->onRelease = [this]() { m_window.close(); };
+		btnExit->onRelease = [this]() { m_gameSettings.shouldClose = true; };
 
 		menu.addElement(btnExit);
 	}
@@ -510,7 +512,7 @@ void Engine::stateRace(float dt)
 
 	// early exit
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-		m_state = State::MAIN_MENU;
+		setGameState(State::MAIN_MENU);
 
 	// proper exit
 	if (allPlayersFinished())

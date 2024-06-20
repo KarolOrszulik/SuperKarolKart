@@ -109,6 +109,7 @@ private:
 		int vehicle[4]{};
 		int laps = 3;
 		bool drawFPS = true;
+		bool shouldClose = false;
 		Settings() = default;
 	} m_gameSettings;
 
