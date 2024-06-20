@@ -15,7 +15,6 @@ public:
 
 private:
 	void calculateSizeAndViewport();
-	sf::Vector2f calculateSpeedPos();
 
 	int m_number;
 	sf::Vector2f m_size;

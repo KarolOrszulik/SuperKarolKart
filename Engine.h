@@ -69,6 +69,11 @@ private:
 
 	void populatePlayers();
 
+	void addObjectsToAdd();
+	void removeObjectsForRemoval();
+	void displayCountdown();
+	bool allPlayersFinished() const;
+
 	State m_state = State::MAIN_MENU;
 
 	std::unordered_set<std::unique_ptr<GameObject>> m_objects;
@@ -81,17 +86,20 @@ private:
 	sf::RenderWindow m_window;
 	Track m_track;
 
+	std::filesystem::path m_assetsPath;
 	std::unordered_map<std::string, sf::Font> m_fonts;
 	std::unordered_map<std::string, sf::Texture> m_textures;
 
 	std::unordered_map<State, Menu> m_menus;
-	std::filesystem::path m_assetsPath;
+
+	float m_raceTime;
 	struct Settings
 	{
 		int numPlayers = -1;
 		std::string trackName;
 		std::string playerNames[4]{};
 		int vehicle[4]{};
+		int laps = 3;
 	} gameSettings;
 
 	friend float operator ""_vh(long double);

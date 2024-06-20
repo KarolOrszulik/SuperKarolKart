@@ -195,10 +195,6 @@ void Engine::stateMainMenu(float dt)
 		hovStyle.fontColor  =	{ 255, 200,   0, 255 };
 		selStyle.fontColor  =	{ 255,   0,   0, 255 };
 
-		auto image = std::make_shared<UIImage>(normStyle, getTexture("bowling"));
-		image->setSize({ 10._vh, 10._vh });
-		image->expandImageToSize();
-
 		UIElementFactory textFactory(normStyle, normStyle, normStyle, getFont("SKK"), 15_vh);
 		UIElementFactory btnFactory(normStyle, hovStyle, selStyle, getFont("SKK"), 10_vh);
 
@@ -211,7 +207,6 @@ void Engine::stateMainMenu(float dt)
 		title->centerHorizontally(menu.getWidth());
 
 		menu.addElement(title);
-		menu.addElement(image);
 
 		// <---- Start Button ---->
 		auto btnPlay = btnFactory.makeBtnPtr("PLAY", { 0, 35.0_vh });
@@ -397,29 +392,76 @@ void Engine::statePreRace(float dt)
 
 	populatePlayers();
 
+	m_raceTime = -3.f;
 	setGameState(State::RACE);
 }
 
 void Engine::stateRace(float dt)
 {
-	for (auto& player : m_players)
-		player.controlVehicle();
+	m_raceTime += dt;
+	if(m_raceTime > 0.f)
+		for (auto& player : m_players)
+			player.controlVehicle();
 
 	m_world.clear();
 	m_track.draw(m_world);
 	for (auto& obj : m_objects)
 	{
-		obj->update(dt);
+		if(m_raceTime > 0)
+			obj->update(dt);
 		obj->draw(m_world);
 	}
 	m_world.display(); // finalize drawing the world
 
-	// add objects from m_objectsToAdd to m_objects
+	addObjectsToAdd();
+	removeObjectsForRemoval();
+
+
+	for (auto& player : m_players)
+		player.drawPlayerScreen(m_world, m_window, dt);
+
+	drawFPS(dt);
+	displayCountdown();
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+		m_state = State::RESULTS;
+
+	
+
+	if (allPlayersFinished())
+		setGameState(State::RESULTS);
+}
+
+void Engine::displayCountdown()
+{
+	UIButton::Style normStyle;
+	normStyle.fontOutlineThickness = 2._vh;
+	UIElementFactory factory(normStyle, getFont("SKK"), 20_vh);
+	UIButton txt;
+	if (m_raceTime < 0.f)
+	{
+		auto time = std::to_string(int(-m_raceTime + 1));
+		txt = factory.makeBtn(time, { 50._vw, 50._vh}, UIElement::Origin::MID_CENTER);
+	}
+	else if (m_raceTime < 1.f )
+	{
+		txt = factory.makeBtn("GO!", { 50._vw, 50._vh }, UIElement::Origin::MID_CENTER);
+	}
+	if (getNumPlayers() == 1)
+		txt.setPosition({ 50._vw, 25._vh });
+	txt.draw(m_window, {});
+}
+
+
+void Engine::addObjectsToAdd()
+{
 	for (auto& obj : m_objectsToAdd)
 		m_objects.emplace(std::move(obj));
 	m_objectsToAdd.clear();
+}
 
-	// remove objects from m_objects which are in m_objectsToRemove
+void Engine::removeObjectsForRemoval()
+{
 	for (auto& obj : m_objectsToRemove)
 	{
 		auto it = std::ranges::find_if(m_objects, [obj](auto& p) { return p.get() == obj; });
@@ -427,26 +469,15 @@ void Engine::stateRace(float dt)
 			m_objects.erase(it);
 	}
 	m_objectsToRemove.clear();
+}
 
-
-	for (auto& player : m_players)
-		player.drawPlayerScreen(m_world, m_window, dt);
-
-
-	drawFPS(dt);
-
-
-	sf::Text text("Escape to end race", getFont("SKK"), 24);
-	text.setFillColor(sf::Color::White);
-	text.move(0, 30);
-	m_window.draw(text);
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-		m_state = State::RESULTS;
-
-	constexpr size_t LAPS = 3;
-	if (std::ranges::all_of(m_players, [](Player const& p) {return p.getCompletedLaps() >= LAPS; }))
-		m_state = State::RESULTS;
+bool Engine::allPlayersFinished() const
+{
+	return std::ranges::all_of(m_players, 
+		[this](Player const& p) { 
+			return p.getCompletedLaps() >= gameSettings.laps; 
+		}
+	);
 }
 
 void Engine::stateResults(float dt)

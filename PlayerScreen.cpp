@@ -51,7 +51,7 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 	Engine& engine = *Engine::getInstance();
 	auto center = vehicle.getPosition();
 	auto angle = vehicle.getAngle();
-	auto speed = std::abs(std::roundf(vehicle.getSpeed()));
+	auto speed = std::abs(std::round(vehicle.getSpeed()));
 
 
 	float newsin = static_cast<float>(
@@ -64,6 +64,7 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 
 	sf::View view(center, m_size);
 	view.setViewport(m_viewport);
+
 	float zoom = 0.25f * (1 + (speed / vehicle.getMaxSpeed()));
 	view.zoom(zoom); // to zmieniæ na zale¿ne od prêdkoœci jak ju¿ bêdzie coœ takiego jak prêdkoœæ
 	//view.rotate(angle * 180.f / 3.1415f + 90.f); // sztywna rotacja
@@ -83,17 +84,12 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 	auto speedInt = static_cast<int>(m_speedCounter.getValue());
 	std::string speedStr = std::to_string(speedInt) + "km/h";
 
-	sf::Uint8 whiteLevel = 255 * (1.f - std::min(speed / 200.f, 1.f));
+	sf::Uint8 whiteLevel = static_cast<int>(255 * (1.f - std::min(speed / 200.f, 1.f)));
 	m_speedStyle.fontColor = { 255 , whiteLevel, whiteLevel, 255 };
 	m_speedStyle.fontOutlineThickness = 1 * vh;
 
-	UIElementFactory factory(m_speedStyle, engine.getFont("SKK"), 7 * vh);
+	UIElementFactory factory(m_speedStyle, engine.getFont("SKK"), static_cast<int>(7 * vh));
 	auto speedDisp = factory.makeBtn(speedStr, pos, UIElement::Origin::BOT_RIGHT);
 	speedDisp.draw(target, {});
 
-}
-
-sf::Vector2f PlayerScreen::calculateSpeedPos()
-{
-	return sf::Vector2f();
 }

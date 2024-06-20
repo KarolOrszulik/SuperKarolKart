@@ -75,7 +75,7 @@ void UIButton::shrinkSizeToText()
 
 void UIButton::applyPadding(unsigned padding)
 {
-	sf::Vector2f paddingVec(padding, padding);
+	sf::Vector2f paddingVec(static_cast<float>(padding), static_cast<float>(padding));
 	sf::Vector2f newSize = getSize();
 	newSize += paddingVec * 2.f; // ???
 
