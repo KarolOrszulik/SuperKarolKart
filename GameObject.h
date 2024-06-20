@@ -26,7 +26,5 @@ protected:
 
 private:
 	sf::Sprite m_sprite;
-
-	static sf::Uint8 checkboard[];
 };
 
