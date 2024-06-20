@@ -390,6 +390,9 @@ void Engine::statePreRace(float dt)
 	sf::Vector2u worldSize(m_track.getSize());
 	m_world.create(worldSize.x, worldSize.y);
 
+	updateAllObjects(dt);
+	updateAllObjects(dt);
+
 	populatePlayers();
 
 	m_raceTime = -3.f;
@@ -399,22 +402,17 @@ void Engine::statePreRace(float dt)
 void Engine::stateRace(float dt)
 {
 	m_raceTime += dt;
-	if(m_raceTime > 0.f)
-		for (auto& player : m_players)
-			player.controlVehicle();
+
+	for (auto& player : m_players)
+		player.controlVehicle();
 
 	m_world.clear();
 	m_track.draw(m_world);
-	for (auto& obj : m_objects)
-	{
-		if(m_raceTime > 0)
-			obj->update(dt);
-		obj->draw(m_world);
-	}
-	m_world.display(); // finalize drawing the world
 
-	addObjectsToAdd();
-	removeObjectsForRemoval();
+	if (m_raceTime > 0.f)
+		updateAllObjects(dt);
+
+	drawAllObjects();
 
 
 	for (auto& player : m_players)
@@ -452,6 +450,22 @@ void Engine::displayCountdown()
 	txt.draw(m_window, {});
 }
 
+
+void Engine::updateAllObjects(float dt)
+{
+	for (auto& obj : m_objects)
+		obj->update(dt);
+
+	addObjectsToAdd();
+	removeObjectsForRemoval();
+}
+
+void Engine::drawAllObjects()
+{
+	for (auto& obj : m_objects)
+		obj->draw(m_world);
+	m_world.display();
+}
 
 void Engine::addObjectsToAdd()
 {
