@@ -3,6 +3,7 @@
 #include "PowerUp.h"
 #include "BowlingBall.h"
 #include "OilSpill.h"
+#include "Arrows.h"
 #include <cmath>
 
 
@@ -18,11 +19,19 @@ void Box::interactWithVehicle(Vehicle& vehicle)
 {
 	auto engine = Engine::getInstance();
 	srand(time(NULL));
-	auto x = rand();
-	if (x % 2 == 0)
+	auto x = rand() % 3;
+	switch (x)
+	{
+	case 0:
 		vehicle.setPowerUp(std::make_unique<BowlingBall>(engine->getTexture("bowling")));
-	else
+		break;
+	case 1:
 		vehicle.setPowerUp(std::make_unique<OilSpill>(engine->getTexture("oil")));
+		break;
+	case 2:
+		vehicle.setPowerUp(std::make_unique<Arrows>(engine->getTexture("arrows")));
+		break;
+	}
 	engine->flagForRemoval(this);
 
 	GroundItem::interactWithVehicle(vehicle);
