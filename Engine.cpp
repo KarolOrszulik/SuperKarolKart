@@ -481,6 +481,7 @@ void Engine::stateRace(float dt)
 {
 	m_raceTime += dt;
 
+	// collect player input in parallel
 	std::vector<std::future<void>> futures;
 	for (auto& player : m_players)
 		futures.push_back(std::async(std::launch::async, &Player::controlVehicle, &player));
@@ -488,31 +489,32 @@ void Engine::stateRace(float dt)
 	for (auto& f : futures)
 		f.get();
 
-
-	m_world.clear(m_track.getBackgroundColor());
-
-	m_track.draw(m_world);
-
-	if (m_raceTime > 0.f)
+	// update all objects if the race has begun
+	if (raceHasStarted())
 		updateAllObjects(dt);
 
+	// draw the track and all objects to the world
+	m_world.clear(m_track.getBackgroundColor());
+	m_track.draw(m_world);
 	drawAllObjects();
 
-
+	// draw the world from each player's perspective
 	for (auto& player : m_players)
 		player.drawPlayerScreen(m_world, m_window, dt);
 
+	// draw the UI elements for initial countdown
 	displayCountdown();
 
+	// update race completion times
 	for (auto& player : m_players)
-	{
 		if (player.getCompletedLaps() >= m_gameSettings.laps && player.getFinishTime() < 0.1f)
 			player.setFinishTime(m_raceTime);
-	}
 
+	// early exit
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
 		m_state = State::MAIN_MENU;
 
+	// proper exit
 	if (allPlayersFinished())
 		setGameState(State::RESULTS);
 }
