@@ -341,7 +341,7 @@ void Engine::stateSetup(float dt)
 		auto btnGO = btnFactory.makeBtnPtr("START!", { 0, 90.0_vh });
 		btnGO->centerHorizontally(menu.getWidth());
 		btnGO->onRelease = [this]() {
-			if (m_gameSettings.numPlayers > 0) {
+			if (m_gameSettings.numPlayers > 0 && !m_gameSettings.trackName.empty()) {
 				setGameState(State::VEHICLE_MENU);
 			}
 		};
@@ -459,9 +459,7 @@ void Engine::statePreRace(float dt)
 	m_objects.clear();
 	std::string trackPath = (m_assetsPath / "track").string();
 	m_track.loadTilemap(trackPath + "/track_tileset.png");
-	//m_track.loadTrack(trackPath + "/" + m_gameSettings.trackName);
-	m_track.loadTrack(trackPath + "/small.txt");
-
+	m_track.loadTrack(trackPath + "/" + m_gameSettings.trackName);
 
 	sf::Vector2u worldSize(m_track.getSize());
 	m_world.create(worldSize.x, worldSize.y);

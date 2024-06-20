@@ -106,7 +106,7 @@ private:
 		std::string trackName;
 		int vehicle[4]{};
 		int laps = 3;
-		bool drawFPS = false;
+		bool drawFPS = true;
 		Settings() = default;
 	} m_gameSettings;
 
