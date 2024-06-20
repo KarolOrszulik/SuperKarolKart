@@ -624,7 +624,13 @@ void Engine::stateResults(float dt)
 		for (int i = 0; i < finishTimes.size(); i++)
 		{
 			auto& [time, player] = finishTimes[i];
-			std::string timeStr = std::to_string(time) + "s";
+
+			const int minutes = std::floor(time / 60.f);
+			const int seconds = std::fmod(time, 60.f);
+			const int hundredths = std::fmod(time, 1.f) * 100;
+			const char* leadingZero = seconds < 10 ? "0" : "";
+
+			std::string timeStr = std::to_string(minutes) + ":" + leadingZero + std::to_string(seconds) + "." + std::to_string(hundredths);
 			std::string place = "#" + std::to_string(i + 1) + ": ";
 			std::string result = place + player->getName() + " finished in " + timeStr;
 
