@@ -106,10 +106,12 @@ void Track::loadTrack(std::string const& path)
 		{ '?', Tile::VLC }
 	};
 
+	auto addRowOfTires = [this] { for (int i = 0; i < m_size.x; i++) m_tiles.push_back(Tile::TIRES); };
+
 	std::string line;
 	for (int y = 0; std::getline(file, line); y++)
 	{
-		if (m_size.x != 0 && m_size.x != line.length())
+		if (m_size.x != 0 && m_size.x != line.length() + 2)
 		{
 			std::cerr << "Invalid track file: all lines must have the same length" << std::endl;
 			return;
@@ -117,13 +119,20 @@ void Track::loadTrack(std::string const& path)
 		else
 		{
 			m_size.x = static_cast<unsigned int>(line.length());
+			m_size.x += 2; // Add tires on the sides
 		}
 		m_size.y = y+1;
 
-
-		for (int x = 0; x < line.length(); x++)
+		if (y == 0)
 		{
-			char c = line[x];
+			addRowOfTires();
+			y++;
+		}
+
+		m_tiles.push_back(Tile::TIRES);
+		for (int x = 1; x <= line.length(); x++)
+		{
+			char c = line[x-1];
 			try
 			{
 				if (c == '!') // speed booster
@@ -169,7 +178,28 @@ void Track::loadTrack(std::string const& path)
 				m_tiles.push_back(Tile::ROAD);
 			}
 		}
+		m_tiles.push_back(Tile::TIRES);
 	}
+
+	addRowOfTires();
+	m_size.y++;	   // Add last row of tires
+
+	//std::vector<Tile> tilesWithBounds;
+	//for (int i = 0; i < m_size.x + 2; i++)
+	//	tilesWithBounds.push_back(Tile::TIRES);
+	//for (int i = 0; i < m_size.y; i++)
+	//{
+	//	tilesWithBounds.push_back(Tile::TIRES);
+	//	for (int j = 0; j < m_size.x; j++)
+	//		tilesWithBounds.push_back(m_tiles[tile2index(j,i)]);
+	//	tilesWithBounds.push_back(Tile::TIRES);
+	//}
+	//for (int i = 0; i < m_size.x + 2; i++)
+	//	tilesWithBounds.push_back(Tile::TIRES);
+
+	//m_tiles = std::move(tilesWithBounds);
+	//m_size += {2, 2};
+
 
 	renderTexture();
 
@@ -189,7 +219,7 @@ void Track::loadTilemap(std::string const& path)
 
 void Track::renderTexture()
 {
-	m_texture.create(m_size.x * GRID_SIZE, m_size.y * GRID_SIZE);
+	m_texture.create((m_size.x + 2) * GRID_SIZE, (m_size.y + 2) * GRID_SIZE);
 	m_texture.clear(sf::Color::Black);
 
 	const std::map<Tile, sf::IntRect> tileRects
@@ -198,7 +228,8 @@ void Track::renderTexture()
 		{ Tile::ROAD,		 sf::IntRect(1 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) },
 		{ Tile::ROAD_CORNER, sf::IntRect(2 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) },
 		{ Tile::FINISH,      sf::IntRect(3 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) },
-		{ Tile::VLC,         sf::IntRect(4 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) }
+		{ Tile::VLC,         sf::IntRect(4 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) },
+		{ Tile::TIRES,       sf::IntRect(5 * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE) }
 	};
 
 	for (uint32_t y = 0; y < m_size.y; ++y)

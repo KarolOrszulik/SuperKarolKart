@@ -2,6 +2,23 @@
 
 void GroundVehicle::handleMovement(float dt)
 {
+	const float margin = 1.2f * m_track->getGridSizeF();
+	if (m_position.x <= margin || m_position.x >= m_track->getSize().x - margin)
+	{
+		// reflect m_angle around x-axis
+		m_angle = 3.14f - m_angle;
+		m_position.x = std::clamp(m_position.x, margin, m_track->getSize().x - margin);
+		m_speed *= 0.7f;
+	}
+	if (m_position.y <= margin || m_position.y >= m_track->getSize().y - margin)
+	{
+		// reflect m_angle around y-axis
+		m_angle = -m_angle;
+		m_position.y = std::clamp(m_position.y, margin, m_track->getSize().y - margin);
+		m_speed *= 0.7f;
+	}
+
+
 	const DrivingParameters p = getDrivingParameters();
 
 	Track::Tile tile = m_track->atPos(m_position);
