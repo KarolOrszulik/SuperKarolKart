@@ -500,7 +500,7 @@ void Engine::stateRace(float dt)
 
 	for (auto& player : m_players)
 	{
-		if (player.getCompletedLaps() >= gameSettings.laps && player.getFinishTime() < 0.1f)
+		if (player.getCompletedLaps() >= m_gameSettings.laps && player.getFinishTime() < 0.1f)
 			player.setFinishTime(m_raceTime);
 	}
 
@@ -581,14 +581,14 @@ void Engine::stateResults(float dt)
 	struct Result
 	{
 		float time;
-		int player;
+		Player* player;
 	};
 
 	std::vector<Result> finishTimes;
 
 	for (int i = 0; i < m_players.size(); i++)
 	{
-		finishTimes.push_back({ m_players[i].getFinishTime(), i });
+		finishTimes.push_back({ m_players[i].getFinishTime(), &m_players[i]});
 	}
 
 	std::ranges::sort(finishTimes, {}, &Result::time);
