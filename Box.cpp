@@ -16,13 +16,13 @@ Box::Box(const sf::Texture& texture,
 
 void Box::interactWithVehicle(Vehicle& vehicle)
 {
+	auto engine = Engine::getInstance();
 	srand(time(NULL));
 	auto x = rand();
 	if (x % 2 == 0)
-		vehicle.setPowerUp(std::make_unique<BowlingBall>());
+		vehicle.setPowerUp(std::make_unique<BowlingBall>(engine->getTexture("bowling")));
 	else
-		vehicle.setPowerUp(std::make_unique<OilSpill>());
-	auto engine = Engine::getInstance();
+		vehicle.setPowerUp(std::make_unique<OilSpill>(engine->getTexture("oil")));
 	engine->flagForRemoval(this);
 
 	GroundItem::interactWithVehicle(vehicle);

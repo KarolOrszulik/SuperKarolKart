@@ -149,7 +149,7 @@ void Track::loadTrack(std::string const& path)
 				}
 				else if (c == '%') // oil spill
 				{
-					std::unique_ptr<GroundItem> oil = std::make_unique<SpeedAdjuster>(engine->getTexture("oil"), 0.5f, sf::Vector2f{}, false);
+					std::unique_ptr<GroundItem> oil = std::make_unique<SpeedAdjuster>(engine->getTexture("oil"), 0.5f);
 					std::unique_ptr<GroundItemSpawner> pSpawner =
 						std::make_unique<GroundItemSpawner>(sf::Vector2f(x + 0.5f, y + 0.5f) * GRID_SIZE_F, std::move(oil));
 					engine->addObject(std::move(pSpawner));

@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 #include "UIButton.h"
+#include "UIImage.h"
+#include "Vehicle.h"
 #include "AveragingCounter.h"
 
 class Player;
@@ -23,6 +25,9 @@ private:
 	// zoom stays at ZOOM_MAX when speed is above ZOOM_SPEED_END
 
 	void calculateSizeAndViewport();
+
+	UIButton generateSpeedDisplay(float speed, float vh, float dt);
+	UIImage generateItemImage(const Vehicle& vehicle, float vh);
 
 	int m_number;
 	sf::Vector2f m_size;

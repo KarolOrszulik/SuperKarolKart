@@ -28,6 +28,8 @@ public:
 	virtual float getSpeed() const = 0;
 	virtual float getMaxSpeed() const = 0;
 
+	const sf::Texture& getItemTexture() const;
+
 	void update(float dt);
 	void draw(sf::RenderTarget& window) override;
 

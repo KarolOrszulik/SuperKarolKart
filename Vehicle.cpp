@@ -96,6 +96,14 @@ void Vehicle::handleItemUse()
 
 
 
+const sf::Texture& Vehicle::getItemTexture() const
+{
+	if(m_powerUp)
+		return m_powerUp->getTexture();
+
+	return {};
+}
+
 void Vehicle::update(float dt)
 {
 	handleGroundItems();

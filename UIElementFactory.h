@@ -4,6 +4,7 @@
 #include "UIToggleButton.h"
 #include "UIRadioGroup.h"
 #include "UITextInput.h"
+#include "UIImage.h"
 
 class UIElementFactory
 {
@@ -34,6 +35,20 @@ public:
 		const sf::Vector2f& position = {0, 0},
 		UIElement::Origin origin = UIElement::Origin::TOP_LEFT,
 		bool shrinkToText = true,
+		const sf::Vector2f& size = { 0, 0 }) const;
+
+	UIImage makeImg(
+		const sf::Texture& texture,
+		const sf::Vector2f& position = {0, 0},
+		UIElement::Origin origin = UIElement::Origin::TOP_LEFT,
+		unsigned padding = 0,
+		const sf::Vector2f& size = { 0, 0 }) const;
+
+	std::shared_ptr<UIImage> makeImgPtr(
+		const sf::Texture& texture,
+		const sf::Vector2f& position = {0, 0},
+		unsigned padding = 0,
+		UIElement::Origin origin = UIElement::Origin::TOP_LEFT,
 		const sf::Vector2f& size = { 0, 0 }) const;
 
 	UIToggleButton makeToggle(
