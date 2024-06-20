@@ -23,10 +23,14 @@ public:
 	void setFinishTime(float time) { m_finishTime = time; }
 	float getFinishTime() const { return m_finishTime; }
 
+	void setName(const std::string& name) { this->name = name; }
+	const std::string& getName() const { return name; }
+
 private:
 	Vehicle* m_vehicle = nullptr;
 	ControlScheme m_control;
 	PlayerScreen m_screen;
+	std::string name;
 
 	float m_finishTime = 0.f;
 
