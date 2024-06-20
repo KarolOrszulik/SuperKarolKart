@@ -132,7 +132,7 @@ void Track::loadTrack(std::string const& path)
 		m_tiles.push_back(Tile::TIRES);
 		for (int x = 1; x <= line.length(); x++)
 		{
-			char c = line[x];
+			char c = line[x-1];
 			try
 			{
 				if (c == '!') // speed booster

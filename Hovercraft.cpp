@@ -7,6 +7,21 @@ float Hovercraft::getSpeed() const
 
 void Hovercraft::handleMovement(float dt)
 {
+	// handle bouncing off edges of track
+	const float margin = 1.2f * m_track->getGridSizeF();
+	if (m_position.x <= margin || m_position.x >= m_track->getSize().x - margin)
+	{
+		m_position -= m_velocity * dt;
+		m_velocity.x = -m_velocity.x;
+		m_velocity *= 0.7f;
+	}
+	if (m_position.y <= margin || m_position.y >= m_track->getSize().y - margin)
+	{
+		m_position -= m_velocity * dt;
+		m_velocity.y = -m_velocity.y;
+		m_velocity *= 0.7f;
+	}
+
 	sf::Vector2f force;
 
 	if (std::abs(m_input.accelerator) < 0.01f)
