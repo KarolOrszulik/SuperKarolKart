@@ -9,6 +9,8 @@ class PowerUp
 public:
 	PowerUp(const sf::Texture& texture) { m_sprite.setTexture(texture); };
 
+	static float calculateLaunchSpeed(float vehicleSpeed, float launchSpeed, float minSpeed);
+
 	void use(Vehicle& owner);
 
 	bool canBeUsed() const { return m_usageLeft > 0; }

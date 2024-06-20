@@ -17,8 +17,6 @@ public:
 
 	bool isSingleUse() const { return m_singleUse; }
 
-	~GroundItem() override;
-
 protected:
 	sf::Vector2f m_velocity;
 
