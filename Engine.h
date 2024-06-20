@@ -31,6 +31,7 @@ public:
 
 	unsigned int getGridSize() const { return m_track.getGridSize(); }
 	float getGridSizeF() const { return m_track.getGridSizeF(); }
+	size_t getNumLaps() const { return gameSettings.laps; }
 
 	void init(uint32_t width, uint32_t height, std::string const& title);
 	void run();

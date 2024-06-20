@@ -9,6 +9,7 @@ void GroundVehicle::handleMovement(float dt)
 		m_angle = 3.14f - m_angle;
 		m_position.x = std::clamp(m_position.x, margin, m_track->getSize().x - margin);
 		m_speed *= 0.7f;
+		m_speed = std::min(m_speed, 40.0f);
 	}
 	if (m_position.y <= margin || m_position.y >= m_track->getSize().y - margin)
 	{
@@ -16,6 +17,7 @@ void GroundVehicle::handleMovement(float dt)
 		m_angle = -m_angle;
 		m_position.y = std::clamp(m_position.y, margin, m_track->getSize().y - margin);
 		m_speed *= 0.7f;
+		m_speed = std::min(m_speed, 40.0f);
 	}
 
 
