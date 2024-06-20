@@ -527,16 +527,25 @@ bool Engine::allPlayersFinished() const
 
 void Engine::stateResults(float dt)
 {
-	std::vector<std::pair<float, int>> finishTimes;
+	struct Result
+	{
+		float time;
+		int player;
+	};
+
+	std::vector<Result> finishTimes;
+
 	for (int i = 0; i < m_players.size(); i++)
 	{
 		finishTimes.push_back({ m_players[i].getFinishTime(), i });
 	}
-	std::sort(finishTimes.begin(), finishTimes.end());
 
-	for (auto [time, player] : finishTimes)
+	std::ranges::sort(finishTimes, {}, &Result::time);
+
+	for (int i = 0; i < finishTimes.size(); i++)
 	{
-		std::cout << "Place " << finishTimes.size() - player << ": Player " << player + 1 << " finished in " << time << "s" << std::endl;
+		auto& [time, player] = finishTimes[i];
+		std::cout << "Player " << player + 1 << " finished in " << time << " seconds" << std::endl;
 	}
 
 	if (m_players.size() > 0)
