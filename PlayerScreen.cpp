@@ -91,8 +91,11 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 
 	UIButton lapCounter = generateLapCounter(player, vh);
 	lapCounter.setPosition(getCornerPosition(Corner::BOT_LEFT, windowSize));
+	lapCounter.move({2 * vh, 0.f});
 	lapCounter.draw(target, {});
 }
+
+
 
 UIButton PlayerScreen::generateSpeedDisplay(float speed, float vh, float dt)
 {
@@ -113,6 +116,8 @@ UIButton PlayerScreen::generateSpeedDisplay(float speed, float vh, float dt)
 	return factory.makeBtn(speedStr, {}, UIElement::Origin::BOT_RIGHT);
 }
 
+
+
 UIButton PlayerScreen::generateLapCounter(const Player& player, float vh)
 {
 	auto engine = Engine::getInstance();
@@ -131,6 +136,8 @@ UIButton PlayerScreen::generateLapCounter(const Player& player, float vh)
 	UIElementFactory factory(lapStyle, font, static_cast<int>(5 * vh));
 	return factory.makeBtn(lapCount, {}, UIElement::Origin::BOT_LEFT);
 }
+
+
 
 UIImage PlayerScreen::generateItemImage(const Vehicle& vehicle, float vh)
 {
@@ -151,6 +158,8 @@ UIImage PlayerScreen::generateItemImage(const Vehicle& vehicle, float vh)
 		paddingPercent * vh, 
 		sizePercent * sf::Vector2f{ vh, vh });
 }
+
+
 
 sf::Vector2f PlayerScreen::getCornerPosition(
 	Corner corner, 

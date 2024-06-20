@@ -15,6 +15,7 @@
 #include "AveragingCounter.h"
 
 #include <iostream>
+#include <filesystem>
 
 class Engine
 {
@@ -31,7 +32,7 @@ public:
 
 	unsigned int getGridSize() const { return m_track.getGridSize(); }
 	float getGridSizeF() const { return m_track.getGridSizeF(); }
-	size_t getNumLaps() const { return gameSettings.laps; }
+	size_t getNumLaps() const { return m_gameSettings.laps; }
 
 	void init(uint32_t width, uint32_t height, std::string const& title);
 	void run();
@@ -101,11 +102,13 @@ private:
 	struct Settings
 	{
 		int numPlayers = -1;
-		std::string trackName;
 		std::string playerNames[4]{};
+		std::string trackName;
 		int vehicle[4]{};
 		int laps = 3;
-	} gameSettings;
+		bool drawFPS = false;
+		Settings() = default;
+	} m_gameSettings;
 
 	friend float operator ""_vh(long double);
 	friend float operator ""_vw(long double);
