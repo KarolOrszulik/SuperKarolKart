@@ -17,7 +17,8 @@
 #include "Hovercraft.h"
 
 #include <iostream>
-
+#include <future>
+#include <thread>
 
 std::shared_ptr<Engine> Engine::s_instance = nullptr;
 
@@ -426,10 +427,13 @@ void Engine::stateRace(float dt)
 {
 	m_raceTime += dt;
 
+	std::vector<std::future<void>> futures;
 	for (auto& player : m_players)
-	{
-		player.controlVehicle();
-	}
+		futures.push_back(std::async(std::launch::async, &Player::controlVehicle, &player));
+
+	for (auto& f : futures)
+		f.get();
+
 
 	m_world.clear(m_track.getBackgroundColor());
 
