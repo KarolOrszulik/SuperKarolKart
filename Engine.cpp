@@ -127,21 +127,29 @@ void Engine::onStart()
 	if(!std::filesystem::exists(fontsPath))
 		throw std::runtime_error("Fonts folder could not be found");
 
-	for (auto& p : std::filesystem::directory_iterator(texturesPath))
+	std::jthread texturesLoaderThread([this, texturesPath]() { loadTextures(texturesPath); });
+	std::jthread fontsLoaderThread([this, fontsPath]() { loadFonts(fontsPath); });
+}
+
+void Engine::loadTextures(std::filesystem::path const& path)
+{
+	for (auto& p : std::filesystem::directory_iterator(path))
 	{
 		std::string path = p.path().string();
 		std::string name = p.path().stem().string();
 		if (!m_textures[name].loadFromFile(path))
 			throw std::runtime_error("Texture " + name + " could not be loaded");
-
 	}
+}
 
-	for(auto& p : std::filesystem::directory_iterator(fontsPath))
+void Engine::loadFonts(std::filesystem::path const& path)
+{
+	for (auto& p : std::filesystem::directory_iterator(path))
 	{
 		std::string path = p.path().string();
 		std::string name = p.path().stem().string();
 		std::cout << path << std::endl;
-		if(!m_fonts[name].loadFromFile(path))
+		if (!m_fonts[name].loadFromFile(path))
 			throw std::runtime_error("Font" + name + "could not be loaded");
 	}
 }
