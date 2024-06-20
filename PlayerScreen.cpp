@@ -84,19 +84,55 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 
 	float vh = target.getSize().y / 100.0f;
 
-	sf::Vector2f offset = (m_viewport.getSize() + m_viewport.getPosition());
-	sf::Vector2f pos = { offset.x * target.getSize().x, offset.y * target.getSize().y };
+	sf::Vector2f speedOffset = (m_viewport.getSize() + m_viewport.getPosition());
+	sf::Vector2f speedPos = { speedOffset.x * target.getSize().x, speedOffset.y * target.getSize().y };
 
+	UIButton speedDisplay = generateSpeedDisplay(speed, vh, dt);
+	speedDisplay.setPosition(speedPos);
+	speedDisplay.draw(target, {});
+
+	UIImage itemImage = generateItemImage(vehicle, vh);
+	itemImage.setPosition(
+		{m_viewport.getPosition().x * target.getSize().x,
+		 m_viewport.getPosition().y * target.getSize().y});
+
+	itemImage.draw(target, {});
+}
+
+UIButton PlayerScreen::generateSpeedDisplay(float speed, float vh, float dt)
+{
 	m_speedCounter.update(dt, speed);
+
 	auto speedInt = static_cast<int>(m_speedCounter.getValue());
 	std::string speedStr = std::to_string(speedInt) + "km/h";
+
+	auto engine = Engine::getInstance();
+	const sf::Font& font = engine->getFont("SKK");
 
 	sf::Uint8 whiteLevel = static_cast<int>(255 * (1.f - std::min(speed / 200.f, 1.f)));
 	m_speedStyle.fontColor = { 255 , whiteLevel, whiteLevel, 255 };
 	m_speedStyle.fontOutlineThickness = 1 * vh;
 
-	UIElementFactory factory(m_speedStyle, engine.getFont("SKK"), static_cast<int>(7 * vh));
-	auto speedDisp = factory.makeBtn(speedStr, pos, UIElement::Origin::BOT_RIGHT);
-	speedDisp.draw(target, {});
+	UIElementFactory factory(m_speedStyle, font, static_cast<int>(7 * vh));
+	return factory.makeBtn(speedStr, {}, UIElement::Origin::BOT_RIGHT);
+}
 
+UIImage PlayerScreen::generateItemImage(const Vehicle& vehicle, float vh)
+{
+	auto engine = Engine::getInstance();
+	constexpr float paddingPercent = 2.f;
+	constexpr float sizePercent = 6.f;
+	const sf::Font& font = engine->getFont("SKK");
+
+	UIButton::Style imageStyle;
+	imageStyle.bgColor = {255, 255, 255, 150};
+	imageStyle.bgOutlineColor = sf::Color::Black;
+	imageStyle.bgOutlineThickness = -0.75f * vh;
+
+	UIElementFactory imageFactory(imageStyle, font, 0);
+	return imageFactory.makeImg(
+		vehicle.getItemTexture(),
+		{}, UIElement::Origin::TOP_LEFT,
+		paddingPercent * vh, 
+		sizePercent * sf::Vector2f{ vh, vh });
 }

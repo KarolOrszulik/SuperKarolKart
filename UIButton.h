@@ -52,7 +52,7 @@ public:
 	inline unsigned getCharacterSize() const
 		{ return m_text.getCharacterSize(); };
 
-	
+	Style& accessStyle(State state) { return m_styles[state]; };
 
 	void handleEvent(sf::Event& event);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

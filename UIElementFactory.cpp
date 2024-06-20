@@ -35,8 +35,6 @@ UIButton UIElementFactory::makeBtn(
 	return btn;
 }
 
-#include <iostream>
-
 std::shared_ptr<UIButton> UIElementFactory::makeBtnPtr(
 	const std::string& text,
 	const sf::Vector2f& position,
@@ -52,6 +50,38 @@ std::shared_ptr<UIButton> UIElementFactory::makeBtnPtr(
 	btn->setPosition(position);
 	if (shrinkToText) btn->shrinkSizeToText();
 	return btn;
+}
+
+UIImage UIElementFactory::makeImg(
+	const sf::Texture& texture, 
+	const sf::Vector2f& position, 
+	UIElement::Origin origin, 
+	unsigned padding, 
+	const sf::Vector2f& size) const
+{
+	UIImage img(m_normStyle, texture);
+	img.setOrigin(origin);
+	img.setPosition(position);
+	img.setSize(size);
+	img.expandImageToSize();
+	img.applyPadding(padding);
+	return img;
+}
+
+std::shared_ptr<UIImage> UIElementFactory::makeImgPtr(
+	const sf::Texture& texture, 
+	const sf::Vector2f& position, 
+	unsigned padding, 
+	UIElement::Origin origin, 
+	const sf::Vector2f& size) const
+{
+	auto img = std::make_shared<UIImage>(m_normStyle, texture);
+	img->setOrigin(origin);
+	img->setPosition(position);
+	img->setSize(size);
+	img->expandImageToSize();
+	img->applyPadding(padding);
+	return img;
 }
 
 

@@ -28,11 +28,11 @@ void UIImage::expandImageToSize()
 void UIImage::applyPadding(unsigned padding)
 {
 	m_padding = padding;
+	sf::Vector2f paddingVec(padding, padding);
 	sf::Vector2f size = getSize();
-	size.x += padding * 2;
-	size.y += padding * 2;
+	size += paddingVec * 2.f;
 	setSize(size);
-	m_sprite.move({ static_cast<float>(padding), static_cast<float>(padding)});
+	m_sprite.move(paddingVec);
 }
 
 const sf::Texture& UIImage::getTexture()

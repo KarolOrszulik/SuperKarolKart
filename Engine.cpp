@@ -221,6 +221,10 @@ void Engine::stateMainMenu(float dt)
 		menu.setBgColor({ 20,170,150,255 });
 		menu.setSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
 
+		//auto img = std::make_shared<UIImage>(normStyle, getTexture("kart"));
+		auto img = textFactory.makeImgPtr(getTexture("kart"));
+		menu.addElement(img);
+
 		// <---- Title ---->
 		auto title = textFactory.makeBtnPtr("Super Karol Kart", { 0, 5.0_vh });
 		title->centerHorizontally(menu.getWidth());
@@ -438,7 +442,7 @@ void Engine::stateRace(float dt)
 	for (auto& player : m_players)
 		player.drawPlayerScreen(m_world, m_window, dt);
 
-	drawFPS(dt);
+	//drawFPS(dt);
 	displayCountdown();
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
