@@ -177,6 +177,8 @@ void Engine::onUpdate(float dt)
 		stateResults(dt);
 		break;
 	}
+	if(m_gameSettings.drawFPS)
+		drawFPS(dt);
 }
 
 void Engine::populatePlayers()
@@ -454,9 +456,12 @@ void Engine::stateVehicleMenu(float dt)
 
 void Engine::statePreRace(float dt)
 {
+	m_objects.clear();
 	std::string trackPath = (m_assetsPath / "track").string();
 	m_track.loadTilemap(trackPath + "/track_tileset.png");
-	m_track.loadTrack(trackPath + "/" + m_gameSettings.trackName);
+	//m_track.loadTrack(trackPath + "/" + m_gameSettings.trackName);
+	m_track.loadTrack(trackPath + "/small.txt");
+
 
 	sf::Vector2u worldSize(m_track.getSize());
 	m_world.create(worldSize.x, worldSize.y);
@@ -465,6 +470,8 @@ void Engine::statePreRace(float dt)
 	updateAllObjects(dt); // niestety musi byæ 2 razy
 
 	populatePlayers();
+	for(int i = 0; i < getNumPlayers(); i++)
+		m_players[i].setName(m_gameSettings.playerNames[i]);
 
 	m_raceTime = -3.f;
 	setGameState(State::RACE);
@@ -495,7 +502,6 @@ void Engine::stateRace(float dt)
 	for (auto& player : m_players)
 		player.drawPlayerScreen(m_world, m_window, dt);
 
-	//drawFPS(dt);
 	displayCountdown();
 
 	for (auto& player : m_players)
@@ -506,7 +512,6 @@ void Engine::stateRace(float dt)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
 		m_state = State::MAIN_MENU;
-
 
 	if (allPlayersFinished())
 		setGameState(State::RESULTS);
@@ -578,35 +583,63 @@ bool Engine::allPlayersFinished() const
 
 void Engine::stateResults(float dt)
 {
-	struct Result
+	if (!m_menus.contains(State::RESULTS))
 	{
-		float time;
-		Player* player;
-	};
+		struct Result
+		{
+			float time;
+			Player* player;
+		};
 
-	std::vector<Result> finishTimes;
+		std::vector<Result> finishTimes;
 
-	for (int i = 0; i < m_players.size(); i++)
-	{
-		finishTimes.push_back({ m_players[i].getFinishTime(), &m_players[i]});
+		for (int i = 0; i < m_players.size(); i++)
+		{
+			finishTimes.push_back({ m_players[i].getFinishTime(), &m_players[i] });
+		}
+
+		std::ranges::sort(finishTimes, {}, &Result::time);
+		UIButton::Style normStyle, hovStyle, selStyle;
+		normStyle.bgColor   = {   0,   0,   0,   0 };
+		normStyle.fontColor = { 255, 255, 255, 255 };
+		hovStyle.fontColor  = { 255, 200,   0, 255 };
+		selStyle.fontColor  = { 255,   0,   0, 255 };
+
+		UIElementFactory factory(normStyle, getFont("SKK"), 15_vh);
+		UIElementFactory factoryBtn(normStyle, hovStyle, selStyle, getFont("SKK"), 10_vh);
+
+
+		Menu& menu = m_menus[State::RESULTS];
+		menu.setBgColor({ 20,170,150,255 });
+		menu.setSize({ (float)m_window.getSize().x, (float)m_window.getSize().y });
+
+		// <---- Title ---->
+		auto title = factory.makeBtnPtr("Super Karol Kart", { 0, 5.0_vh });
+		title->centerHorizontally(menu.getWidth());
+		menu.addElement(title);
+
+		// <---- Results ---->
+
+		factory.setCharacterSize(8_vh);
+		for (int i = 0; i < finishTimes.size(); i++)
+		{
+			auto& [time, player] = finishTimes[i];
+			std::string timeStr = std::to_string(time) + "s";
+			std::string place = "#" + std::to_string(i + 1) + ": ";
+			std::string result = place + player->getName() + " finished in " + timeStr;
+
+			auto resultText = factory.makeBtnPtr(result, { 0, 30.0_vh + 10.0_vh * i });
+			resultText->centerHorizontally(menu.getWidth());
+			menu.addElement(resultText);
+		}
+
+		// <---- Start Button ---->
+		auto btnGO = factoryBtn.makeBtnPtr("MAIN MENU", { 0, 90.0_vh });
+		btnGO->centerHorizontally(menu.getWidth());
+		btnGO->onRelease = [this]() { setGameState(State::MAIN_MENU); };
+		menu.addElement(btnGO);
 	}
-
-	std::ranges::sort(finishTimes, {}, &Result::time);
-
-	for (int i = 0; i < finishTimes.size(); i++)
-	{
-		auto& [time, player] = finishTimes[i];
-		std::cout << "Player " << player + 1 << " finished in " << time << " seconds" << std::endl;
-	}
-
-	if (m_players.size() > 0)
-		std::cout << "Enter aby wyjsc" << std::endl;
-
-	m_players.clear();
-	m_objects.clear();
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Return))
-		m_state = State::MAIN_MENU;
+	m_window.draw(m_menus[State::RESULTS]);
 }
 
 

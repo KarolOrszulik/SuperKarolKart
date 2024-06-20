@@ -91,6 +91,7 @@ void Track::loadTrack(std::string const& path)
 	m_tiles.clear();
 	m_checkpoints.clear();
 	m_playerStarts.fill(0);
+	m_size = { 0, 0 };
 
 	std::shared_ptr<Engine> engine = Engine::getInstance();
 	std::map<char, Checkpoint> tmpCheckpoints;
