@@ -527,14 +527,26 @@ bool Engine::allPlayersFinished() const
 
 void Engine::stateResults(float dt)
 {
-	for (auto& player : m_players)
+	std::vector<std::pair<float, int>> finishTimes;
+	for (int i = 0; i < m_players.size(); i++)
 	{
-		std::cout << "Player finished in " << player.getFinishTime() << "s" << std::endl;
+		finishTimes.push_back({ m_players[i].getFinishTime(), i });
 	}
+	std::sort(finishTimes.begin(), finishTimes.end());
+
+	for (auto [time, player] : finishTimes)
+	{
+		std::cout << "Place " << finishTimes.size() - player << ": Player " << player + 1 << " finished in " << time << "s" << std::endl;
+	}
+
+	if (m_players.size() > 0)
+		std::cout << "Enter aby wyjsc" << std::endl;
 
 	m_players.clear();
 	m_objects.clear();
-	m_state = State::MAIN_MENU;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Return))
+		m_state = State::MAIN_MENU;
 }
 
 
