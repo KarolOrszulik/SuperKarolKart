@@ -459,8 +459,8 @@ void Engine::statePreRace(float dt)
 	m_objects.clear();
 	std::string trackPath = (m_assetsPath / "track").string();
 	m_track.loadTilemap(trackPath + "/track_tileset.png");
-	//m_track.loadTrack(trackPath + "/" + m_gameSettings.trackName);
-	m_track.loadTrack(trackPath + "/small.txt");
+	m_track.loadTrack(trackPath + "/" + m_gameSettings.trackName);
+	//m_track.loadTrack(trackPath + "/small.txt");
 
 
 	sf::Vector2u worldSize(m_track.getSize());
