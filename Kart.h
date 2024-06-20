@@ -16,7 +16,7 @@ private:
 			.wheelbase = 12.f,
 			.maxFriction = 350.f,
 			.lockAngle = 30.f * 3.14f / 180.f,
-			.maxSpeedRoad = 140.f,
+			.maxSpeedRoad = 150.f,
 			.maxSpeedGrass = 60.f,
 			.maxReverseSpeedRatio = 0.7f,
 			.decelerationRoad = 90.f,
