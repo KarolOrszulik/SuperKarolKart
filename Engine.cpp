@@ -91,6 +91,25 @@ void Engine::resetWindowView()
 	m_menus.erase(m_state);
 }
 
+const sf::Texture& Engine::getTexture(const std::string& name)
+{
+	if (!m_textures.contains(name)) 
+	{
+		std::cout << "Wczytuje teksture: " << name << std::endl;
+
+		static sf::Uint8 checkboard[] = {
+			  0,  0,   0, 255, 128,  0, 128, 255,  0,  0,   0, 255,
+			128,  0, 128, 255,   0,  0,   0, 255,128,  0, 128, 255,
+			  0,  0,   0, 255, 128,  0, 128, 255,  0,  0,   0, 255,
+		};
+		sf::Image img;
+		img.create(3, 3, checkboard);
+
+		m_textures[name].loadFromImage(img);
+	}
+	return m_textures.at(name);
+}
+
 void Engine::onStart()
 {
 	m_state = State::MAIN_MENU;
@@ -510,6 +529,6 @@ void Engine::drawFPS(float dt)
 	UIElementFactory factory(normStyle, getFont("SKK"), 3_vh);
 	
 	auto fps = std::to_string(static_cast<int>(m_fpsCounter.getValue()));
-	UIButton btn = factory.makeBtn(fps);
+	UIButton btn = factory.makeBtn(fps + " FPS");
 	btn.draw(m_window, {});
 }

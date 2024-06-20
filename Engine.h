@@ -36,8 +36,8 @@ public:
 	void run();
 
 	void resetWindowView();
-	sf::Texture const& getTexture(std::string const& name) const { return m_textures.at(name); }
-	sf::Font const& getFont(std::string const& name) const { return m_fonts.at(name); }
+	const sf::Texture& getTexture(std::string const& name);
+	const sf::Font& getFont(std::string const& name) const { return m_fonts.at(name); }
 
 private:
 	enum class State

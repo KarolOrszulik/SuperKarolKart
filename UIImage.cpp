@@ -1,12 +1,5 @@
 #include "UIImage.h"
 
-sf::Uint8 UIImage::checkboard[] = {
-	0,  0,   0, 255,
-	128,  0, 128, 255,
-	128,  0, 128, 255,
-	0,  0,  0,  255
-};
-
 UIImage::UIImage(Style normal, const sf::Texture& texture)
 	: UIButton(normal)
 {
@@ -44,14 +37,5 @@ void UIImage::applyPadding(unsigned padding)
 
 const sf::Texture& UIImage::getTexture()
 {
-	if (m_sprite.getTexture())
-	{
-		sf::Image img;
-		img.create(2, 2, checkboard);
-
-		sf::Texture texture;
-		texture.loadFromImage(img);
-		texture.setRepeated(true);
-	}
 	return *m_sprite.getTexture();
 }

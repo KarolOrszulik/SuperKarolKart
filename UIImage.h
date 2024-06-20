@@ -18,6 +18,5 @@ public:
 private:
 	sf::Sprite m_sprite;
 	unsigned m_padding = 0;
-	static sf::Uint8 checkboard[];
 };
 
