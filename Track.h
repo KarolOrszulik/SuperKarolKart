@@ -58,4 +58,5 @@ enum class Track::Tile
 	ROAD_CORNER,
 	FINISH,
 	VLC,
+	TIRES,
 };

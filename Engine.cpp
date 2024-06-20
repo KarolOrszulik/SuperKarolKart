@@ -390,8 +390,8 @@ void Engine::statePreRace(float dt)
 	sf::Vector2u worldSize(m_track.getSize());
 	m_world.create(worldSize.x, worldSize.y);
 
-	updateAllObjects(dt);
-	updateAllObjects(dt);
+	updateAllObjects(dt); // 
+	updateAllObjects(dt); // niestety musi byæ 2 razy
 
 	populatePlayers();
 
@@ -423,8 +423,6 @@ void Engine::stateRace(float dt)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
 		m_state = State::RESULTS;
-
-	
 
 	if (allPlayersFinished())
 		setGameState(State::RESULTS);
