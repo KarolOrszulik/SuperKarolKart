@@ -50,14 +50,15 @@ void Vehicle::handleCheckpoints()
 	std::optional<int> checkpointIndex = m_track->getCheckpointIndex(m_position, Engine::getInstance()->getGridSizeF());
 	if (checkpointIndex.has_value())
 	{
+		std::cout << "Najechano na checkpoint, w sumie jest ich " << m_track->getCheckpointCount() << std::endl;
 		if (checkpointIndex == m_nextCheckpoint)
 		{
 			m_nextCheckpoint = (m_nextCheckpoint + 1) % m_track->getCheckpointCount();
 			std::cout << "Gracz " << this << " przeszedl checkpoint " << checkpointIndex.value() << std::endl;
 			if (m_nextCheckpoint == 0)
 			{
-				std::cout << "Gracz " << this << " rozpoczal nowe okrazenie" << std::endl;
 				++m_completedLaps;
+				std::cout << "Gracz " << this << " rozpoczal okrazenie " << m_completedLaps << std::endl;
 			}
 		}
 	}

@@ -408,7 +408,7 @@ void Engine::stateVehicleMenu(float dt)
 void Engine::statePreRace(float dt)
 {
 	m_track.loadTilemap("assets/track/track_tileset.png");
-	m_track.loadTrack("assets/track/track_00.txt");
+	m_track.loadTrack("assets/track/small.txt");
 
 	sf::Vector2u worldSize(m_track.getSize());
 	m_world.create(worldSize.x, worldSize.y);
@@ -427,7 +427,9 @@ void Engine::stateRace(float dt)
 	m_raceTime += dt;
 
 	for (auto& player : m_players)
+	{
 		player.controlVehicle();
+	}
 
 	m_world.clear(m_track.getBackgroundColor());
 
@@ -445,8 +447,15 @@ void Engine::stateRace(float dt)
 	//drawFPS(dt);
 	displayCountdown();
 
+	for (auto& player : m_players)
+	{
+		if (player.getCompletedLaps() >= gameSettings.laps && player.getFinishTime() < 0.1f)
+			player.setFinishTime(m_raceTime);
+	}
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
 		m_state = State::RESULTS;
+
 
 	if (allPlayersFinished())
 		setGameState(State::RESULTS);
@@ -518,6 +527,11 @@ bool Engine::allPlayersFinished() const
 
 void Engine::stateResults(float dt)
 {
+	for (auto& player : m_players)
+	{
+		std::cout << "Player finished in " << player.getFinishTime() << "s" << std::endl;
+	}
+
 	m_players.clear();
 	m_objects.clear();
 	m_state = State::MAIN_MENU;
