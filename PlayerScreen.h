@@ -29,7 +29,8 @@ private:
 		TOP_LEFT,
 		TOP_RIGHT,
 		BOT_LEFT,
-		BOT_RIGHT
+		BOT_RIGHT,
+		CENTER
 	};
 
 	void calculateSizeAndViewport();
@@ -37,6 +38,7 @@ private:
 	UIButton generateSpeedDisplay(float speed, float vh, float dt);
 	UIButton generateLapCounter(const Player& player, float vh);
 	UIImage generateItemImage(const Vehicle& vehicle, float vh);
+	sf::CircleShape generateDircetionArrow(const Vehicle& vehicle, float vh);
 
 	sf::Vector2f getCornerPosition(Corner corner, sf::Vector2f targetSize) const;
 

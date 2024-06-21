@@ -24,6 +24,7 @@ public:
 	size_t getCompletedLaps() const { return m_completedLaps; }
 	float getAngle() const { return m_angle; }
 	sf::Vector2f getUnitVector() const { return { std::cos(m_angle), std::sin(m_angle) }; }
+	sf::Vector2f getGoalDirection() const { return m_track->getChekpointPos(m_nextCheckpoint) - m_position; }
 
 	virtual float getSpeed() const = 0;
 	virtual float getMaxSpeed() const = 0;

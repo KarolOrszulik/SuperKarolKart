@@ -24,7 +24,7 @@ public:
 
 	std::optional<int> getCheckpointIndex(sf::Vector2f pos, float radius = 0.f) const;
 	size_t getCheckpointCount() const { return m_checkpoints.size(); }
-
+	sf::Vector2f getChekpointPos(size_t checkpoint);
 
 	float getGridSizeF() const { return GRID_SIZE_F; }
 	unsigned int getGridSize() const { return GRID_SIZE; }

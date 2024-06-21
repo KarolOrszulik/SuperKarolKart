@@ -86,6 +86,12 @@ std::optional<int> Track::getCheckpointIndex(sf::Vector2f pos, float radius) con
 		return {};
 }
 
+sf::Vector2f Track::getChekpointPos(size_t idx)
+{
+	Checkpoint checkpoint = m_checkpoints[idx];
+	return index2posCenter(checkpoint[0]);
+}
+
 void Track::loadTrack(std::string const& path)
 {
 	m_tiles.clear();

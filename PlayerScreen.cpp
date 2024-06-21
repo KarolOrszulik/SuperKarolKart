@@ -78,7 +78,14 @@ void PlayerScreen::draw(sf::RenderTexture& source, sf::RenderTarget& target, con
 
 
 	sf::Vector2f windowSize(target.getSize());
-	float vh = windowSize.y / 100.0f;
+	const float vh = windowSize.y / 100.0f;
+	const float vw = windowSize.x / 100.0f;
+
+
+	sf::CircleShape circle = generateDircetionArrow(vehicle, 0.75 * vh / m_zoom * ZOOM_MIN);
+	circle.move(getCornerPosition(Corner::CENTER, windowSize));
+	target.draw(circle);
+
 
 
 	UIButton speedDisplay = generateSpeedDisplay(speed, vh, dt);
@@ -161,12 +168,31 @@ UIImage PlayerScreen::generateItemImage(const Vehicle& vehicle, float vh)
 		sizePercent * sf::Vector2f{ vh, vh });
 }
 
+sf::CircleShape PlayerScreen::generateDircetionArrow(const Vehicle& vehicle, float radius)
+{
+	sf::Vector2f dir = vehicle.getGoalDirection();
+	const float dirAngle = std::atan2(dir.y, dir.x);
+	const float realDirAngle = dirAngle - m_screenAngle - 3.14 / 2;
+
+	// draw circle towards next checkpoint
+	sf::CircleShape circle(1.f * radius);
+	circle.setOutlineThickness(0.4f * radius);
+	circle.setOutlineColor(sf::Color::Black);
+	circle.move(sf::Vector2f(std::cos(realDirAngle), std::sin(realDirAngle)) * 50.f);
+
+	circle.setFillColor(sf::Color(255, 162, 0));
+	return circle;
+}
+
 
 
 sf::Vector2f PlayerScreen::getCornerPosition(
 	Corner corner, 
 	sf::Vector2f targetSize) const
 {
+	if(corner == Corner::CENTER)
+		return (getCornerPosition(Corner::BOT_LEFT, targetSize) + getCornerPosition(Corner::TOP_RIGHT, targetSize)) / 2.f;
+
 	sf::Vector2f leftCorner = m_viewport.getPosition();
 	
 	if(corner == Corner::BOT_LEFT || corner == Corner::BOT_RIGHT)
