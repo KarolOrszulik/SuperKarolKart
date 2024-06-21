@@ -1,0 +1,1 @@
+Jeśli program się kompiluje, ale nie uruchamia, należy skopiować biblioteki .dll z SFML-2.6.1/bin do x64/Debug lub x64/Release.
