@@ -124,7 +124,7 @@ void Engine::onStart()
 	m_normStyle.fontOutlineThickness = 1.f * 1_vh;
 	m_hovStyle.fontColor = { 220, 220, 220, 255 };
 	m_selStyle.fontOutlineThickness = 1.f * 1_vh;
-	m_selStyle.fontColor = { 180, 180, 180, 255 };
+	m_selStyle.fontColor = { 255, 162, 0, 255 };
 
 	m_state = State::MAIN_MENU;
 	m_assetsPath = "assets/";
@@ -338,15 +338,18 @@ void Engine::stateSetup(float dt)
 
 
 		// <---- Start Button ---->
-		auto btnGO = btnFactory.makeBtnPtr("START!", { 0, 90.0_vh });
-		btnGO->centerHorizontally(menu.getWidth());
+		auto btnGO = btnFactory.makeBtnPtr("START!",
+			{ 90._vw, 90._vh }, UIElement::Origin::TOP_RIGHT);
 		btnGO->onRelease = [this]() {
-			if (m_gameSettings.numPlayers > 0 && !m_gameSettings.trackName.empty()) {
+			if (m_gameSettings.numPlayers > 0)
 				setGameState(State::VEHICLE_MENU);
-			}
 		};
-
 		menu.addElement(btnGO);
+
+		// <---- Back Button ---->
+		auto btnBack = btnFactory.makeBtnPtr("BACK", { 10.0_vw, 90.0_vh });
+		btnBack->onRelease = [this]() { setGameState(State::MAIN_MENU); };
+		menu.addElement(btnBack);
 	}
 	m_window.draw(m_menus[State::SETUP_MENU]);
 }
@@ -437,7 +440,7 @@ void Engine::stateVehicleMenu(float dt)
 		};
 		menu.addElement(btnGO);
 
-		// <---- Start Button ---->
+		// <---- Back Button ---->
 		auto btnBack = btnFactory.makeBtnPtr("BACK", { 10.0_vw, 90.0_vh });
 		btnBack->onRelease = [this]() { setGameState(State::SETUP_MENU); };
 		menu.addElement(btnBack);
